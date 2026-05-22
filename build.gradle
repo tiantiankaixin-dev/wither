@@ -1,0 +1,64 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = '1.20.1-4.2.1'
+group = 'nonamecrackers2'
+
+base {
+    archivesName = 'witherstormmod'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    copyIdeResources = true
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { witherstormmod { source sourceSets.main } }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--nogui'
+            mods { witherstormmod { source sourceSets.main } }
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    flatDir { dirs 'libs' }
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.1.47'
+    implementation fg.deobf('nonamecrackers2:crackerslib-forge:1.20.1-0.4.1')
+    compileOnly 'mezz.jei:jei-1.20.1-forge:15.3.0.4'
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title'     : 'witherstormmod',
+            'Specification-Vendor'    : 'nonamecrackers2',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : project.name,
+            'Implementation-Version'  : project.version,
+            'Implementation-Vendor'   : 'nonamecrackers2',
+            'MixinConfigs'            : 'witherstormmod.mixins.json'
+        ])
+    }
+}
