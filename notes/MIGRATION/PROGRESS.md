@@ -91,3 +91,61 @@
 
 ---
 
+## Phase-2 进度（2026-05-24 ~03:30 UTC+8）
+
+### 已完成
+
+| 动作 | 结果 |
+|---|---|
+| 修复 BOM 编码 bug | 185 个文件去 BOM，避免 javac 拒绝 |
+| 复制资源文件 | 1356 个 .png/.json/.ogg 已落地 mdk |
+| 配置 `neoforge.mods.toml` | 启用 mixin + AT，写入 mod 元数据 |
+| 修复 `import // TODO_MIG;` 语法错误 | 123 行注释化（合法 Java） |
+| 跑首次 `gradlew compileJava` | **5234 个真实错误，散落在 329 个文件** |
+| Phase-2 自动迁移 | -490 错误，-37 个出错文件 |
+| 推送到 GitHub | commit `bc02d13` 已上 port-1.21.1 |
+
+### 当前编译状态：**4744 错误 / 292 文件**
+
+### 剩余错误模式（按优先级）
+
+| 模式 | 数量 | 处理策略 |
+|---|---|---|
+| `Capabilities.*` 路径不对 | 598 | 手动校正，或单独写一轮 |
+| `VertexConsumer.vertex(Matrix4f)` | 320 | 改为 `addVertex(Matrix4f,x,y,z)` 可自动 |
+| `BuiltInRegistries.*` 用法 | 266 | 部分调用要 `.getValue()` 或 `.get().value()` |
+| `crackerslib` 不存在 | 212 | **需要先迁移 crackerslib 库** |
+| `MobType` 删除 | 199 | 手动删除 `getMobType()` 重写（1.21 用 entity tags 替代） |
+| `PacketDistributor.PacketTarget` | 94 | 手动改写为 `PacketDistributor.SERVER`/`PLAYER` 等 |
+| `Crackiness` 内部类导入 | 78 | 部分修了，剩余手动 |
+| `TickEvent` 拆分 | 78 | 手动加 `.Pre` / `.Post` 后缀 |
+| `renderToBuffer` 签名变化 | 58 | 模型类需删除 `int color` 参数 |
+| `ModelPart.render` 签名变化 | 52 | 同上 |
+
+### 工时复盘
+
+| 阶段 | 实际工时 |
+|---|---|
+| 0-30 min: 分析 + 第一轮自动迁移 | 30 min |
+| 30-90 min: 修 bug（BOM、PowerShell hashtable）+ 资源复制 | 60 min |
+| 90-150 min: Phase-2 自动迁移 + 编译验证 | 60 min |
+| **合计 AI 工时** | **2.5 小时** |
+
+### 下一步建议
+
+**短期（明天）**：
+1. 迁移 crackerslib（70 文件，预计 4-6h AI 工时）— 是 witherstormmod 编译的硬前置
+2. 写 phase-3 自动脚本处理 `VertexConsumer.vertex(Matrix4f)`（320 错误一波清）
+
+**中期**：
+1. 手动处理 `MobType` 删除（199 错误）— 涉及游戏逻辑判断
+2. 重写 Packet 系统（参见 PACKET_AUDIT.md）— 解决 `PacketDistributor` 94 错误
+3. 重构 Capability → Data Attachment（参见 CAPABILITY_AUDIT.md）— 解决 598 + 264 错误
+
+**里程碑预期**：
+- 编译错误归零：~30-50 小时 AI + 人工
+- runClient 启动：再 ~10-20 小时调试
+- "召唤凋零风暴 + 一阶段战斗"：再 ~15-25 小时
+
+---
+
