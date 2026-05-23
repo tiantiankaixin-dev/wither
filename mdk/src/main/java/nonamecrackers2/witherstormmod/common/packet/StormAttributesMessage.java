@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import com.google.common.collect.Lists;
 import java.util.Collection;
@@ -11,9 +11,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.neoforged.api.distmarker.Dist;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class StormAttributesMessage extends DistantRendererMessage {
@@ -52,7 +52,7 @@ public class StormAttributesMessage extends DistantRendererMessage {
       super.encode(buffer);
       buffer.writeVarInt(this.entityId);
       buffer.writeCollection(this.attributes, (buffer1, snapshot) -> {
-         buffer1.writeResourceLocation(NeoForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
+         buffer1.writeResourceLocation(BuiltInRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
          buffer1.writeDouble(snapshot.getBase());
          buffer1.writeCollection(snapshot.getModifiers(), (buffer2, modifier) -> {
             buffer2.writeUUID(modifier.getId());
@@ -69,7 +69,7 @@ public class StormAttributesMessage extends DistantRendererMessage {
       this.attributes = buffer.readList(
          buffer1 -> {
             ResourceLocation location = buffer1.readResourceLocation();
-            Attribute attribute = (Attribute)NeoForgeRegistries.ATTRIBUTES.getValue(location);
+            Attribute attribute = (Attribute)BuiltInRegistries.ATTRIBUTES.getValue(location);
             double base = buffer1.readDouble();
             List<AttributeModifier> list = buffer1.readList(
                buffer2 -> new AttributeModifier(

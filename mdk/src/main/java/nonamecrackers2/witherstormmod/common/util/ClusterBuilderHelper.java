@@ -31,7 +31,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 
 public class ClusterBuilderHelper {
-   private static final ResourceLocation BOWELS_LOOT = new ResourceLocation("witherstormmod", "chests/bowels_general");
+   private static final ResourceLocation BOWELS_LOOT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "chests/bowels_general");
    private static final SimpleWeightedRandomList<Block> OUTSIDE = SimpleWeightedRandomList.<Block>builder()
       .add(WitherStormModBlocks.TAINTED_FLESH_BLOCK.get(), 20)
       .add(WitherStormModBlocks.INFECTED_FLESH_BLOCK.get(), 3)

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.event;
+package nonamecrackers2.witherstormmod.common.event;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

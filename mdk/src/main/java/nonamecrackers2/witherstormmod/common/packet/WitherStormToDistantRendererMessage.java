@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import com.google.common.collect.Lists;
 import io.netty.buffer.Unpooled;
@@ -18,9 +18,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.head.HeadManager;
@@ -45,7 +45,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       this.entity = entity;
       this.id = entity.getId();
       this.uuid = entity.getUUID();
-      this.type = NeoForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+      this.type = NeoBuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
       this.pos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
       this.yRot = (byte)((int)(entity.getYRot() * 256.0F / 360.0F));
       this.xRot = (byte)((int)(entity.getXRot() * 256.0F / 360.0F));
@@ -147,7 +147,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
 
       for (int i = 0; i < attributeSize; i++) {
          ResourceLocation location = buffer.readResourceLocation();
-         Attribute attribute = (Attribute)NeoForgeRegistries.ATTRIBUTES.getValue(location);
+         Attribute attribute = (Attribute)BuiltInRegistries.ATTRIBUTES.getValue(location);
          double base = buffer.readDouble();
          List<AttributeModifier> list = Lists.newArrayList();
          int modifierSize = buffer.readVarInt();
@@ -195,7 +195,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       buffer.writeInt(this.attributes.size());
 
       for (AttributeSnapshot snapshot : this.attributes) {
-         buffer.writeResourceLocation(NeoForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
+         buffer.writeResourceLocation(BuiltInRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
          buffer.writeDouble(snapshot.getBase());
          buffer.writeVarInt(snapshot.getModifiers().size());
 

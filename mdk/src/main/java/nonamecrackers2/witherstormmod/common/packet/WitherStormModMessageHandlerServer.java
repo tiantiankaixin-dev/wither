@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

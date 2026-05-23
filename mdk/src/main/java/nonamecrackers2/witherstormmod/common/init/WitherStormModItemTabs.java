@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

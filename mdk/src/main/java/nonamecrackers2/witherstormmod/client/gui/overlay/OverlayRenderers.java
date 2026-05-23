@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.gui.overlay;
+package nonamecrackers2.witherstormmod.client.gui.overlay;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -17,7 +17,7 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabiliti
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 
 public class OverlayRenderers {
-   private static final ResourceLocation TRACTOR_BEAM_OUTLINE = new ResourceLocation("witherstormmod", "textures/misc/tractor_beam_outline.png");
+   private static final ResourceLocation TRACTOR_BEAM_OUTLINE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/tractor_beam_outline.png");
 
    public static void registerOverlays(RegisterGuiOverlaysEvent event) {
       event.registerAboveAll(

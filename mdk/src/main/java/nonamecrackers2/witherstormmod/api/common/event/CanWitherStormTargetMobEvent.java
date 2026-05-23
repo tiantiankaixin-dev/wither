@@ -1,10 +1,10 @@
-﻿package nonamecrackers2.witherstormmod.api.common.event;
+package nonamecrackers2.witherstormmod.api.common.event;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.Cancelable;
+// TODO_MIG[CANCELABLE]: removed; class must implement ICancellableEvent
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
-@Cancelable
+// TODO_MIG[CANCELABLE]: implement ICancellableEvent on this class instead
 public class CanWitherStormTargetMobEvent extends WitherStormEvent {
    private final LivingEntity entity;
 

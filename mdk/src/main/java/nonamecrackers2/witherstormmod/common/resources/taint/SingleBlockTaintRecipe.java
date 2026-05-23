@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.resources.taint;
+package nonamecrackers2.witherstormmod.common.resources.taint;
 
 import com.google.gson.JsonObject;
 import java.util.List;
@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class SingleBlockTaintRecipe extends TaintRecipe {
    private final Block block;
@@ -23,12 +23,12 @@ public class SingleBlockTaintRecipe extends TaintRecipe {
 
    @Override
    public String getName() {
-      return NeoForgeRegistries.BLOCKS.getKey(this.block).getPath();
+      return NeoBuiltInRegistries.BLOCK.getKey(this.block).getPath();
    }
 
    @Override
    public void serializeFrom(JsonObject object) {
-      object.addProperty("block", NeoForgeRegistries.BLOCKS.getKey(this.block).toString());
+      object.addProperty("block", NeoBuiltInRegistries.BLOCK.getKey(this.block).toString());
    }
 
    public Block getBlock() {

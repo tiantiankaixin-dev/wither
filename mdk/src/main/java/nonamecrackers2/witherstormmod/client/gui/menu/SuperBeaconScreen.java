@@ -28,9 +28,9 @@ import nonamecrackers2.witherstormmod.common.packet.SuperBeaconSetEffectMessage;
 import nonamecrackers2.witherstormmod.common.packet.SuperBeaconToggleAreaMessage;
 
 public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeaconMenu> {
-   private static final ResourceLocation BORDER = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon.png");
-   private static final ResourceLocation WINDOW = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon_window.png");
-   private static final ResourceLocation BUTTONS = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon_buttons.png");
+   private static final ResourceLocation BORDER = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon.png");
+   private static final ResourceLocation WINDOW = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon_window.png");
+   private static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon_buttons.png");
    private static final Component SELECTED_EFFECT = Component.translatable("container.witherstormmod.withered_beacon.selected");
    private static final Component AVAILABLE_EFFECTS = Component.translatable("container.witherstormmod.withered_beacon.available_effects");
    private static final Component INFO = Component.translatable("withered_beacon.info");

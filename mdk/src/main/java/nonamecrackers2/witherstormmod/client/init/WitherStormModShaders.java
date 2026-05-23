@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.init;
+package nonamecrackers2.witherstormmod.client.init;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import java.io.IOException;

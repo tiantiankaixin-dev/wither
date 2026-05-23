@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.init;
+package nonamecrackers2.witherstormmod.client.init;
 
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeType;

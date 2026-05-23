@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -29,7 +29,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
+// TODO_MIG[PROTECTION_ENCH]: ProtectionEnchantment removed; use EnchantmentHelper.getDamageProtection
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
@@ -48,7 +48,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
-import // TODO_MIG: NetworkHooks removed, use PacketDistributor;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;

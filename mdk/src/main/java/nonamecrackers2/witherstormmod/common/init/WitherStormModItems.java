@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
@@ -30,7 +30,7 @@
  *  net.neoforged.neoforge.common.brewing.IBrewingRecipe
  *  net.neoforged.neoforge.registries.DeferredRegister
  *  net.neoforged.neoforge.registries.NeoForgeRegistries
- *  net.neoforged.neoforge.registries.IForgeRegistry
+ *  net.neoforged.neoforge.registries.Registry
  *  net.neoforged.neoforge.registries.DeferredHolder
  *  nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks
  *  nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes
@@ -78,8 +78,8 @@ import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.Registry;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
@@ -104,7 +104,7 @@ public class WitherStormModItems {
     public static final FoodProperties GOLDEN_APPLE_STEW_FOOD = new FoodProperties.Builder().nutrition(5).saturationMod(1.0f).effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 2600, 0), 1.0f).effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 200, 0), 1.0f).alwaysEat().build();
     public static final FoodProperties WITHERED_FLESH_FOOD = new FoodProperties.Builder().nutrition(4).saturationMod(0.1f).effect(() -> new MobEffectInstance(MobEffects.HUNGER, 800, 0), 0.8f).effect(() -> new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).meat().build();
     public static final FoodProperties WITHERED_SPIDER_EYE_FOOD = new FoodProperties.Builder().nutrition(2).saturationMod(0.8f).effect(() -> new MobEffectInstance(MobEffects.POISON, 200, 0), 1.0f).effect(() -> new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).build();
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create((IForgeRegistry)NeoForgeRegistries.ITEMS, (String)"witherstormmod");
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create((Registry)NeoBuiltInRegistries.ITEM, (String)"witherstormmod");
     public static final DeferredHolder<Item> WITHERED_BONE = ITEMS.register("withered_bone", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item> WITHERED_FLESH = ITEMS.register("withered_flesh", () -> new Item(new Item.Properties().food(WITHERED_FLESH_FOOD).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item> TAINTED_DUST = ITEMS.register("tainted_dust", () -> new ItemNameBlockItem((Block)WitherStormModBlocks.TAINTED_DUST.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));

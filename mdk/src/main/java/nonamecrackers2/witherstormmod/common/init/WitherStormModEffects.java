@@ -1,16 +1,16 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.potion.WitherSicknessEffect;
 
 public class WitherStormModEffects {
-   public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(NeoForgeRegistries.MOB_EFFECTS, "witherstormmod");
+   public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(NeoBuiltInRegistries.MOB_EFFECT, "witherstormmod");
    public static final DeferredHolder<MobEffect> WITHER_SICKNESS = EFFECTS.register(
       "wither_sickness",
       () -> new WitherSicknessEffect(MobEffectCategory.HARMFUL, 8192505)

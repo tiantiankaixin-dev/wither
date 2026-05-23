@@ -15,10 +15,8 @@ import nonamecrackers2.witherstormmod.client.rendertype.UtilRenderTypes;
 import nonamecrackers2.witherstormmod.common.entity.FlamingWitherSkullEntity;
 
 public class FlamingWitherSkullRenderer<T extends FlamingWitherSkullEntity> extends EntityRenderer<T> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/flaming_wither_skull/flaming_wither_skull.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation(
-      "witherstormmod", "textures/entity/flaming_wither_skull/flaming_wither_skull_emissive.png"
-   );
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/flaming_wither_skull/flaming_wither_skull.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/flaming_wither_skull/flaming_wither_skull_emissive.png");
    private final FlamingWitherSkullModel model;
 
    public FlamingWitherSkullRenderer(Context context) {

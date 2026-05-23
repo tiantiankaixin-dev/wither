@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ActivateSuperBeaconTrigger extends SimpleCriterionTrigger<ActivateSuperBeaconTrigger.TriggerInstance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "activate_super_beacon");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "activate_super_beacon");
 
    public ResourceLocation getId() {
       return ID;

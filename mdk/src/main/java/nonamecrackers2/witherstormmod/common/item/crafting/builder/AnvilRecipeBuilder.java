@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.item.crafting.builder;
+package nonamecrackers2.witherstormmod.common.item.crafting.builder;
 
 import com.google.gson.JsonObject;
 import java.util.function.Consumer;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 
@@ -65,7 +65,7 @@ public class AnvilRecipeBuilder implements RecipeBuilder {
          object.add("left", this.left.toJson());
          object.add("right", this.right.toJson());
          object.addProperty("cost", this.xpCost);
-         object.addProperty("result", NeoForgeRegistries.ITEMS.getKey(this.result).toString());
+         object.addProperty("result", NeoBuiltInRegistries.ITEM.getKey(this.result).toString());
       }
 
       public ResourceLocation getId() {

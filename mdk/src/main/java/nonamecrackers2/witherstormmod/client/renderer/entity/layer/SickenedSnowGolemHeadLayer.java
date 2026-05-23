@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.renderer.entity.layer;
+package nonamecrackers2.witherstormmod.client.renderer.entity.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

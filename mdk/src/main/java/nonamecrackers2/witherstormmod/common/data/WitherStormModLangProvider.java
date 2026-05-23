@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.data;
+package nonamecrackers2.witherstormmod.common.data;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;

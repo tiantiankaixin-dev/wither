@@ -18,10 +18,10 @@ import nonamecrackers2.witherstormmod.common.blockentity.SuperSupportBeaconBlock
 
 public class SuperSupportBeaconRenderer extends AbstractSuperBeaconRenderer<SuperSupportBeaconBlockEntity> {
    private static final float[] UVS = new float[]{0.375F, 0.375F, 0.625F, 0.625F};
-   private static final ResourceLocation DIAMOND = new ResourceLocation("witherstormmod", "textures/block/support_beacon_diamond.png");
-   private static final ResourceLocation EMERALD = new ResourceLocation("witherstormmod", "textures/block/support_beacon_emerald.png");
-   private static final ResourceLocation IRON = new ResourceLocation("witherstormmod", "textures/block/support_beacon_iron.png");
-   private static final ResourceLocation REDSTONE = new ResourceLocation("witherstormmod", "textures/block/support_beacon_redstone.png");
+   private static final ResourceLocation DIAMOND = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/block/support_beacon_diamond.png");
+   private static final ResourceLocation EMERALD = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/block/support_beacon_emerald.png");
+   private static final ResourceLocation IRON = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/block/support_beacon_iron.png");
+   private static final ResourceLocation REDSTONE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/block/support_beacon_redstone.png");
    private static final Map<AbstractSuperBeaconBlockEntity.Color, ResourceLocation> TEX_BY_COLOR = ImmutableMap.of(
       AbstractSuperBeaconBlockEntity.Color.AQUA,
       DIAMOND,

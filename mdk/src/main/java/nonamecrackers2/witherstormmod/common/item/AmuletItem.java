@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.item;
+package nonamecrackers2.witherstormmod.common.item;
 
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormSegmentEntity;
@@ -79,7 +79,7 @@ public class AmuletItem extends Item {
 
                WitherStormEntity nearest = WorldUtil.getNearest(storms, player.position(), Entity::position);
                if (nearest != null) {
-                  tag.putString(id + "Type", NeoForgeRegistries.ENTITY_TYPES.getKey(nearest.getType()).toString());
+                  tag.putString(id + "Type", NeoBuiltInRegistries.ENTITY_TYPE.getKey(nearest.getType()).toString());
                   tag.putUUID(id, nearest.getUUID());
                   tag.putInt(id + "Dist", (int)player.distanceTo(nearest));
                   tag.putString(id + "Name", nearest.getDisplayName().getString());
@@ -127,7 +127,7 @@ public class AmuletItem extends Item {
                         tag.putInt(id + "Dist", -1);
                         player.playNotifySound(WitherStormModSoundEvents.AMULET_UNBIND.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                      } else {
-                        tag.putString(id + "Type", NeoForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString());
+                        tag.putString(id + "Type", NeoBuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
                         tag.putUUID(id, entity.getUUID());
                         player.playNotifySound(WitherStormModSoundEvents.AMULET_BIND.get(), SoundSource.PLAYERS, 1.0F, 0.0F);
                         if (player instanceof ServerPlayer serverPlayer) {
@@ -148,7 +148,7 @@ public class AmuletItem extends Item {
    private void saveDistFor(ServerLevel level, CompoundTag tag, Player player, UUID uuid, String id) {
       Entity tracking = null;
       if (tag.getBoolean("TrackEntityTypes")) {
-         EntityType<?> type = (EntityType<?>)NeoForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(tag.getString(id + "Type")));
+         EntityType<?> type = (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(new ResourceLocation(tag.getString(id + "Type")));
          List<Entity> entities = level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(500.0), e -> e.getType().equals(type) && e != player);
          tracking = WorldUtil.getNearest(entities, player.position(), Entity::position);
       } else if (tag.contains(id)) {

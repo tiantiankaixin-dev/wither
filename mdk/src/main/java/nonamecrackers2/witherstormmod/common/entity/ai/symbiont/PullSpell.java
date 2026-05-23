@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.symbiont;
+package nonamecrackers2.witherstormmod.common.entity.ai.symbiont;
 
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;

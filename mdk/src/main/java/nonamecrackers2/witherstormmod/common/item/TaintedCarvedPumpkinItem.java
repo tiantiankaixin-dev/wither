@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.item;
+package nonamecrackers2.witherstormmod.common.item;
 
 import java.util.function.Consumer;
 import net.minecraft.world.entity.monster.EnderMan;

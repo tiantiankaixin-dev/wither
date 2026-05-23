@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.util;
+package nonamecrackers2.witherstormmod.common.util;
 
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.ITeleporter;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 
 public class BowelsTeleporter implements ITeleporter {
@@ -30,7 +30,7 @@ public class BowelsTeleporter implements ITeleporter {
       player.connection
          .send(
             new ClientboundSoundPacket(
-               (Holder)NeoForgeRegistries.SOUND_EVENTS.getHolder(WitherStormModSoundEvents.BOWELS_TRANSPORT.get()).get(),
+               (Holder)NeoBuiltInRegistries.SOUND_EVENT.getHolder(WitherStormModSoundEvents.BOWELS_TRANSPORT.get()).get(),
                SoundSource.AMBIENT,
                player.getX(),
                player.getY(),

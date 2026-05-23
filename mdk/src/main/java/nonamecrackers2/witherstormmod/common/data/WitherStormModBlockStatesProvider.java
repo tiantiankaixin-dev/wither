@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.data;
+package nonamecrackers2.witherstormmod.common.data;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 
 public class WitherStormModBlockStatesProvider extends BlockStateProvider {
@@ -405,18 +405,18 @@ public class WitherStormModBlockStatesProvider extends BlockStateProvider {
    }
 
    private void pumpkin(Block block, ResourceLocation side, ResourceLocation front, ResourceLocation top) {
-      ModelFile file = this.models().orientable(NeoForgeRegistries.BLOCKS.getKey(block).getPath(), side, front, top);
+      ModelFile file = this.models().orientable(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), side, front, top);
       this.horizontalBlock(block, file);
       this.simpleBlockItem(block, file);
    }
 
    private void torch(Block block, ResourceLocation torch) {
-      ModelFile file = ((BlockModelBuilder)this.models().torch(NeoForgeRegistries.BLOCKS.getKey(block).getPath(), torch)).renderType("cutout");
+      ModelFile file = ((BlockModelBuilder)this.models().torch(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
       this.simpleBlock(block, file);
    }
 
    private void wallTorch(Block block, ResourceLocation torch) {
-      ModelFile file = ((BlockModelBuilder)this.models().torchWall(NeoForgeRegistries.BLOCKS.getKey(block).getPath(), torch)).renderType("cutout");
+      ModelFile file = ((BlockModelBuilder)this.models().torchWall(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
       this.horizontalBlock(block, file, 90);
    }
 }

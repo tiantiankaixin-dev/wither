@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.potion;
+package nonamecrackers2.witherstormmod.common.potion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
 import nonamecrackers2.witherstormmod.common.capability.WitherSicknessTracker;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;

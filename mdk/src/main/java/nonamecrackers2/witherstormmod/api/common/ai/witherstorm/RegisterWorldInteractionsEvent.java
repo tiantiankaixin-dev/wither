@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.ai.witherstorm;
+package nonamecrackers2.witherstormmod.api.common.ai.witherstorm;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

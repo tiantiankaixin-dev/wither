@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
@@ -91,7 +91,7 @@
  *  // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
  *  // TODO_MIG: NetworkEvent removed, use IPayloadContext$Context
  *  net.neoforged.neoforge.network.PacketDistributor
- *  net.neoforged.neoforge.registries.IForgeRegistry
+ *  net.neoforged.neoforge.registries.Registry
  *  nonamecrackers2.crackerslib.common.packet.Packet
  *  nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType
  *  nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell
@@ -164,7 +164,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
+// TODO_MIG[MOBTYPE]: MobType removed in 1.21; getMobType() is gone 鈥?use entity tags
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -209,10 +209,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.LogicalSidedProvider;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.Registry;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
@@ -335,7 +335,7 @@ implements BossThemeEntity {
         compound.putBoolean("IsRushMode", this.isRushMode());
         compound.putInt("Stage", this.getStage().ordinal());
         compound.putInt("StageTicks", this.getStageTicks());
-        compound.putString("Spell", Objects.requireNonNull(((IForgeRegistry)WitherStormModRegistries.SPELL_TYPES.get()).getKey(this.getSpell()), "Unregistered spell").toString());
+        compound.putString("Spell", Objects.requireNonNull(((Registry)WitherStormModRegistries.SPELL_TYPES.get()).getKey(this.getSpell()), "Unregistered spell").toString());
         compound.putInt("SpellCastingTicks", this.spellCastingTime);
         compound.putInt("NextSpellPick", this.nextSpellPickCount);
         compound.putBoolean("Smashing", this.isSmashing());
@@ -379,7 +379,7 @@ implements BossThemeEntity {
             this.setStage(BossfightStage.values()[ordinal]);
         }
         this.setStageTicks(compound.getInt("StageTicks"));
-        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((IForgeRegistry)WitherStormModRegistries.SPELL_TYPES.get()).getValue(loc)) != null) {
+        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((Registry)WitherStormModRegistries.SPELL_TYPES.get()).getValue(loc)) != null) {
             this.setSpell(type);
         }
         this.spellCastingTime = compound.getInt("SpellCastingTicks");

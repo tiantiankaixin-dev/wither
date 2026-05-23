@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
@@ -28,7 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.builder.SuperBeaconRecipeBuilder;
@@ -66,7 +66,7 @@ extends SuperBeaconRecipeBuilder {
         public void serializeRecipeData(JsonObject object) {
             super.serializeRecipeData(object);
             JsonObject result = new JsonObject();
-            result.addProperty("item", NeoForgeRegistries.ITEMS.getKey(this.result).toString());
+            result.addProperty("item", NeoBuiltInRegistries.ITEM.getKey(this.result).toString());
             if (this.count > 1) {
                 result.addProperty("count", (Number)this.count);
             }

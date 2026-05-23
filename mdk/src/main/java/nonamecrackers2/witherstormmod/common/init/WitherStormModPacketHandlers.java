@@ -1,8 +1,8 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.resources.ResourceLocation;
-import // TODO_MIG: NetworkRegistry removed, use IPayloadRegistrar (see PACKET_AUDIT.md);
-import // TODO_MIG: SimpleChannel removed, use IPayloadRegistrar;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkRegistry removed, use IPayloadRegistrar (see PACKET_AUDIT.md)
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: SimpleChannel removed, use IPayloadRegistrar
 import nonamecrackers2.crackerslib.common.packet.PacketUtil;
 import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import nonamecrackers2.witherstormmod.common.entity.TentacleEntity;
@@ -44,7 +44,7 @@ import nonamecrackers2.witherstormmod.common.packet.WitherStormToDistantRenderer
 public class WitherStormModPacketHandlers {
    private static final String PROTOCOL_VERSION = "4.0";
    public static final SimpleChannel MAIN = NetworkRegistry.newSimpleChannel(
-      new ResourceLocation("witherstormmod", "main"), () -> "4.0", "4.0"::equals, "4.0"::equals
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "main"), () -> "4.0", "4.0"::equals, "4.0"::equals
    );
 
    public static void registerPackets() {

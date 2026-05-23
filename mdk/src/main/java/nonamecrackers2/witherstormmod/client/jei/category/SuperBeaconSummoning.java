@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.jei.category;
+package nonamecrackers2.witherstormmod.client.jei.category;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -30,7 +30,7 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRe
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 
 public class SuperBeaconSummoning extends SuperBeaconCategory<ResummonSuperBeaconRecipe> {
-   private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("witherstormmod", "textures/gui/jei/summoning_icon.png");
+   private static final ResourceLocation ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/jei/summoning_icon.png");
    private final IDrawable icon;
 
    public SuperBeaconSummoning(IGuiHelper helper) {

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.resources.model;
+package nonamecrackers2.witherstormmod.client.resources.model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

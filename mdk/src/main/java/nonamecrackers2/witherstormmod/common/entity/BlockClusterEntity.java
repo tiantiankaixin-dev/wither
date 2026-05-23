@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import // TODO_MIG: NetworkHooks removed, use PacketDistributor;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.serializer.WitherStormModDataSerializers;

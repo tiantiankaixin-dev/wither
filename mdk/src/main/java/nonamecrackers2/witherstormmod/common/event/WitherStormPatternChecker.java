@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.event;
+package nonamecrackers2.witherstormmod.common.event;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;

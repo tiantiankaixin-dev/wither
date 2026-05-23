@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.controller;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.controller;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -9,9 +9,9 @@ import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 import net.neoforged.neoforge.network.PacketDistributor;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;

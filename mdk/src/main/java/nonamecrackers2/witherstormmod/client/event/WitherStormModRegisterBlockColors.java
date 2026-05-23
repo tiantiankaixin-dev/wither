@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.event;
+package nonamecrackers2.witherstormmod.client.event;
 
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Block;

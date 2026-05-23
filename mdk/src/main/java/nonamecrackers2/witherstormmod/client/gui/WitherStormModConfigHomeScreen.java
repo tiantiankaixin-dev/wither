@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.gui;
+package nonamecrackers2.witherstormmod.client.gui;
 
 import java.util.List;
 import java.util.Map;

@@ -682,7 +682,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
       pigTag.put("CustomName", name);
       SuperBeaconRecipeBuilder.entity(SuperBeaconRecipe.Condition.NONE, RecipeCategory.MISC, EntityType.PIG, pigTag)
          .requires(Items.PORKCHOP, 16)
-         .save(consumer, new ResourceLocation("witherstormmod", "summon_pig"));
+         .save(consumer, ResourceLocation.fromNamespaceAndPath("witherstormmod", "summon_pig"));
    }
 
    private static void cmdTool(Consumer<FinishedRecipe> result, Item required, RecipeCategory category, Item output) {

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.mixin;
+package nonamecrackers2.witherstormmod.mixin;
 
 import java.util.List;
 import net.minecraft.network.protocol.Packet;

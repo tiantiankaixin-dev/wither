@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.IronGolem.Crackiness;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentity.SickenedIronGolemModel;
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
@@ -14,11 +15,11 @@ import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
    private static final Map<Crackiness, ResourceLocation> LAYERS = ImmutableMap.of(
       Crackiness.LOW,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
       Crackiness.MEDIUM,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
       Crackiness.HIGH,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
    );
 
    public SickenedIronGolemCrackinessLayer(RenderLayerParent<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> parent) {

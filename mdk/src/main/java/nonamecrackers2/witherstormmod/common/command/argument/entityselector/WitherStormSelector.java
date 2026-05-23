@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.command.argument.entityselector;
+package nonamecrackers2.witherstormmod.common.command.argument.entityselector;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

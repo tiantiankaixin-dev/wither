@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public class SummonMobSuperBeaconTrigger extends SimpleCriterionTrigger<SummonMobSuperBeaconTrigger.Instance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "summon_mob_withered_beacon");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "summon_mob_withered_beacon");
 
    public ResourceLocation getId() {
       return ID;

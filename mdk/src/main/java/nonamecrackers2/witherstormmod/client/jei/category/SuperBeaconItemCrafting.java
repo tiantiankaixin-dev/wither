@@ -16,7 +16,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.item.crafting.ItemCraftSuperBeaconRecipe;
 
 public class SuperBeaconItemCrafting extends SuperBeaconCategory<ItemCraftSuperBeaconRecipe> {
-   private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("witherstormmod", "textures/gui/jei/crafting_icon.png");
+   private static final ResourceLocation ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/jei/crafting_icon.png");
    private final IDrawable icon;
 
    public SuperBeaconItemCrafting(IGuiHelper helper) {

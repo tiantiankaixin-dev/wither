@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.data;
+package nonamecrackers2.witherstormmod.api.common.data;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
@@ -12,7 +12,7 @@ import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.resources.taint.MobConversion;
 
 public abstract class MobConversionProvider implements DataProvider {
@@ -45,8 +45,8 @@ public abstract class MobConversionProvider implements DataProvider {
       this.addConversions();
       return CompletableFuture.allOf(this.conversions.values().stream().map(conversion -> {
          JsonObject object = new JsonObject();
-         ResourceLocation from = NeoForgeRegistries.ENTITY_TYPES.getKey(conversion.from());
-         ResourceLocation to = NeoForgeRegistries.ENTITY_TYPES.getKey(conversion.to());
+         ResourceLocation from = NeoBuiltInRegistries.ENTITY_TYPE.getKey(conversion.from());
+         ResourceLocation to = NeoBuiltInRegistries.ENTITY_TYPE.getKey(conversion.to());
          object.addProperty("from", from.toString());
          object.addProperty("to", to.toString());
          object.addProperty("convert_from_sickness", conversion.canBeConvertedFromWitherSickness());

@@ -1,6 +1,6 @@
-﻿package nonamecrackers2.witherstormmod.common.event;
+package nonamecrackers2.witherstormmod.common.event;
 
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.LevelTickEvent;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.LevelTickEvent
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 

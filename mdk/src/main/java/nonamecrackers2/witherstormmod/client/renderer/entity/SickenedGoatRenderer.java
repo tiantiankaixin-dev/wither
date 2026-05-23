@@ -11,10 +11,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedGoat;
 
 public class SickenedGoatRenderer extends MobRenderer<SickenedGoat, GoatModel<SickenedGoat>> {
-   private static final ResourceLocation GOAT_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_snow_golem.png");
-   private static final ResourceLocation GOAT_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_snow_golem_emissive.png"
-   );
+   private static final ResourceLocation GOAT_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_snow_golem.png");
+   private static final ResourceLocation GOAT_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_snow_golem_emissive.png");
 
    public SickenedGoatRenderer(Context context) {
       super(context, new GoatModel(context.bakeLayer(WitherStormModRenderers.SICKENED_GOAT)), 0.5F);

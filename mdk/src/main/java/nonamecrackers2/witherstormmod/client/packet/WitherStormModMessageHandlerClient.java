@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.packet;
+package nonamecrackers2.witherstormmod.client.packet;
 
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import net.minecraft.client.Minecraft;
@@ -18,9 +18,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.phys.Vec3;
-import // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.audio.WitherStormSoundLoop;
 import nonamecrackers2.witherstormmod.client.audio.bosstheme.BossThemeManager;
 import nonamecrackers2.witherstormmod.client.capability.WitherStormDistantRenderer;
@@ -95,7 +95,7 @@ public class WitherStormModMessageHandlerClient {
       getDistantRenderer(world)
          .ifPresent(
             distantRenderer -> {
-               WitherStormEntity entity = (WitherStormEntity)(NeoForgeRegistries.ENTITY_TYPES.getValue(message.getType())).create(mc.level);
+               WitherStormEntity entity = (WitherStormEntity)(NeoBuiltInRegistries.ENTITY_TYPE.getValue(message.getType())).create(mc.level);
                double x = message.getPos().x;
                double y = message.getPos().y;
                double z = message.getPos().z;
@@ -253,7 +253,7 @@ public class WitherStormModMessageHandlerClient {
             for (AttributeSnapshot snapshot : message.getAttributes()) {
                AttributeInstance attribute = manager.getInstance(snapshot.getAttribute());
                if (attribute == null) {
-                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, NeoForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
+                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, BuiltInRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
                } else {
                   attribute.setBaseValue(snapshot.getBase());
                   attribute.removeModifiers();

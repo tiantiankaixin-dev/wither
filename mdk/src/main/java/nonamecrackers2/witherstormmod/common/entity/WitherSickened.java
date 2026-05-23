@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.capability.WitherSicknessTracker;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCriteriaTriggers;
@@ -205,7 +205,7 @@ public interface WitherSickened {
       WitherSickened.Data data = this.getData();
       if (compound.contains("OriginalType")) {
          ResourceLocation location = ResourceLocation.tryParse(compound.getString("OriginalType"));
-         EntityType<?> type = (EntityType<?>)NeoForgeRegistries.ENTITY_TYPES.getValue(location);
+         EntityType<?> type = (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(location);
          data.setOriginal(type, compound.contains("OriginalData") ? compound.getCompound("OriginalData") : null);
       }
 
@@ -360,7 +360,7 @@ public interface WitherSickened {
             return null;
          } else {
             EntityType<?> type = this.original;
-            ResourceLocation location = NeoForgeRegistries.ENTITY_TYPES.getKey(type);
+            ResourceLocation location = NeoBuiltInRegistries.ENTITY_TYPE.getKey(type);
             return type.canSerialize() && location != null ? location.toString() : null;
          }
       }

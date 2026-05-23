@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.event;
+package nonamecrackers2.witherstormmod.client.event;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
@@ -18,7 +18,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEffects;
 
 public class RenderWitherSicknessOverlay {
-   private static final ResourceLocation WITHER_SICKNESS_ICONS = new ResourceLocation("witherstormmod", "textures/gui/wither_sickness.png");
+   private static final ResourceLocation WITHER_SICKNESS_ICONS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/wither_sickness.png");
    private final RandomSource random = RandomSource.create();
    private int lastHealth;
    private int displayHealth;

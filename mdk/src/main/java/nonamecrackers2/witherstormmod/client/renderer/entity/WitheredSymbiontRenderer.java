@@ -15,8 +15,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.WitheredSymbi
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitheredSymbiontRenderer extends MobRenderer<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont.png");
-   private static final ResourceLocation EGG_TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/misc/crackers.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont.png");
+   private static final ResourceLocation EGG_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/misc/crackers.png");
 
    public WitheredSymbiontRenderer(Context context) {
       super(context, new WitheredSymbiontModel(context.bakeLayer(WitherStormModRenderers.WITHERED_SYMBIONT)), 0.8F);

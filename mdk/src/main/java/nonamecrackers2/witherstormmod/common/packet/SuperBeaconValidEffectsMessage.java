@@ -1,12 +1,12 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffect;
 import net.neoforged.api.distmarker.Dist;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 

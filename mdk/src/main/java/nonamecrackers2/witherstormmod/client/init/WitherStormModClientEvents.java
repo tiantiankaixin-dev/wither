@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.init;
+package nonamecrackers2.witherstormmod.client.init;
 
 import net.neoforged.neoforge.common.NeoForge;
 import nonamecrackers2.witherstormmod.client.capability.BowelsEffectsManager;

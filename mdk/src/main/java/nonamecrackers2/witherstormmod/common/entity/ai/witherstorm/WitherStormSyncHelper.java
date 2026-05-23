@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;

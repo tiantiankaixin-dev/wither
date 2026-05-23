@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.ai.witherstorm.clustersource;
+package nonamecrackers2.witherstormmod.api.common.ai.witherstorm.clustersource;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

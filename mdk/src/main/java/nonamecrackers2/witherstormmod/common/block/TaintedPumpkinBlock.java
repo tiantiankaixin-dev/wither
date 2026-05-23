@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.block;
+package nonamecrackers2.witherstormmod.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

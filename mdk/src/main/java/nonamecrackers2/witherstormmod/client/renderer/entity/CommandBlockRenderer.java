@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.renderer.entity;
+package nonamecrackers2.witherstormmod.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
@@ -29,7 +29,7 @@ import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import org.joml.Matrix4f;
 
 public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
-   private static final ResourceLocation RIBCAGE_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/command_block/ribcage.png");
+   private static final ResourceLocation RIBCAGE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/command_block/ribcage.png");
    private final RibcageModel ribcage;
    @Nullable
    private EntityModel<CommandBlockEntity> model;

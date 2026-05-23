@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +25,6 @@ public class WitherStormModStructures {
    }
 
    public static void registerPieceTypes() {
-      Registry.register(BuiltInRegistries.STRUCTURE_PIECE, new ResourceLocation("witherstormmod", "platform"), PLATFORM);
+      Registry.register(BuiltInRegistries.STRUCTURE_PIECE, ResourceLocation.fromNamespaceAndPath("witherstormmod", "platform"), PLATFORM);
    }
 }

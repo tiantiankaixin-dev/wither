@@ -13,8 +13,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedPhantom;
 
 public class SickenedPhantomRenderer extends MobRenderer<SickenedPhantom, PhantomModel<SickenedPhantom>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_phantom.png");
-   private static final ResourceLocation TEXTURE_EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_phantom_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_phantom.png");
+   private static final ResourceLocation TEXTURE_EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_phantom_emissive.png");
 
    public SickenedPhantomRenderer(Context context) {
       super(context, new PhantomModel(context.bakeLayer(WitherStormModRenderers.SICKENED_PHANTOM)), 0.75F);

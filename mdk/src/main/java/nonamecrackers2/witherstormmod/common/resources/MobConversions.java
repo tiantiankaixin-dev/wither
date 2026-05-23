@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.resources;
+package nonamecrackers2.witherstormmod.common.resources;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -17,7 +17,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.resources.taint.MobConversion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,10 +60,10 @@ public class MobConversions extends SimpleJsonResourceReloadListener {
       ResourceLocation id = ResourceLocation.tryParse(rawId);
       if (id == null) {
          throw new JsonSyntaxException("Not a valid id: '" + rawId + "'");
-      } else if (!NeoForgeRegistries.ENTITY_TYPES.containsKey(id)) {
+      } else if (!NeoBuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
          throw new JsonSyntaxException("Unknown entity with id '" + rawId + "'");
       } else {
-         return (EntityType<?>)NeoForgeRegistries.ENTITY_TYPES.getValue(id);
+         return (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(id);
       }
    }
 

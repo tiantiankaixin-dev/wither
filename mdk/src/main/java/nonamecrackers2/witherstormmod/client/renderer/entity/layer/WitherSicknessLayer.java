@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.renderer.entity.layer;
+package nonamecrackers2.witherstormmod.client.renderer.entity.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,9 +18,7 @@ import nonamecrackers2.witherstormmod.client.util.TiledTextureGenerator;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 
 public class WitherSicknessLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-   private static final ResourceLocation WITHER_SICKNESS_LAYER_64 = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_sickness_layer/wither_sickness_layer.png"
-   );
+   private static final ResourceLocation WITHER_SICKNESS_LAYER_64 = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_sickness_layer/wither_sickness_layer.png");
    private final M model;
 
    public WitherSicknessLayer(RenderLayerParent<T, M> renderer) {

@@ -1,12 +1,12 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.api.distmarker.Dist;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
@@ -39,13 +39,13 @@ public class GlobalSoundMessage extends Packet {
    }
 
    public void encode(FriendlyByteBuf buffer) {
-      buffer.writeUtf(NeoForgeRegistries.SOUND_EVENTS.getKey(this.event).toString());
+      buffer.writeUtf(NeoBuiltInRegistries.SOUND_EVENT.getKey(this.event).toString());
       buffer.writeFloat(this.pitch);
       buffer.writeFloat(this.volume);
    }
 
    public void decode(FriendlyByteBuf buffer) {
-      this.event = NeoForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(buffer.readUtf()));
+      this.event = NeoBuiltInRegistries.SOUND_EVENT.getValue(new ResourceLocation(buffer.readUtf()));
       this.pitch = buffer.readFloat();
       this.volume = buffer.readFloat();
    }
@@ -56,7 +56,7 @@ public class GlobalSoundMessage extends Packet {
 
    public String toString() {
       return "GlobalSoundMessage[sound_event="
-         + NeoForgeRegistries.SOUND_EVENTS.getKey(this.event).toString()
+         + NeoBuiltInRegistries.SOUND_EVENT.getKey(this.event).toString()
          + ", pitch="
          + this.pitch
          + ", volume="

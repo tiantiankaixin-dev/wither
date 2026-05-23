@@ -12,7 +12,7 @@ import nonamecrackers2.witherstormmod.client.rendertype.UtilRenderTypes;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitheredSymbiontTearLayer extends RenderLayer<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_tear.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_tear.png");
 
    public WitheredSymbiontTearLayer(RenderLayerParent<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> parent) {
       super(parent);

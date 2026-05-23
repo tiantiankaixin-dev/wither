@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.item.crafting;
+package nonamecrackers2.witherstormmod.common.item.crafting;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeTypes;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +74,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
 
          String rawEntityId = GsonHelper.getAsString(object, "entity");
          ResourceLocation entityId = new ResourceLocation(rawEntityId);
-         EntityType<?> type = (EntityType<?>)NeoForgeRegistries.ENTITY_TYPES.getValue(entityId);
+         EntityType<?> type = (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(entityId);
          if (type == null) {
             throw new JsonSyntaxException("Unknown entity of id '" + rawEntityId + "'");
          } else {
@@ -102,7 +102,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
 
       public void toNetwork(FriendlyByteBuf buffer, ResummonSuperBeaconRecipe recipe) {
          buffer.writeCollection(recipe.ingredients, (b, i) -> i.toNetwork(b));
-         buffer.writeRegistryId(NeoForgeRegistries.ENTITY_TYPES, recipe.entity);
+         buffer.writeRegistryId(NeoBuiltInRegistries.ENTITY_TYPE, recipe.entity);
          buffer.writeNbt(recipe.nbt);
          buffer.writeEnum(recipe.getCondition());
       }

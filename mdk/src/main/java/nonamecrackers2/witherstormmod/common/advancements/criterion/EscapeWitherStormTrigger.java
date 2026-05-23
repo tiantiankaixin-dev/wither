@@ -14,7 +14,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
 @Deprecated
 public class EscapeWitherStormTrigger extends SimpleCriterionTrigger<EscapeWitherStormTrigger.Instance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "escape_wither_storm");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "escape_wither_storm");
 
    public ResourceLocation getId() {
       return ID;

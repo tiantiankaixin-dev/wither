@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.event;
+package nonamecrackers2.witherstormmod.common.event;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Mob;

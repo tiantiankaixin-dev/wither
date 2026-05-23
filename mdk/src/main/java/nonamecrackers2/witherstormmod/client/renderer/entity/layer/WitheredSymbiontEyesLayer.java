@@ -9,7 +9,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitheredSymbiontEyesLayer extends EyesLayer<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> {
    private static final RenderType EYES = RenderType.eyes(
-      new ResourceLocation("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_emissive.png")
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_emissive.png")
    );
 
    public WitheredSymbiontEyesLayer(RenderLayerParent<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> renderer) {

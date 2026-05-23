@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.part;
+package nonamecrackers2.witherstormmod.common.entity.part;
 
 import com.google.common.collect.Lists;
 import java.util.List;

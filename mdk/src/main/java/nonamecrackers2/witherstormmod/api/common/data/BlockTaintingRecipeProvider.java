@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.data;
+package nonamecrackers2.witherstormmod.api.common.data;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
@@ -17,7 +17,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.resources.taint.SingleBlockTaintRecipe;
 import nonamecrackers2.witherstormmod.common.resources.taint.TagBasedTaintRecipe;
 import nonamecrackers2.witherstormmod.common.resources.taint.TaintRecipe;
@@ -94,7 +94,7 @@ public abstract class BlockTaintingRecipeProvider implements DataProvider {
          JsonObject object = new JsonObject();
          recipe.serializeFrom(object);
          if (recipe.effect() != null) {
-            object.addProperty("potion_effect", NeoForgeRegistries.MOB_EFFECTS.getKey(recipe.effect()).toString());
+            object.addProperty("potion_effect", NeoBuiltInRegistries.MOB_EFFECT.getKey(recipe.effect()).toString());
          }
 
          object.add("replacement", (JsonElement)BlockState.CODEC.encodeStart(JsonOps.INSTANCE, recipe.replacement()).result().get());

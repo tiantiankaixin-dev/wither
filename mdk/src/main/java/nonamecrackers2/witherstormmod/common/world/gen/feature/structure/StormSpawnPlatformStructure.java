@@ -40,14 +40,14 @@ public class StormSpawnPlatformStructure extends Structure {
       instance -> instance.group(settingsCodec(instance), BlockPos.CODEC.fieldOf("position").forGetter(structure -> structure.spawnPos))
             .apply(instance, StormSpawnPlatformStructure::new)
    );
-   private static final ResourceLocation DESERT = new ResourceLocation("witherstormmod", "desert_storm_spawn_platform");
-   private static final ResourceLocation JUNGLE = new ResourceLocation("witherstormmod", "jungle_storm_spawn_platform");
-   private static final ResourceLocation SAVANNA = new ResourceLocation("witherstormmod", "savanna_storm_spawn_platform");
-   private static final ResourceLocation TAIGA = new ResourceLocation("witherstormmod", "taiga_storm_spawn_platform");
-   private static final ResourceLocation SNOWY = new ResourceLocation("witherstormmod", "snowy_storm_spawn_platform");
-   private static final ResourceLocation RUINS = new ResourceLocation("witherstormmod", "ruins_storm_spawn_platform");
-   private static final ResourceLocation ORDER_TEMPLE = new ResourceLocation("witherstormmod", "order_temple_storm_spawn_platform");
-   private static final ResourceLocation FOREST = new ResourceLocation("witherstormmod", "forest_storm_spawn_platform");
+   private static final ResourceLocation DESERT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "desert_storm_spawn_platform");
+   private static final ResourceLocation JUNGLE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "jungle_storm_spawn_platform");
+   private static final ResourceLocation SAVANNA = ResourceLocation.fromNamespaceAndPath("witherstormmod", "savanna_storm_spawn_platform");
+   private static final ResourceLocation TAIGA = ResourceLocation.fromNamespaceAndPath("witherstormmod", "taiga_storm_spawn_platform");
+   private static final ResourceLocation SNOWY = ResourceLocation.fromNamespaceAndPath("witherstormmod", "snowy_storm_spawn_platform");
+   private static final ResourceLocation RUINS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "ruins_storm_spawn_platform");
+   private static final ResourceLocation ORDER_TEMPLE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "order_temple_storm_spawn_platform");
+   private static final ResourceLocation FOREST = ResourceLocation.fromNamespaceAndPath("witherstormmod", "forest_storm_spawn_platform");
    private static final ResourceLocation AUTO_SPAWN = WitherStormMod.id("auto_spawn_platform");
    private BlockPos spawnPos;
 

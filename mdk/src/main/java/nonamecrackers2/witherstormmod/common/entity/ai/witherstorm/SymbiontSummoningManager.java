@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+// TODO_MIG[FORGECAP]: ForgeCapabilities removed; use Capabilities.ItemHandler.* etc
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.items.IItemHandler;
 import nonamecrackers2.witherstormmod.WitherStormMod;
@@ -148,7 +148,7 @@ public class SymbiontSummoningManager {
          if (player.position().subtract(this.entity.position()).horizontalDistance() > this.entity.getAttributeValue(Attributes.FOLLOW_RANGE)) {
             return false;
          } else {
-            IItemHandler handler = (IItemHandler)player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+            IItemHandler handler = (IItemHandler)player.getCapability(/* TODO_MIG[FORGECAP] */ Capabilities.ITEM_HANDLER).orElse(null);
             if (handler != null) {
                for (int i = 0; i < handler.getSlots(); i++) {
                   ItemStack stack = handler.getStackInSlot(i);

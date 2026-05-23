@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.util;
+package nonamecrackers2.witherstormmod.client.util;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,13 +20,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.common.item.AmuletItem;
 import org.joml.Matrix4f;
 
 public class AmuletAnimationHelper {
-   public static final ResourceLocation GLARE = new ResourceLocation("witherstormmod", "textures/misc/glare.png");
+   public static final ResourceLocation GLARE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/glare.png");
    private static final Map<InteractionHand, AmuletAnimationHelper.AnimationHolder> ANIMATIONS = ImmutableMap.of(
       InteractionHand.MAIN_HAND, new AmuletAnimationHelper.AnimationHolder(), InteractionHand.OFF_HAND, new AmuletAnimationHelper.AnimationHolder()
    );

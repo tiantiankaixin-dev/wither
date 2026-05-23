@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import java.util.Optional;
 import net.minecraft.world.entity.projectile.DragonFireball;

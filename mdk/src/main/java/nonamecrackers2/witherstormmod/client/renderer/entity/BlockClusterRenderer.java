@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.renderer.entity;
+package nonamecrackers2.witherstormmod.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.entity.ClientBlockClusterEntity;
 import nonamecrackers2.witherstormmod.client.instancing.RenderBufferer;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -121,7 +121,7 @@ public class BlockClusterRenderer extends EntityRenderer<BlockClusterEntity> {
                CompoundTag data = entity.getTileDataFromOffsetPos(relativePos);
                if (data != null) {
                   String id = data.getString("id");
-                  BlockEntity tile = ((BlockEntityType)NeoForgeRegistries.BLOCK_ENTITY_TYPES.getValue(new ResourceLocation(id))).create(pos, state);
+                  BlockEntity tile = ((BlockEntityType)NeoBuiltInRegistries.BLOCK_ENTITY_TYPE.getValue(new ResourceLocation(id))).create(pos, state);
                   BlockEntityRenderer<BlockEntity> tileRenderer = minecraft.getBlockEntityRenderDispatcher().getRenderer(tile);
                   tile.setLevel(world);
                   tile.load(data);

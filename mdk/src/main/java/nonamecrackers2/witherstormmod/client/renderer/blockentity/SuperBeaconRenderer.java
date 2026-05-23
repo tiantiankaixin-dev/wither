@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.renderer.blockentity;
+package nonamecrackers2.witherstormmod.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -30,7 +30,7 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class SuperBeaconRenderer extends AbstractSuperBeaconRenderer<SuperBeaconBlockEntity> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "block/tainted_dust_block");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "block/tainted_dust_block");
    private final TextureAtlas atlas;
    private final TextureAtlasSprite texture;
    private final ItemRenderer itemRenderer;

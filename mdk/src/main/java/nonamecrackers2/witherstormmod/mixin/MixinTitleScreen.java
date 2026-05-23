@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin({TitleScreen.class})
 public class MixinTitleScreen {
    private static final CubeMap WITHERSTORMMOD_CUBE_MAP = (CubeMap)Util.make(
-      new CubeMap(new ResourceLocation("textures/gui/title/background/panorama")),
-      map -> ((MixinCubeMap)map).getImages()[0] = new ResourceLocation("witherstormmod", "textures/gui/title/background/panorama_0.png")
+      new CubeMap(ResourceLocation.parse("textures/gui/title/background/panorama")),
+      map -> ((MixinCubeMap)map).getImages()[0] = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/title/background/panorama_0.png")
    );
    private final PanoramaRenderer witherstormmodPanorama = new PanoramaRenderer(WITHERSTORMMOD_CUBE_MAP);
 

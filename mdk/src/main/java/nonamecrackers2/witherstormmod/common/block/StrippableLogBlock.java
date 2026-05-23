@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.block;
+package nonamecrackers2.witherstormmod.common.block;
 
 import java.util.function.Supplier;
 import net.minecraft.core.Direction.Axis;

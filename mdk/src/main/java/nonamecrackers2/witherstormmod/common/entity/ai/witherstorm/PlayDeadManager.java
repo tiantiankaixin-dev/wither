@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
 
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;

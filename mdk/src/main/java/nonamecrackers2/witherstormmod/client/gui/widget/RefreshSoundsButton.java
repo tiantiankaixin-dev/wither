@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.Button.Builder;
 import net.minecraft.resources.ResourceLocation;
 
 public class RefreshSoundsButton extends Button {
-   private static final ResourceLocation SOUND_REFRESHER = new ResourceLocation("witherstormmod", "textures/gui/sound_refresher.png");
+   private static final ResourceLocation SOUND_REFRESHER = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/sound_refresher.png");
 
    public RefreshSoundsButton(Builder builder) {
       super(builder);

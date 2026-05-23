@@ -1,11 +1,11 @@
-﻿package nonamecrackers2.witherstormmod.client.capability;
+package nonamecrackers2.witherstormmod.client.capability;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.PlayerTickEvent;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.PlayerTickEvent
 import nonamecrackers2.witherstormmod.api.common.entity.WitherStormBase;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.util.TractorBeamHelper;

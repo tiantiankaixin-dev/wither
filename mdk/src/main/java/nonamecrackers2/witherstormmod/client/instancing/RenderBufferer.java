@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.instancing;
+package nonamecrackers2.witherstormmod.client.instancing;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.shaders.FogShape;
@@ -19,9 +19,9 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.RenderTickEvent;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.RenderTickEvent
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.command;
+package nonamecrackers2.witherstormmod.common.command;
 
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;

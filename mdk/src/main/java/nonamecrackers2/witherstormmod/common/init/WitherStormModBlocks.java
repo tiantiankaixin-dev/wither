@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.block.FireworkBundleBlock;
 import nonamecrackers2.witherstormmod.common.block.FormidibombBlock;
@@ -53,7 +53,7 @@ import nonamecrackers2.witherstormmod.common.block.WireBlock;
 import nonamecrackers2.witherstormmod.common.block.WitheredPhlegmBlock;
 
 public class WitherStormModBlocks {
-   public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(NeoForgeRegistries.BLOCKS, "witherstormmod");
+   public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(NeoBuiltInRegistries.BLOCK, "witherstormmod");
    public static final BlockSetType TAINTED_SET = BlockSetType.register(new BlockSetType("tainted"));
    public static final WoodType TAINTED = WoodType.register(new WoodType("tainted", TAINTED_SET));
    public static final DeferredHolder<Block> SUPER_TNT = BLOCKS.register(

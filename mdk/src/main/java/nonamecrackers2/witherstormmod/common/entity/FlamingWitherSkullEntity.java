@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
-import // TODO_MIG: NetworkHooks removed, use PacketDistributor;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.WitherStormMod;

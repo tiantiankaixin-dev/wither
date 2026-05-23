@@ -12,7 +12,7 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.TentacleModel
 import nonamecrackers2.witherstormmod.common.entity.TentacleEntity;
 
 public class TentacleRenderer extends EntityRenderer<TentacleEntity> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/tentacle/tentacle.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle/tentacle.png");
    private final TentacleModel model;
 
    public TentacleRenderer(Context context) {

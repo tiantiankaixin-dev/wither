@@ -12,10 +12,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedZombie;
 
 public class SickenedZombieRenderer extends AbstractZombieRenderer<SickenedZombie, ZombieModel<SickenedZombie>> {
-   private static final ResourceLocation SICKENED_ZOMBIE_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_zombie.png");
-   private static final ResourceLocation SICKENED_ZOMBIE_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_zombie_emissive.png"
-   );
+   private static final ResourceLocation SICKENED_ZOMBIE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_zombie.png");
+   private static final ResourceLocation SICKENED_ZOMBIE_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_zombie_emissive.png");
 
    public SickenedZombieRenderer(Context context) {
       super(

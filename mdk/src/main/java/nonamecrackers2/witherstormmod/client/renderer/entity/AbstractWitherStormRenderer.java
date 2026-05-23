@@ -63,20 +63,16 @@ import org.joml.Vector3f;
 public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M extends AbstractWitherStormModel<T>> extends EntityRenderer<T> {
    private static final Color MAIN_HEAD_COLOR = new Color(1.0F, 0.6F, 0.0F);
    private static final Color EXTRA_HEAD_COLOR = new Color(1.0F, 1.0F, 0.0F);
-   public static final ResourceLocation WITHER_STORM_INVULNERABLE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_storm/wither_storm_invulnerable.png"
-   );
-   public static final ResourceLocation WITHER_STORM_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm.png");
-   public static final ResourceLocation WITHER_STORM_EXPLODING_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_storm/wither_storm_exploding.png"
-   );
-   public static final ResourceLocation EMISSIVE_DECAL = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_emissive_decal.png");
-   public static final ResourceLocation HURT_OVERLAY = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_hurt_overlay.png");
-   public static final ResourceLocation PULSE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_pulse.png");
-   public static final ResourceLocation DEBRIS_RING = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/debris.png");
-   public static final ResourceLocation SHINE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/shine.png");
-   public static final ResourceLocation PINK_WITHER_STORM_LOCATION = new ResourceLocation("witherstormmod", "textures/misc/pink_wither_storm.png");
-   public static final ResourceLocation WITHER_ARMOR_LOCATION = new ResourceLocation("textures/entity/wither/wither_armor.png");
+   public static final ResourceLocation WITHER_STORM_INVULNERABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_invulnerable.png");
+   public static final ResourceLocation WITHER_STORM_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm.png");
+   public static final ResourceLocation WITHER_STORM_EXPLODING_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_exploding.png");
+   public static final ResourceLocation EMISSIVE_DECAL = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_emissive_decal.png");
+   public static final ResourceLocation HURT_OVERLAY = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_hurt_overlay.png");
+   public static final ResourceLocation PULSE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_pulse.png");
+   public static final ResourceLocation DEBRIS_RING = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/debris.png");
+   public static final ResourceLocation SHINE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/shine.png");
+   public static final ResourceLocation PINK_WITHER_STORM_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/pink_wither_storm.png");
+   public static final ResourceLocation WITHER_ARMOR_LOCATION = ResourceLocation.parse("textures/entity/wither/wither_armor.png");
    protected final SantaHatModel santaHat;
    @Nullable
    protected final SpecialDay specialDay;

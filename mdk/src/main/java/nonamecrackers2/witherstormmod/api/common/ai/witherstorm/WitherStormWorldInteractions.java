@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.ai.witherstorm;
+package nonamecrackers2.witherstormmod.api.common.ai.witherstorm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

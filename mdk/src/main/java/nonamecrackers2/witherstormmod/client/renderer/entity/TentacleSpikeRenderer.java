@@ -14,8 +14,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.TentacleSpike
 import nonamecrackers2.witherstormmod.common.entity.TentacleSpike;
 
 public class TentacleSpikeRenderer extends EntityRenderer<TentacleSpike> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike_emissive.png");
    private final TentacleSpikeModel<TentacleSpike> model;
 
    public TentacleSpikeRenderer(Context context) {

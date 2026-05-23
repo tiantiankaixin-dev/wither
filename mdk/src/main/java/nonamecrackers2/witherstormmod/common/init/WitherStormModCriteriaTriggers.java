@@ -9,10 +9,10 @@ import nonamecrackers2.witherstormmod.common.advancements.criterion.SummonMobSup
 import nonamecrackers2.witherstormmod.common.advancements.criterion.WitherStormTrigger;
 
 public class WitherStormModCriteriaTriggers {
-   public static final WitherStormTrigger PLAY_DEAD_TRIGGER = new WitherStormTrigger(new ResourceLocation("witherstormmod", "wither_storm_play_dead"));
-   public static final WitherStormTrigger REVIVAL_TRIGGER = new WitherStormTrigger(new ResourceLocation("witherstormmod", "wither_storm_revival"));
-   public static final WitherStormTrigger ESCAPE_STORM = new WitherStormTrigger(new ResourceLocation("witherstormmod", "escape_wither_storm"));
-   public static final WitherStormTrigger RING_BELL_NEAR_STORM = new WitherStormTrigger(new ResourceLocation("witherstormmod", "ring_bell_near_storm"));
+   public static final WitherStormTrigger PLAY_DEAD_TRIGGER = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_play_dead"));
+   public static final WitherStormTrigger REVIVAL_TRIGGER = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_revival"));
+   public static final WitherStormTrigger ESCAPE_STORM = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "escape_wither_storm"));
+   public static final WitherStormTrigger RING_BELL_NEAR_STORM = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "ring_bell_near_storm"));
    public static final WitherStormTrigger NEARLY_KILL_WITHER_STORM = new WitherStormTrigger(WitherStormMod.id("nearly_kill_wither_storm"));
    public static final CuredSickenedMobTrigger CURED_SICKENED_MOB = new CuredSickenedMobTrigger();
    public static final ActivateSuperBeaconTrigger ACTIVATE_SUPER_BEACON = new ActivateSuperBeaconTrigger();

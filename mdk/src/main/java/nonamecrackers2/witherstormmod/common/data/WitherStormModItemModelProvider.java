@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.data;
+package nonamecrackers2.witherstormmod.common.data;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 
 public class WitherStormModItemModelProvider extends ItemModelProvider {
@@ -118,12 +118,12 @@ public class WitherStormModItemModelProvider extends ItemModelProvider {
    }
 
    private void handheld(Item item) {
-      ResourceLocation id = NeoForgeRegistries.ITEMS.getKey(item);
+      ResourceLocation id = NeoBuiltInRegistries.ITEM.getKey(item);
       ((ItemModelBuilder)this.withExistingParent(id.getPath(), "item/handheld")).texture("layer0", this.modLoc("item/" + id.getPath()));
    }
 
    private void spawnEgg(Item item) {
-      ResourceLocation id = NeoForgeRegistries.ITEMS.getKey(item);
+      ResourceLocation id = NeoBuiltInRegistries.ITEM.getKey(item);
       this.withExistingParent(id.getPath(), "item/template_spawn_egg");
    }
 }

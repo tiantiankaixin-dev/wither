@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.item.crafting;
+package nonamecrackers2.witherstormmod.common.item.crafting;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeTypes;
 import org.jetbrains.annotations.Nullable;
@@ -140,7 +140,7 @@ public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
          } else {
             String rawId = GsonHelper.getAsString(object, "result");
             ResourceLocation itemId = new ResourceLocation(rawId);
-            Item item = (Item)NeoForgeRegistries.ITEMS.getValue(itemId);
+            Item item = (Item)NeoBuiltInRegistries.ITEM.getValue(itemId);
             if (item == null) {
                throw new JsonSyntaxException("Unknown item '" + rawId + "'");
             }

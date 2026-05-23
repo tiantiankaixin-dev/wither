@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.util;
+package nonamecrackers2.witherstormmod.client.util;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

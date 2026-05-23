@@ -14,8 +14,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentit
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 
 public class SickenedIronGolemRenderer extends MobRenderer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_emissive.png");
 
    public SickenedIronGolemRenderer(Context context) {
       super(context, new SickenedIronGolemModel(context.bakeLayer(WitherStormModRenderers.SICKENED_IRON_GOLEM)), 0.7F);

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.init;
+package nonamecrackers2.witherstormmod.client.init;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -11,8 +11,8 @@ import net.neoforged.neoforge.common.capabilities.CapabilityManager;
 import net.neoforged.neoforge.common.capabilities.CapabilityToken;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
-import // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
-import // TODO_MIG: AttachCapabilitiesEvent removed, use RegisterCapabilitiesEvent (see CAPABILITY_AUDIT.md);
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: AttachCapabilitiesEvent removed, use RegisterCapabilitiesEvent (see CAPABILITY_AUDIT.md)
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.client.audio.ISoundManager;
 import nonamecrackers2.witherstormmod.client.audio.bosstheme.BossThemeManager;
@@ -96,7 +96,7 @@ public class WitherStormModClientCapabilities {
       if (world.isClientSide) {
          Minecraft mc = Minecraft.getInstance();
          final LazyOptional<WitherStormDistantRenderer> distantRenderer = LazyOptional.of(() -> new WitherStormDistantRenderer(mc));
-         event.addCapability(new ResourceLocation("witherstormmod", "distant_renderer"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "distant_renderer"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                return capability == WitherStormModClientCapabilities.DISTANT_RENDERER ? distantRenderer.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }
@@ -104,7 +104,7 @@ public class WitherStormModClientCapabilities {
          event.addListener(distantRenderer::invalidate);
          if (world.dimension().location().equals(WitherStormMod.bowelsLocation())) {
             final LazyOptional<BowelsEffectsManager> bowelsEffects = LazyOptional.of(() -> new BowelsEffectsManager(mc));
-            event.addCapability(new ResourceLocation("witherstormmod", "bowels_effects_manager"), new ICapabilityProvider() {
+            event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels_effects_manager"), new ICapabilityProvider() {
                public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                   return capability == WitherStormModClientCapabilities.BOWELS_EFFECTS_MANAGER ? bowelsEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
                }
@@ -113,7 +113,7 @@ public class WitherStormModClientCapabilities {
          }
 
          final LazyOptional<WitherStormAmbienceEffects> ambientEffects = LazyOptional.of(() -> new WitherStormAmbienceEffects(mc));
-         event.addCapability(new ResourceLocation("witherstormmod", "wither_storm_ambience_effects"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_ambience_effects"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
                return cap == WitherStormModClientCapabilities.AMBIENT_EFFECTS ? ambientEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }
@@ -121,7 +121,7 @@ public class WitherStormModClientCapabilities {
          event.addListener(ambientEffects::invalidate);
          SoundManagersHolder holder = new SoundManagersHolder();
          final LazyOptional<SoundManagersHolder> holderOptional = LazyOptional.of(() -> holder);
-         event.addCapability(new ResourceLocation("witherstormmod", "sound_managers_holder"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sound_managers_holder"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                return capability == WitherStormModClientCapabilities.SOUND_MANAGERS ? holderOptional.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }
@@ -144,7 +144,7 @@ public class WitherStormModClientCapabilities {
       AttachCapabilitiesEvent<Level> event, SoundManagersHolder holder, String id, ISoundManager manager, final Capability<H> capability
    ) {
       final LazyOptional<ISoundManager> optional = LazyOptional.of(() -> manager);
-      event.addCapability(new ResourceLocation("witherstormmod", id), new ICapabilityProvider() {
+      event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", id), new ICapabilityProvider() {
          public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
             return cap == capability ? optional.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
          }
@@ -157,21 +157,21 @@ public class WitherStormModClientCapabilities {
       Entity entity = (Entity)event.getObject();
       if (entity instanceof LocalPlayer player) {
          final LazyOptional<PlayerCameraShaker> cameraShaker = LazyOptional.of(() -> new PlayerCameraShaker(player));
-         event.addCapability(new ResourceLocation("witherstormmod", "camera_shaker"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "camera_shaker"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                return capability == WitherStormModClientCapabilities.CAMERA_SHAKER ? cameraShaker.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }
          });
          event.addListener(cameraShaker::invalidate);
          final LazyOptional<PlayerScreenBlinder> screenBlinder = LazyOptional.of(PlayerScreenBlinder::new);
-         event.addCapability(new ResourceLocation("witherstormmod", "blinder"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "blinder"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                return capability == WitherStormModClientCapabilities.SCREEN_BLINDER ? screenBlinder.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }
          });
          event.addListener(screenBlinder::invalidate);
          final LazyOptional<PlayerTractorBeamEffects> tractorBeamEffects = LazyOptional.of(() -> new PlayerTractorBeamEffects(player));
-         event.addCapability(new ResourceLocation("witherstormmod", "tractor_beam_effects"), new ICapabilityProvider() {
+         event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "tractor_beam_effects"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
                return capability == WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS ? tractorBeamEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
             }

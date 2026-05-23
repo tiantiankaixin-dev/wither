@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
@@ -28,7 +28,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.builder.SuperBeaconRecipeBuilder;
@@ -66,7 +66,7 @@ extends SuperBeaconRecipeBuilder {
     }
 
     private static ResourceLocation defaultRecipeId(EntityType<?> type) {
-        ResourceLocation id = NeoForgeRegistries.ENTITY_TYPES.getKey(type);
+        ResourceLocation id = NeoBuiltInRegistries.ENTITY_TYPE.getKey(type);
         return new ResourceLocation(id.getNamespace(), "summon_" + id.getPath());
     }
 
@@ -83,7 +83,7 @@ extends SuperBeaconRecipeBuilder {
 
         public void serializeRecipeData(JsonObject object) {
             super.serializeRecipeData(object);
-            object.addProperty("entity", NeoForgeRegistries.ENTITY_TYPES.getKey(this.entity).toString());
+            object.addProperty("entity", NeoBuiltInRegistries.ENTITY_TYPE.getKey(this.entity).toString());
             if (!this.nbt.isEmpty()) {
                 object.addProperty("nbt", this.nbt.toString());
             }

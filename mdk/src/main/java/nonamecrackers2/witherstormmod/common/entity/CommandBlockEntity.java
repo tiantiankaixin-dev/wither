@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
@@ -174,8 +174,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.event.EventHooks;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.WitherStormMod;
@@ -894,7 +894,7 @@ BossThemeEntity {
             for (int i = 0; i < 30 && this.level().getBlockState(pos.below()).is(Blocks.AIR); ++i) {
                 pos = pos.below();
             }
-            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacements.Type)SpawnPlacements.Type.ON_GROUND, (LevelReader)this.level(), (BlockPos)pos, type) || !(Math.sqrt(playerPos.distSqr((Vec3i)pos)) > 6.0)) continue;
+            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacementTypes)SpawnPlacementTypes.ON_GROUND, (LevelReader)this.level(), (BlockPos)pos, type) || !(Math.sqrt(playerPos.distSqr((Vec3i)pos)) > 6.0)) continue;
             return pos;
         }
         return null;
@@ -935,7 +935,7 @@ BossThemeEntity {
             for (int j = 0; j < 30 && this.level().getBlockState(currentPos.below()).is(Blocks.AIR); ++j) {
                 currentPos = currentPos.below();
             }
-            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacements.Type)SpawnPlacements.Type.ON_GROUND, (LevelReader)this.level(), (BlockPos)currentPos, type) || !(Math.sqrt(this.blockPosition().distSqr((Vec3i)currentPos)) > 6.0)) continue;
+            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacementTypes)SpawnPlacementTypes.ON_GROUND, (LevelReader)this.level(), (BlockPos)currentPos, type) || !(Math.sqrt(this.blockPosition().distSqr((Vec3i)currentPos)) > 6.0)) continue;
             pos = currentPos;
             break;
         }

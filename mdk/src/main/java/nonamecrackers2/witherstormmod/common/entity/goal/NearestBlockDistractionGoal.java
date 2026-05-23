@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.goal;
+package nonamecrackers2.witherstormmod.common.entity.goal;
 
 import java.util.EnumSet;
 import java.util.Objects;

@@ -12,8 +12,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedChicken;
 
 public class SickenedChickenRenderer extends MobRenderer<SickenedChicken, ChickenModel<SickenedChicken>> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_chicken.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_chicken_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_chicken.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_chicken_emissive.png");
 
    public SickenedChickenRenderer(Context context) {
       super(context, new ChickenModel(context.bakeLayer(WitherStormModRenderers.SICKENED_CHICKEN)), 0.3F);

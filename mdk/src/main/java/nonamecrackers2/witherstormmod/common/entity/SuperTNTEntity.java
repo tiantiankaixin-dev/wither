@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.HitResult;
-import // TODO_MIG: NetworkHooks removed, use PacketDistributor;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;

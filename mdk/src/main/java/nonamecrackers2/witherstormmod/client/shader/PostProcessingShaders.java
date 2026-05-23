@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PostProcessingShaders implements ResourceManagerReloadListener {
    public static final PostProcessingShaders INSTANCE = new PostProcessingShaders(Minecraft.getInstance());
-   private static final ResourceLocation ABERRATION = new ResourceLocation("witherstormmod", "shaders/post/aberration.json");
+   private static final ResourceLocation ABERRATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "shaders/post/aberration.json");
    private static final Logger LOGGER = LogManager.getLogger();
    private final Minecraft minecraft;
    private PostChain aberrationEffect;

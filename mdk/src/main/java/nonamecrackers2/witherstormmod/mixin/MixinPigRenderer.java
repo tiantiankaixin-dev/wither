@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin({PigRenderer.class})
 public class MixinPigRenderer {
    @Unique
-   private static final ResourceLocation REUBEN_TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/misc/reuben.png");
+   private static final ResourceLocation REUBEN_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/misc/reuben.png");
 
    @Inject(
       method = {"getTextureLocation(Lnet/minecraft/world/entity/animal/Pig;)Lnet/minecraft/resources/ResourceLocation;"},

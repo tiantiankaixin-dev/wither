@@ -12,10 +12,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedSkeleton;
 
 public class SickenedSkeletonRenderer extends SkeletonRenderer {
-   private static final ResourceLocation SICKENED_SKELETON_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_skeleton.png");
-   private static final ResourceLocation SICKENED_SKELETON_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_skeleton_emissive.png"
-   );
+   private static final ResourceLocation SICKENED_SKELETON_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_skeleton.png");
+   private static final ResourceLocation SICKENED_SKELETON_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_skeleton_emissive.png");
 
    public SickenedSkeletonRenderer(Context context) {
       super(

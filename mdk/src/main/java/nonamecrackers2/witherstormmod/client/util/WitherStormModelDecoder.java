@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.util;
+package nonamecrackers2.witherstormmod.client.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;

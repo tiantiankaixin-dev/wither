@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.head;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.head;
 
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;

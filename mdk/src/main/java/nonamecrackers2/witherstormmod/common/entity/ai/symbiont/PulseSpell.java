@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.symbiont;
+package nonamecrackers2.witherstormmod.common.entity.ai.symbiont;
 
 import java.util.ArrayList;
 import java.util.List;

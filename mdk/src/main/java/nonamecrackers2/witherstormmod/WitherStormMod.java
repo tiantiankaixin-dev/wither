@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod;
+package nonamecrackers2.witherstormmod;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
@@ -22,7 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.commands.EntitySelectorManager;
 import net.neoforged.bus.api.IEventBus;
-import // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -87,7 +87,7 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 public class WitherStormMod {
    public static final Logger LOGGER = LogManager.getLogger();
    public static final String MOD_ID = "witherstormmod";
-   private static final ResourceLocation BOWELS = new ResourceLocation("witherstormmod", "bowels");
+   private static final ResourceLocation BOWELS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels");
    public static final LocalDate DATE = LocalDate.now();
    private static ArtifactVersion version;
    private static boolean isAprilFools;
@@ -197,7 +197,7 @@ public class WitherStormMod {
             manager.registerReloadListener(SoundManagersRefresher.INSTANCE);
             ItemProperties.register(
                Items.CROSSBOW,
-               new ResourceLocation("witherstormmod", "ender_pearl"),
+               ResourceLocation.fromNamespaceAndPath("witherstormmod", "ender_pearl"),
                (stack, world, entity, i) -> entity != null && CrossbowItem.isCharged(stack) && CrossbowItem.containsChargedProjectile(stack, Items.ENDER_PEARL) ? 1.0F : 0.0F
             );
             FormidiBladeItem.registerItemProperty();
@@ -223,6 +223,6 @@ public class WitherStormMod {
    }
 
    public static ResourceLocation id(String path) {
-      return new ResourceLocation("witherstormmod", path);
+      return ResourceLocation.fromNamespaceAndPath("witherstormmod", path);
    }
 }

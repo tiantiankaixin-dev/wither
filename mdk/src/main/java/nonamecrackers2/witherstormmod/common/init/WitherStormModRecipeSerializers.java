@@ -1,9 +1,9 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.item.crafting.AnvilRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.ItemCraftSuperBeaconRecipe;
@@ -11,7 +11,7 @@ import nonamecrackers2.witherstormmod.common.item.crafting.LockAmuletRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRecipe;
 
 public class WitherStormModRecipeSerializers {
-   public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.RECIPE_SERIALIZERS, "witherstormmod");
+   public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(NeoBuiltInRegistries.RECIPE_SERIALIZER, "witherstormmod");
    public static final DeferredHolder<SimpleCraftingRecipeSerializer<LockAmuletRecipe>> LOCK_AMULET = RECIPE_SERIALIZERS.register(
       "lock_amulet", () -> new SimpleCraftingRecipeSerializer(LockAmuletRecipe::new)
    );

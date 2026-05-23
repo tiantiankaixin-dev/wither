@@ -16,7 +16,7 @@ import nonamecrackers2.witherstormmod.common.blockentity.AbstractSuperBeaconBloc
 import org.joml.Matrix4f;
 
 public abstract class AbstractSuperBeaconRenderer<T extends AbstractSuperBeaconBlockEntity> implements BlockEntityRenderer<T> {
-   protected static final ResourceLocation BEAM = new ResourceLocation("witherstormmod", "textures/misc/beam.png");
+   protected static final ResourceLocation BEAM = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/beam.png");
 
    public AbstractSuperBeaconRenderer(Context context) {
    }

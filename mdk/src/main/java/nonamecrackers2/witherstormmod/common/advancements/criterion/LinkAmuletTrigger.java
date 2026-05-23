@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public class LinkAmuletTrigger extends SimpleCriterionTrigger<LinkAmuletTrigger.Instance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "link_amulet");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "link_amulet");
 
    public ResourceLocation getId() {
       return ID;

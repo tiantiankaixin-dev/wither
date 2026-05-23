@@ -1,7 +1,7 @@
-﻿package nonamecrackers2.witherstormmod.common.packet;
+package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-import // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.crackerslib.common.packet.Packet;
 
 public class SuperBeaconToggleAreaMessage extends Packet {

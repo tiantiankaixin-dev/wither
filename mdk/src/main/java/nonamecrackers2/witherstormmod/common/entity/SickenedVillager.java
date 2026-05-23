@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
@@ -38,7 +38,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.neoforged.neoforge.common.BasicItemListing;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.mixin.IMixinZombieVillager;
 import org.apache.commons.lang3.ArrayUtils;
@@ -48,7 +48,7 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
    public static final Map<VillagerProfession, ItemListing[]> SICKENED_TRADES = Util.make(
       Maps.newHashMap(),
       map -> {
-         for (VillagerProfession profession : NeoForgeRegistries.VILLAGER_PROFESSIONS.getValues()) {
+         for (VillagerProfession profession : NeoBuiltInRegistries.VILLAGER_PROFESSION.getValues()) {
             if (profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
                if (profession == VillagerProfession.CLERIC) {
                   map.put(profession, makeDefaultWitheredItems(new BasicItemListing(1, new ItemStack((ItemLike)WitherStormModItems.TAINTED_DUST.get()), 12, 2)));

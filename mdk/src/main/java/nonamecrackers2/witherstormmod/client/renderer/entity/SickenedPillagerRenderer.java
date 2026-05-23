@@ -12,8 +12,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedPillager;
 
 public class SickenedPillagerRenderer extends IllagerRenderer<SickenedPillager> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_pillager.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_pillager_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_pillager.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_pillager_emissive.png");
 
    public SickenedPillagerRenderer(Context context) {
       super(context, new IllagerModel(context.bakeLayer(WitherStormModRenderers.SICKENED_PILLAGER)), 0.5F);

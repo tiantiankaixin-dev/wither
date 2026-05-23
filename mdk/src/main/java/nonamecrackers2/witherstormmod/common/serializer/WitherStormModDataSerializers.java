@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.serializer;
+package nonamecrackers2.witherstormmod.common.serializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoNeoForgeRegistries.Keys;
+import net.neoforged.neoforge.registries.NeoBuiltInRegistries.Keys;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
 import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;

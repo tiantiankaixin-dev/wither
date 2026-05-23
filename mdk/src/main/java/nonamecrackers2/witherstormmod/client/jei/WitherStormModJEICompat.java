@@ -30,7 +30,7 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRe
 
 @JeiPlugin
 public class WitherStormModJEICompat implements IModPlugin {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "jei_compat");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "jei_compat");
    public static final RecipeType<ItemCraftSuperBeaconRecipe> SUPER_BEACON_ITEM_CRAFTING = RecipeType.create(
       "witherstormmod", "item_craft_super_beacon", ItemCraftSuperBeaconRecipe.class
    );

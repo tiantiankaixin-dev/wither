@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.capability;
+package nonamecrackers2.witherstormmod.common.capability;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -6,7 +6,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.ICapabilitySerializable;
-import // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
 
 public abstract class EntityCapability<E extends EntityCapability<E, T>, T extends Entity> {
    protected final T entity;

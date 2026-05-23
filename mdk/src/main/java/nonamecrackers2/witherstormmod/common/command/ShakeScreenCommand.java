@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.command;
+package nonamecrackers2.witherstormmod.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;

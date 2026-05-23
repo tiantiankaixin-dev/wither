@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity;
+package nonamecrackers2.witherstormmod.common.entity;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.neoforged.neoforge.entity.PartEntity;

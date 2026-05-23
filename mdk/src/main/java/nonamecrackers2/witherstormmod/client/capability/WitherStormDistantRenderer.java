@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.capability;
+package nonamecrackers2.witherstormmod.client.capability;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -33,11 +33,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent;
-import // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import // TODO_MIG: server.timings removed.TimeTracker;
+import net.minecraft.core.registries.BuiltInRegistries;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: server.timings removed.TimeTracker
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.client.renderer.blockentity.AbstractSuperBeaconRenderer;
@@ -82,7 +82,7 @@ public class WitherStormDistantRenderer {
    public void tickEntity(WitherStormEntity entity) {
       entity.setOldPosAndRot();
       entity.tickCount++;
-      this.minecraft.level.getProfiler().push(() -> NeoForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString());
+      this.minecraft.level.getProfiler().push(() -> NeoBuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
       if (entity.canUpdate() && entity.level().getEntity(entity.getId()) == null) {
          entity.tick();
       }

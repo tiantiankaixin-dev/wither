@@ -1,8 +1,8 @@
-﻿package nonamecrackers2.witherstormmod.client.util;
+package nonamecrackers2.witherstormmod.client.util;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import // TODO_MIG: PlayMessages removed.SpawnEntity;
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: PlayMessages removed.SpawnEntity
 import nonamecrackers2.witherstormmod.client.entity.ClientBlockClusterEntity;
 import nonamecrackers2.witherstormmod.common.entity.BlockClusterEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;

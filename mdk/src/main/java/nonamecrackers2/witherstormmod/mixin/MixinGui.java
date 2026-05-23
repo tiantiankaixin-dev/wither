@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({Gui.class})
 public class MixinGui {
    @Unique
-   private static final ResourceLocation PHASOMETER_SCOPE_TEXTURE = new ResourceLocation("witherstormmod", "textures/misc/phasometer_scope.png");
+   private static final ResourceLocation PHASOMETER_SCOPE_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/phasometer_scope.png");
    @Final
    @Shadow
    protected Minecraft minecraft;

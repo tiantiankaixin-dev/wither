@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.event;
+package nonamecrackers2.witherstormmod.client.event;
 
 import java.util.List;
 import net.minecraft.ChatFormatting;

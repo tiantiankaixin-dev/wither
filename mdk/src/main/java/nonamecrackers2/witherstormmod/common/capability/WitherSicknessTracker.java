@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.capability;
+package nonamecrackers2.witherstormmod.common.capability;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffect;

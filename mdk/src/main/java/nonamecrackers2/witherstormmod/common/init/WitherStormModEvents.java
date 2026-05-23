@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.neoforged.neoforge.common.NeoForge;
 import nonamecrackers2.witherstormmod.common.capability.WitherStormBowelsManager;

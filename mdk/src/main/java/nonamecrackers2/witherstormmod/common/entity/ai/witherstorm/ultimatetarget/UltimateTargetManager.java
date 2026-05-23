@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarget;
+package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarget;
 
 import java.util.Arrays;
 import java.util.List;

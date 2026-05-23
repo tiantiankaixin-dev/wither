@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public class CuredSickenedMobTrigger extends SimpleCriterionTrigger<CuredSickenedMobTrigger.Instance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "cured_sickened_mob");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "cured_sickened_mob");
 
    public ResourceLocation getId() {
       return ID;

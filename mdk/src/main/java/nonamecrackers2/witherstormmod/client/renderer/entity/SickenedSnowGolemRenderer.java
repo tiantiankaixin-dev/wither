@@ -12,10 +12,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.layer.SickenedSnowG
 import nonamecrackers2.witherstormmod.common.entity.SickenedSnowGolem;
 
 public class SickenedSnowGolemRenderer extends MobRenderer<SickenedSnowGolem, SnowGolemModel<SickenedSnowGolem>> {
-   private static final ResourceLocation SNOW_GOLEM_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_snow_golem.png");
-   private static final ResourceLocation SNOW_GOLEM_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_snow_golem_emissive.png"
-   );
+   private static final ResourceLocation SNOW_GOLEM_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_snow_golem.png");
+   private static final ResourceLocation SNOW_GOLEM_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_snow_golem_emissive.png");
 
    public SickenedSnowGolemRenderer(Context context) {
       super(context, new SnowGolemModel(context.bakeLayer(WitherStormModRenderers.SICKENED_SNOW_GOLEM)), 0.5F);

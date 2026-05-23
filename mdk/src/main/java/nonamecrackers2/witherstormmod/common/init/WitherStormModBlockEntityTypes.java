@@ -1,10 +1,10 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.blockentity.FireworkBundleBlockEntity;
 import nonamecrackers2.witherstormmod.common.blockentity.FormidibombBlockEntity;
@@ -13,7 +13,7 @@ import nonamecrackers2.witherstormmod.common.blockentity.SuperSupportBeaconBlock
 import nonamecrackers2.witherstormmod.common.blockentity.WitheredPhlegmBlockEntity;
 
 public class WitherStormModBlockEntityTypes {
-   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(NeoForgeRegistries.BLOCK_ENTITY_TYPES, "witherstormmod");
+   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(NeoBuiltInRegistries.BLOCK_ENTITY_TYPE, "witherstormmod");
    public static final DeferredHolder<BlockEntityType<FormidibombBlockEntity>> FORMIDIBOMB = BLOCK_ENTITIES.register(
       "formidibomb", () -> Builder.of(FormidibombBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.FORMIDIBOMB.get()}).build(null)
    );

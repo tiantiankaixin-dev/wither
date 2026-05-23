@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.event;
+package nonamecrackers2.witherstormmod.client.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

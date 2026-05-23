@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.event;
+package nonamecrackers2.witherstormmod.common.event;
 
 import java.util.UUID;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;

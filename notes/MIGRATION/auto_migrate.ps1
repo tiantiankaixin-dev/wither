@@ -137,7 +137,9 @@ foreach ($file in $javaFiles) {
         $stats.TodoMarkers += $localTodos
 
         if (-not $DryRun) {
-            [System.IO.File]::WriteAllText($file.FullName, $content, [System.Text.Encoding]::UTF8)
+            # IMPORTANT: use UTF8 WITHOUT BOM (javac rejects BOM)
+            $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+            [System.IO.File]::WriteAllText($file.FullName, $content, $utf8NoBom)
         }
     }
 }

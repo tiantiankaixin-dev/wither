@@ -11,8 +11,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedCow;
 
 public class SickenedCowRenderer extends MobRenderer<SickenedCow, CowModel<SickenedCow>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_cow.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_cow_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_cow.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_cow_emissive.png");
 
    public SickenedCowRenderer(Context context) {
       super(context, new CowModel(context.bakeLayer(WitherStormModRenderers.SICKENED_COW)), 0.7F);

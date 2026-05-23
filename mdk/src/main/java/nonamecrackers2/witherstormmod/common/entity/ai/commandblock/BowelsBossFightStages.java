@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.entity.ai.commandblock;
+package nonamecrackers2.witherstormmod.common.entity.ai.commandblock;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.capability.WitherSicknessTracker;
 import nonamecrackers2.witherstormmod.common.capability.WitherStormBowelsManager;
@@ -407,7 +407,7 @@ public class BowelsBossFightStages {
                         player.connection
                            .send(
                               new ClientboundSoundPacket(
-                                 (Holder)NeoForgeRegistries.SOUND_EVENTS.getHolder(WitherStormModSoundEvents.WITHER_STORM_DEATH.get()).get(),
+                                 (Holder)NeoBuiltInRegistries.SOUND_EVENT.getHolder(WitherStormModSoundEvents.WITHER_STORM_DEATH.get()).get(),
                                  SoundSource.HOSTILE,
                                  player.getX(),
                                  player.getY(),

@@ -1,11 +1,11 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType.Builder;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent.Operation;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.client.util.ClientBlockClusterFactory;
 import nonamecrackers2.witherstormmod.common.entity.BlockClusterEntity;
@@ -50,7 +50,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitherStormSegmentEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitherStormModEntityTypes {
-   public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(NeoForgeRegistries.ENTITY_TYPES, "witherstormmod");
+   public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(NeoBuiltInRegistries.ENTITY_TYPE, "witherstormmod");
    public static final DeferredHolder<EntityType<WitherStormEntity>> WITHER_STORM = register(
       "wither_storm", Builder.of(WitherStormEntity::new, MobCategory.MONSTER).sized(0.9F, 3.5F).setTrackingRange(512).clientTrackingRange(512).fireImmune()
    );
@@ -156,7 +156,7 @@ public class WitherStormModEntityTypes {
    );
 
    private static <T extends Entity> DeferredHolder<EntityType<T>> register(String id, Builder<T> builder) {
-      return ENTITIES.register(id, () -> builder.build(new ResourceLocation("witherstormmod", id).toString()));
+      return ENTITIES.register(id, () -> builder.build(ResourceLocation.fromNamespaceAndPath("witherstormmod", id).toString()));
    }
 
    public static void addEntityAttributes(EntityAttributeCreationEvent event) {

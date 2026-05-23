@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.resources;
+package nonamecrackers2.witherstormmod.common.resources;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -25,7 +25,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.resources.taint.SingleBlockTaintRecipe;
 import nonamecrackers2.witherstormmod.common.resources.taint.TagBasedTaintRecipe;
 import nonamecrackers2.witherstormmod.common.resources.taint.TaintRecipe;
@@ -55,7 +55,7 @@ public class BlockTainting extends SimpleJsonResourceReloadListener {
                ResourceLocation rawEffectId = (ResourceLocation)ResourceLocation.read(GsonHelper.getAsString(object, "potion_effect")).resultOrPartial(m -> {
                   throw new JsonSyntaxException(m);
                }).get();
-               effect = (MobEffect)NeoForgeRegistries.MOB_EFFECTS.getValue(rawEffectId);
+               effect = (MobEffect)NeoBuiltInRegistries.MOB_EFFECT.getValue(rawEffectId);
                if (effect == null) {
                   throw new JsonSyntaxException("Unknown effect with id '" + rawEffectId + "'");
                }
@@ -100,11 +100,11 @@ public class BlockTainting extends SimpleJsonResourceReloadListener {
                ResourceLocation blockId = (ResourceLocation)ResourceLocation.read(blockEntry).resultOrPartial(ex -> {
                   throw new JsonSyntaxException(ex);
                }).get();
-               if (!NeoForgeRegistries.BLOCKS.containsKey(blockId)) {
+               if (!NeoBuiltInRegistries.BLOCK.containsKey(blockId)) {
                   throw new JsonSyntaxException("Unknown block with id '" + blockEntry + "'");
                }
 
-               Block block = (Block)NeoForgeRegistries.BLOCKS.getValue(blockId);
+               Block block = (Block)NeoBuiltInRegistries.BLOCK.getValue(blockId);
                recipes.put(id, new SingleBlockTaintRecipe(block, effect, replacement, properties));
             }
          } catch (IllegalStateException | JsonSyntaxException var19) {

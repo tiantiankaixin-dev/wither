@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.client.entity;
+package nonamecrackers2.witherstormmod.client.entity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

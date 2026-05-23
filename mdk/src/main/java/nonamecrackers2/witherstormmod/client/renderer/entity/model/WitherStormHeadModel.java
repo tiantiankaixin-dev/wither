@@ -33,7 +33,7 @@ public class WitherStormHeadModel extends EntityModel<WitherStormHeadEntity> {
    }
 
    public void setupAnim(WitherStormHeadEntity entity, float walkAnimPos, float walkAnimSpeed, float bob, float yRot, float xRot) {
-      this.head.setupAnimations(entity, Minecraft.getInstance().getPartialTick(), bob, yRot, xRot, 0);
+      this.head.setupAnimations(entity, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), bob, yRot, xRot, 0);
    }
 
    public void renderToBuffer(

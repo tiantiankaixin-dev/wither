@@ -1,13 +1,13 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class WitherStormModSoundEvents {
-   public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(NeoForgeRegistries.SOUND_EVENTS, "witherstormmod");
+   public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(NeoBuiltInRegistries.SOUND_EVENT, "witherstormmod");
    public static final DeferredHolder<SoundEvent> WITHER_STORM_ROAR = createSoundEvent("wither_storm_roar");
    public static final DeferredHolder<SoundEvent> WITHER_STORM_EVOLVES = createSoundEvent("wither_storm_evolves");
    public static final DeferredHolder<SoundEvent> WITHER_STORM_CLOSE_LOOP = createSoundEvent("wither_storm_close_loop");
@@ -88,6 +88,6 @@ public class WitherStormModSoundEvents {
    public static final DeferredHolder<SoundEvent> MOB_CURED = createSoundEvent("mob_cured");
 
    private static DeferredHolder<SoundEvent> createSoundEvent(String name) {
-      return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation("witherstormmod", name)));
+      return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("witherstormmod", name)));
    }
 }

@@ -1,16 +1,16 @@
-﻿package nonamecrackers2.witherstormmod.common.init;
+package nonamecrackers2.witherstormmod.common.init;
 
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperBeaconMenu;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperSupportBeaconMenu;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.WitheredPhlegmMenu;
 
 public class WitherStormModMenuTypes {
-   public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(NeoForgeRegistries.MENU_TYPES, "witherstormmod");
+   public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(NeoBuiltInRegistries.MENU, "witherstormmod");
    public static final DeferredHolder<MenuType<SuperBeaconMenu>> SUPER_BEACON = MENU_TYPES.register(
       "super_beacon", () -> new MenuType(SuperBeaconMenu::new, FeatureFlags.DEFAULT_FLAGS)
    );

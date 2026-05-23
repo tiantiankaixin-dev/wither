@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.util;
+package nonamecrackers2.witherstormmod.common.util;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.api.common.event;
+package nonamecrackers2.witherstormmod.api.common.event;
 
 import net.neoforged.bus.api.Event;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;

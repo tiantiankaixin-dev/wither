@@ -96,7 +96,7 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
    public static void registerItemProperty() {
       ItemProperties.register(
          (Item)WitherStormModItems.FORMIDI_BLADE.get(),
-         new ResourceLocation("witherstormmod", "anim"),
+         ResourceLocation.fromNamespaceAndPath("witherstormmod", "anim"),
          (stack, world, entity, i) -> entity == null
                ? 0.0F
                : getPower(entity, stack, entity.getItemInHand(InteractionHand.OFF_HAND) == stack || entity.getItemInHand(InteractionHand.MAIN_HAND) == stack)

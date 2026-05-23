@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.blockentity;
+package nonamecrackers2.witherstormmod.common.blockentity;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Random;

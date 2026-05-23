@@ -1,4 +1,4 @@
-﻿package nonamecrackers2.witherstormmod.common.util;
+package nonamecrackers2.witherstormmod.common.util;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
@@ -750,7 +750,7 @@ public class WorldUtil {
          int z = start.getZ() + random.nextInt(diameter) - diameter / 2;
          int y = level.getHeightmapPos(Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).getY();
          BlockPos pos = new BlockPos(x, y, z);
-         if (NaturalSpawner.isSpawnPositionOk(net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND, level, pos, type) && pos.distSqr(start) > 6.0) {
+         if (NaturalSpawner.isSpawnPositionOk(net.minecraft.world.entity.SpawnPlacementTypes.ON_GROUND, level, pos, type) && pos.distSqr(start) > 6.0) {
             return pos;
          }
       }
