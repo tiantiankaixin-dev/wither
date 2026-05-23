@@ -20,7 +20,7 @@ public class WitherStormModMessageHandlerServer {
 
    public static void processInjureHeadMessage(InjureHeadMessage message, ServerPlayer player) {
       ServerLevel world = player.serverLevel();
-      double pickRange = player.getAttribute((Attribute)ForgeMod.BLOCK_REACH.get()).getValue();
+      double pickRange = player.getAttribute((Attribute)NeoForgeMod.BLOCK_REACH.get()).getValue();
       Vec3 pos = player.getEyePosition(1.0F);
       Vec3 eye = player.getViewVector(1.0F);
       Vec3 reach = pos.add(eye.x * pickRange, eye.y * pickRange, eye.z * pickRange);

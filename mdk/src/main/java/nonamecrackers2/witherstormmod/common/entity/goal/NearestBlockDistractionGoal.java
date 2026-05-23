@@ -36,7 +36,7 @@ public class NearestBlockDistractionGoal<T extends Mob & WitherStormBase> extend
    }
 
    public boolean canUse() {
-      if (!ForgeEventFactory.getMobGriefingEvent(this.mob.level(), this.mob)) {
+      if (!EventHooks.getMobGriefingEvent(this.mob.level(), this.mob)) {
          return false;
       } else if (this.retry > 0) {
          this.retry--;

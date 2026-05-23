@@ -39,7 +39,7 @@ import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 import nonamecrackers2.witherstormmod.common.packet.UpdateDamagingProjectileMessage;
 import org.jetbrains.annotations.NotNull;
 
-public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implements IEntityAdditionalSpawnData {
+public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implements IEntityWithComplexSpawn {
    public FlamingWitherSkullEntity(EntityType<? extends FlamingWitherSkullEntity> type, Level world) {
       super(type, world);
    }
@@ -134,7 +134,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
    }
 
    protected void explodeAndDiscard() {
-      boolean flag = ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+      boolean flag = EventHooks.getMobGriefingEvent(this.level(), this.getOwner());
       this.playSound(
          WitherStormModSoundEvents.FLAMING_SKULL_IMPACT.get(), 6.0F, (this.random.nextFloat() - this.random.nextFloat()) * -0.2F + 1.0F
       );

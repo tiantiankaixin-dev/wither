@@ -207,7 +207,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       }
 
       FriendlyByteBuf extra = new FriendlyByteBuf(Unpooled.buffer());
-      if (this.entity instanceof IEntityAdditionalSpawnData e) {
+      if (this.entity instanceof IEntityWithComplexSpawn e) {
          e.writeSpawnData(extra);
       }
 

@@ -27,7 +27,7 @@ public class TaintedPumpkinBlock extends Block {
 
    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
       ItemStack item = player.getItemInHand(hand);
-      if (item.canPerformAction(ToolActions.SHEARS_CARVE)) {
+      if (item.canPerformAction(ItemAbilities.SHEARS_CARVE)) {
          if (!level.isClientSide) {
             Direction hitSide = hitResult.getDirection();
             Direction direction = hitSide.getAxis() == Axis.Y ? player.getDirection().getOpposite() : hitSide;

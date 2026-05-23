@@ -17,11 +17,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class WitherStormModConfig {
    public static final WitherStormModConfig.ClientConfig CLIENT;
-   public static final ForgeConfigSpec CLIENT_SPEC;
+   public static final ModConfigSpec CLIENT_SPEC;
    public static final WitherStormModConfig.CommonConfig COMMON;
-   public static final ForgeConfigSpec COMMON_SPEC;
+   public static final ModConfigSpec COMMON_SPEC;
    public static final WitherStormModConfig.ServerConfig SERVER;
-   public static final ForgeConfigSpec SERVER_SPEC;
+   public static final ModConfigSpec SERVER_SPEC;
 
    public static void registerPresets(RegisterConfigPresetsEvent event) {
       event.exclude(CLIENT.playWitherStormTheme)
@@ -99,14 +99,14 @@ public class WitherStormModConfig {
    }
 
    static {
-      Pair<WitherStormModConfig.ClientConfig, ForgeConfigSpec> clientSpecPair = new Builder().configure(WitherStormModConfig.ClientConfig::new);
-      CLIENT_SPEC = (ForgeConfigSpec)clientSpecPair.getRight();
+      Pair<WitherStormModConfig.ClientConfig, ModConfigSpec> clientSpecPair = new Builder().configure(WitherStormModConfig.ClientConfig::new);
+      CLIENT_SPEC = (ModConfigSpec)clientSpecPair.getRight();
       CLIENT = (WitherStormModConfig.ClientConfig)clientSpecPair.getLeft();
-      Pair<WitherStormModConfig.CommonConfig, ForgeConfigSpec> commonSpecPair = new Builder().configure(WitherStormModConfig.CommonConfig::new);
-      COMMON_SPEC = (ForgeConfigSpec)commonSpecPair.getRight();
+      Pair<WitherStormModConfig.CommonConfig, ModConfigSpec> commonSpecPair = new Builder().configure(WitherStormModConfig.CommonConfig::new);
+      COMMON_SPEC = (ModConfigSpec)commonSpecPair.getRight();
       COMMON = (WitherStormModConfig.CommonConfig)commonSpecPair.getLeft();
-      Pair<WitherStormModConfig.ServerConfig, ForgeConfigSpec> serverSpecPair = new Builder().configure(WitherStormModConfig.ServerConfig::new);
-      SERVER_SPEC = (ForgeConfigSpec)serverSpecPair.getRight();
+      Pair<WitherStormModConfig.ServerConfig, ModConfigSpec> serverSpecPair = new Builder().configure(WitherStormModConfig.ServerConfig::new);
+      SERVER_SPEC = (ModConfigSpec)serverSpecPair.getRight();
       SERVER = (WitherStormModConfig.ServerConfig)serverSpecPair.getLeft();
    }
 

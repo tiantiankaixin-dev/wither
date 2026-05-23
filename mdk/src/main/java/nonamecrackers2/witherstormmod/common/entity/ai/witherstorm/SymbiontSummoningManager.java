@@ -243,7 +243,7 @@ public class SymbiontSummoningManager {
                   CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer)nearbyPlayers, entity);
                }
 
-               ForgeEventFactory.onFinalizeSpawn(entity, world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+               EventHooks.onFinalizeSpawn(entity, world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.TRIGGERED, null, null);
                entity.spawnAnim();
                world.sendParticles(
                   WitherStormModParticleTypes.COMMAND_BLOCK.get(),

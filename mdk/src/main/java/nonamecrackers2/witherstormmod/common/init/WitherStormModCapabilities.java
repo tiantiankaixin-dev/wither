@@ -58,7 +58,7 @@ public class WitherStormModCapabilities {
          final LazyOptional<ChunkLoadingBlockEntities> chunkLoadingBlockEntities = LazyOptional.of(() -> new ChunkLoadingBlockEntities((ServerLevel)world));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "chunk_loading_block_entities"), new ICapabilitySerializable<CompoundTag>() {
             public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-               return cap == WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES ? chunkLoadingBlockEntities.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return cap == WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES ? chunkLoadingBlockEntities.cast() : null /* MIG_LAZYOPT */;
             }
 
             public CompoundTag serializeNBT() {
@@ -73,7 +73,7 @@ public class WitherStormModCapabilities {
          final LazyOptional<WitherStormModChunkLoader> chunkLoader = LazyOptional.of(() -> new WitherStormModChunkLoader((ServerLevel)world));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "chunk_loader"), new ICapabilitySerializable<Tag>() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModCapabilities.CHUNK_LOADER ? chunkLoader.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModCapabilities.CHUNK_LOADER ? chunkLoader.cast() : null /* MIG_LAZYOPT */;
             }
 
             public Tag serializeNBT() {
@@ -89,7 +89,7 @@ public class WitherStormModCapabilities {
             final LazyOptional<WitherStormBowelsManager> bowelsManager = LazyOptional.of(() -> new WitherStormBowelsManager((ServerLevel)world));
             event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels_manager"), new ICapabilitySerializable<Tag>() {
                public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-                  return capability == WitherStormModCapabilities.BOWELS_MANAGER ? bowelsManager.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+                  return capability == WitherStormModCapabilities.BOWELS_MANAGER ? bowelsManager.cast() : null /* MIG_LAZYOPT */;
                }
 
                public Tag serializeNBT() {
@@ -105,7 +105,7 @@ public class WitherStormModCapabilities {
             final LazyOptional<WitherStormAutoSpawner> autoSpawner = LazyOptional.of(() -> new WitherStormAutoSpawner((ServerLevel)world));
             event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "auto_spawner"), new ICapabilitySerializable<CompoundTag>() {
                public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-                  return cap == WitherStormModCapabilities.WITHER_STORM_AUTO_SPAWNER ? autoSpawner.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+                  return cap == WitherStormModCapabilities.WITHER_STORM_AUTO_SPAWNER ? autoSpawner.cast() : null /* MIG_LAZYOPT */;
                }
 
                public CompoundTag serializeNBT() {

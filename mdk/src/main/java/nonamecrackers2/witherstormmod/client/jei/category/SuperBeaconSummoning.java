@@ -53,7 +53,7 @@ public class SuperBeaconSummoning extends SuperBeaconCategory<ResummonSuperBeaco
    protected void addResult(IRecipeLayoutBuilder builder, ResummonSuperBeaconRecipe recipe, IFocusGroup focuses, int x, int y, RegistryAccess access) {
       EntityType<?> type = recipe.getResummonEntity();
       if (type != null) {
-         SpawnEggItem spawnEgg = ForgeSpawnEggItem.fromEntityType(type);
+         SpawnEggItem spawnEgg = DeferredSpawnEggItem.fromEntityType(type);
          if (spawnEgg != null) {
             builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(new ItemStack(spawnEgg));
          } else {

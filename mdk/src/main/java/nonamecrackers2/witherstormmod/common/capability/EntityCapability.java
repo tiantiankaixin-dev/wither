@@ -37,7 +37,7 @@ public abstract class EntityCapability<E extends EntityCapability<E, T>, T exten
       }
 
       public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-         return cap == this.capability ? this.optional.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+         return cap == this.capability ? this.optional.cast() : null /* MIG_LAZYOPT */;
       }
 
       public Tag serializeNBT() {

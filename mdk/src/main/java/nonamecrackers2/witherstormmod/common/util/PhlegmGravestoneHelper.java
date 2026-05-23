@@ -27,7 +27,7 @@ public class PhlegmGravestoneHelper {
    }
 
    public static void spawnForEntity(LivingEntity entity, Vec3 pos, List<ItemStack> items) {
-      int reward = ForgeEventFactory.getExperienceDrop(entity, ((MixinLivingEntityAccessor)entity).witherstormmod$getLastHurtByPlayer(), entity.getExperienceReward());
+      int reward = EventHooks.getExperienceDrop(entity, ((MixinLivingEntityAccessor)entity).witherstormmod$getLastHurtByPlayer(), entity.getExperienceReward());
       entity.skipDropExperience();
       BlockClusterEntity cluster = ClusterBuilderHelper.buildPhlegmClusterWithItems(entity.level(), entity.getRandom(), items, entity.getDisplayName(), reward);
       if (cluster.getSize() > 0) {

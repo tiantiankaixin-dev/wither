@@ -1,0 +1,39 @@
+package nonamecrackers2.crackerslib.client.event.impl;
+
+import javax.annotation.Nullable;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
+import nonamecrackers2.crackerslib.client.gui.ConfigMenuButtons;
+
+public class ConfigMenuButtonEvent extends Event implements IModBusEvent {
+   private final String modid;
+   @Nullable
+   private ConfigMenuButtons.Factory factory;
+
+   public ConfigMenuButtonEvent(String modid) {
+      this.modid = modid;
+   }
+
+   public void registerFactory(ConfigMenuButtons.Factory factory) {
+      this.factory = factory;
+   }
+
+   public void defaultButtonWithSingleCharacter(char character, int color) {
+      this.factory = onPress -> {
+         Button button = Button.m_253074_(Component.m_237113_(String.valueOf(character)), onPress).m_253136_();
+         button.setFGColor(color);
+         return button;
+      };
+   }
+
+   public String getModId() {
+      return this.modid;
+   }
+
+   @Nullable
+   public ConfigMenuButtons.Factory getFactory() {
+      return this.factory;
+   }
+}

@@ -18,7 +18,7 @@ import nonamecrackers2.witherstormmod.client.gui.widget.RefreshSoundsButton;
 public class WitherStormModConfigHomeScreen extends ConfigHomeScreen {
    public WitherStormModConfigHomeScreen(
       String modid,
-      Map<Type, ForgeConfigSpec> specs,
+      Map<Type, ModConfigSpec> specs,
       TitleLogo title,
       boolean isWorldLoaded,
       boolean hasSinglePlayerServer,

@@ -351,7 +351,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
          }
 
          List<Entity> entitiesToExplode = world.getEntities(null, explosionArea);
-         ForgeEventFactory.onExplosionDetonate(world, explosion, entitiesToExplode, (double)diameter);
+         EventHooks.onExplosionDetonate(world, explosion, entitiesToExplode, (double)diameter);
          Vec3 vector = new Vec3(x, y, z);
 
          for (Entity toExplode : entitiesToExplode) {

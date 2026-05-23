@@ -867,7 +867,7 @@ BossThemeEntity {
             BlockPos randomPos = this.getRandomPosAroundPlayer(entity.getType(), playerPos, minRadius, maxRadius, 10);
             if (randomPos == null || !this.hasEnoughSpace((Entity)entity, randomPos)) continue;
             entity.setPos((double)randomPos.getX() + 0.5, (double)(randomPos.getY() + 1), (double)randomPos.getZ() + 0.5);
-            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(randomPos), (MobSpawnType)MobSpawnType.EVENT, null, null);
+            EventHooks.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(randomPos), (MobSpawnType)MobSpawnType.EVENT, null, null);
             if (entity instanceof Monster || entity instanceof AbstractGolem) {
                 this.addSpeedAttribute(entity);
             }
@@ -907,7 +907,7 @@ BossThemeEntity {
         BlockPos pos = this.getRandomNearbyPos(entity.getType(), diameter, 5);
         if (pos != null && this.hasEnoughSpace((Entity)entity, pos)) {
             entity.setPos((double)pos.getX() + 0.5, (double)(pos.getY() + 1), (double)pos.getZ() + 0.5);
-            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(pos), (MobSpawnType)MobSpawnType.EVENT, null, null);
+            EventHooks.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(pos), (MobSpawnType)MobSpawnType.EVENT, null, null);
             if (entity instanceof Monster || entity instanceof AbstractGolem) {
                 this.addSpeedAttribute(entity);
             }

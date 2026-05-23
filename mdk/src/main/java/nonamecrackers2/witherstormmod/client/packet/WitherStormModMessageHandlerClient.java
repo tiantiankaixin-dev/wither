@@ -121,8 +121,8 @@ public class WitherStormModMessageHandlerClient {
                   distantRenderer.addWitherStorm(message.getId(), entity);
                }
 
-               if (entity instanceof IEntityAdditionalSpawnData) {
-                  ((IEntityAdditionalSpawnData)entity).readSpawnData(message.getBuffer());
+               if (entity instanceof IEntityWithComplexSpawn) {
+                  ((IEntityWithComplexSpawn)entity).readSpawnData(message.getBuffer());
                }
 
                if (entity instanceof EntitySyncableData) {

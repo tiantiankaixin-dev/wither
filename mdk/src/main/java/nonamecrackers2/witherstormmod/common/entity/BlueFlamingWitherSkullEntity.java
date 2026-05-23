@@ -46,7 +46,7 @@ public class BlueFlamingWitherSkullEntity extends FlamingWitherSkullEntity {
 
    @Override
    protected void explodeAndDiscard() {
-      boolean flag = ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+      boolean flag = EventHooks.getMobGriefingEvent(this.level(), this.getOwner());
       this.playSound(
          WitherStormModSoundEvents.FLAMING_SKULL_IMPACT.get(), 6.0F, (this.random.nextFloat() - this.random.nextFloat()) * -0.2F + 0.8F
       );

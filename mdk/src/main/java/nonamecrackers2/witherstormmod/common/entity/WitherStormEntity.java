@@ -876,7 +876,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
             this.headManager.customServerAiStep();
             if (this.destroyBlocksTick > 0) {
                this.destroyBlocksTick--;
-               if (this.destroyBlocksTick == 0 && ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+               if (this.destroyBlocksTick == 0 && EventHooks.getMobGriefingEvent(this.level(), this)) {
                   int i1 = Mth.floor(this.getY());
                   int l1 = Mth.floor(this.getX());
                   int i2 = Mth.floor(this.getZ());
@@ -892,7 +892,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                            BlockState blockstate = this.level().getBlockState(blockpos);
                            if (blockstate.canEntityDestroy(this.level(), blockpos, this)
                               && !blockstate.is(WitherStormModBlockTags.WITHER_STORM_BLOCK_BLACKLIST)
-                              && ForgeEventFactory.onEntityDestroyBlock(this, blockpos, blockstate)) {
+                              && EventHooks.onEntityDestroyBlock(this, blockpos, blockstate)) {
                               flag = this.level().destroyBlock(blockpos, true, this) || flag;
                            }
                         }
@@ -928,7 +928,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                }
             }
 
-            if (ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+            if (EventHooks.getMobGriefingEvent(this.level(), this)) {
                double addRad;
                double consumptionRadius;
                if (this.getPhase() >= 6) {
@@ -1073,7 +1073,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                }
             }
 
-            if ((this.horizontalCollision || this.verticalCollision) && ForgeEventFactory.getMobGriefingEvent(this.level(), this) && this.getPhase() > 3) {
+            if ((this.horizontalCollision || this.verticalCollision) && EventHooks.getMobGriefingEvent(this.level(), this) && this.getPhase() > 3) {
                for (int i = 0; i < 10; i++) {
                   Direction direction = Direction.getRandom(this.random);
                   AABB box = this.getBoundingBox();
@@ -1200,7 +1200,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       }
 
       if (!this.level().isClientSide) {
-         if (this.getPhase() > 5 && this.getDeathTime() < 240 && ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+         if (this.getPhase() > 5 && this.getDeathTime() < 240 && EventHooks.getMobGriefingEvent(this.level(), this)) {
             this.dropDeathClusters();
          }
 
@@ -1268,7 +1268,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public void removeFluidFromLook(float x, float y, int head) {
       Vec3 vecPos = this.getHeadPos(head);
       Vec3 end = vecPos.add(this.getViewVector(x, y, 200.0F));
-      if (ForgeEventFactory.getMobGriefingEvent(this.level(), this) && this.getPhase() > 3) {
+      if (EventHooks.getMobGriefingEvent(this.level(), this) && this.getPhase() > 3) {
          BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.ANY, null));
          BlockPos hitPos = result.getBlockPos();
          if (WorldUtil.isLoaded((ServerLevel)this.level(), hitPos)
@@ -1295,7 +1295,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public void createClusterFromLook(float x, float y, int time, int head) {
       Vec3 vecPos = this.getHeadPos(head);
       Vec3 end = vecPos.add(this.getViewVector(x, y, 200.0F));
-      if (ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+      if (EventHooks.getMobGriefingEvent(this.level(), this)) {
          BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.NONE, null));
          BlockPos hitPos = result.getBlockPos();
          if (WorldUtil.isLoaded((ServerLevel)this.level(), hitPos)) {
@@ -3094,7 +3094,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       item.setNoGravity(true);
       this.level().addFreshEntity(item);
       ServerLevel level = (ServerLevel)this.level();
-      ExperienceOrb.award(level, player.position().add(0.0, 10.0, 0.0), ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, this.getExperienceReward()));
+      ExperienceOrb.award(level, player.position().add(0.0, 10.0, 0.0), EventHooks.getExperienceDrop(this, this.lastHurtByPlayer, this.getExperienceReward()));
 
       for (Player nearby : this.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(15.0))) {
          BlockPos nearestVillage = level.findNearestMapStructure(StructureTags.VILLAGE, player.blockPosition(), 50, false);

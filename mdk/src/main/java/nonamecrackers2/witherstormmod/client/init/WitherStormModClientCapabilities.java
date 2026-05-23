@@ -98,7 +98,7 @@ public class WitherStormModClientCapabilities {
          final LazyOptional<WitherStormDistantRenderer> distantRenderer = LazyOptional.of(() -> new WitherStormDistantRenderer(mc));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "distant_renderer"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModClientCapabilities.DISTANT_RENDERER ? distantRenderer.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModClientCapabilities.DISTANT_RENDERER ? distantRenderer.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(distantRenderer::invalidate);
@@ -106,7 +106,7 @@ public class WitherStormModClientCapabilities {
             final LazyOptional<BowelsEffectsManager> bowelsEffects = LazyOptional.of(() -> new BowelsEffectsManager(mc));
             event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels_effects_manager"), new ICapabilityProvider() {
                public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-                  return capability == WitherStormModClientCapabilities.BOWELS_EFFECTS_MANAGER ? bowelsEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+                  return capability == WitherStormModClientCapabilities.BOWELS_EFFECTS_MANAGER ? bowelsEffects.cast() : null /* MIG_LAZYOPT */;
                }
             });
             event.addListener(bowelsEffects::invalidate);
@@ -115,7 +115,7 @@ public class WitherStormModClientCapabilities {
          final LazyOptional<WitherStormAmbienceEffects> ambientEffects = LazyOptional.of(() -> new WitherStormAmbienceEffects(mc));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_ambience_effects"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-               return cap == WitherStormModClientCapabilities.AMBIENT_EFFECTS ? ambientEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return cap == WitherStormModClientCapabilities.AMBIENT_EFFECTS ? ambientEffects.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(ambientEffects::invalidate);
@@ -123,7 +123,7 @@ public class WitherStormModClientCapabilities {
          final LazyOptional<SoundManagersHolder> holderOptional = LazyOptional.of(() -> holder);
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sound_managers_holder"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModClientCapabilities.SOUND_MANAGERS ? holderOptional.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModClientCapabilities.SOUND_MANAGERS ? holderOptional.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(holderOptional::invalidate);
@@ -146,7 +146,7 @@ public class WitherStormModClientCapabilities {
       final LazyOptional<ISoundManager> optional = LazyOptional.of(() -> manager);
       event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", id), new ICapabilityProvider() {
          public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-            return cap == capability ? optional.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+            return cap == capability ? optional.cast() : null /* MIG_LAZYOPT */;
          }
       });
       event.addListener(optional::invalidate);
@@ -159,21 +159,21 @@ public class WitherStormModClientCapabilities {
          final LazyOptional<PlayerCameraShaker> cameraShaker = LazyOptional.of(() -> new PlayerCameraShaker(player));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "camera_shaker"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModClientCapabilities.CAMERA_SHAKER ? cameraShaker.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModClientCapabilities.CAMERA_SHAKER ? cameraShaker.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(cameraShaker::invalidate);
          final LazyOptional<PlayerScreenBlinder> screenBlinder = LazyOptional.of(PlayerScreenBlinder::new);
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "blinder"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModClientCapabilities.SCREEN_BLINDER ? screenBlinder.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModClientCapabilities.SCREEN_BLINDER ? screenBlinder.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(screenBlinder::invalidate);
          final LazyOptional<PlayerTractorBeamEffects> tractorBeamEffects = LazyOptional.of(() -> new PlayerTractorBeamEffects(player));
          event.addCapability(ResourceLocation.fromNamespaceAndPath("witherstormmod", "tractor_beam_effects"), new ICapabilityProvider() {
             public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
-               return capability == WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS ? tractorBeamEffects.cast() : null /* TODO_MIG: LazyOptional.empty() -> null */;
+               return capability == WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS ? tractorBeamEffects.cast() : null /* MIG_LAZYOPT */;
             }
          });
          event.addListener(tractorBeamEffects::invalidate);

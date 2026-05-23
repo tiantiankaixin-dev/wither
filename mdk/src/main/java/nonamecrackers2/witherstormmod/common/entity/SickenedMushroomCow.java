@@ -28,7 +28,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SickenedMushroomCow extends SickenedCow implements IForgeShearable {
+public class SickenedMushroomCow extends SickenedCow implements IShearable {
    public SickenedMushroomCow(EntityType<? extends SickenedMushroomCow> type, Level level) {
       super(type, level);
    }

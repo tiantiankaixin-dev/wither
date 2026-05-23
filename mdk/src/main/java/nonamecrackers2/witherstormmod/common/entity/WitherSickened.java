@@ -77,7 +77,7 @@ public interface WitherSickened {
       if (!cast.level().isClientSide && cast.isAlive() && this.isConverting()) {
          int i = this.getConversionProgress();
          data.conversionTime -= i;
-         if (data.getConversionTime() <= 0 && ForgeEventFactory.canLivingConvert(cast, (EntityType)cast.getType(), timer -> data.conversionTime = timer)) {
+         if (data.getConversionTime() <= 0 && EventHooks.canLivingConvert(cast, (EntityType)cast.getType(), timer -> data.conversionTime = timer)) {
             this.cure((ServerLevel)cast.level());
          }
       }
@@ -246,7 +246,7 @@ public interface WitherSickened {
 
             entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0));
             cast.playSound(WitherStormModSoundEvents.MOB_CURED.get());
-            ForgeEventFactory.onLivingConvert(cast, entity);
+            EventHooks.onLivingConvert(cast, entity);
             return true;
          }
       }

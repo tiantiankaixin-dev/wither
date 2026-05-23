@@ -705,7 +705,7 @@ public class WorldUtil {
       if (pos != null && hasEnoughSpace(world, type.getDimensions(), pos)) {
          Mob entity = (Mob)type.create(world);
          DifficultyInstance difficulty = world.getCurrentDifficultyAt(entity.blockPosition());
-         ForgeEventFactory.onFinalizeSpawn(entity, world, difficulty, MobSpawnType.TRIGGERED, null, null);
+         EventHooks.onFinalizeSpawn(entity, world, difficulty, MobSpawnType.TRIGGERED, null, null);
          if (WitherSickened.CAN_WEAR_ARMOR.test(entity) && entity instanceof Monster monster) {
             EquipmentHelper.applyEquipment(monster, difficulty, advancedMobs);
          }

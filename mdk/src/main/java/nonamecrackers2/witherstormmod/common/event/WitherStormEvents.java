@@ -42,7 +42,7 @@ public class WitherStormEvents {
       if (!entity.level().isClientSide) {
          boolean flag = false;
          if (attacker instanceof WitherStormEntity storm) {
-            if (ForgeEventFactory.getMobGriefingEvent(entity.level(), entity)) {
+            if (EventHooks.getMobGriefingEvent(entity.level(), entity)) {
                BlockPos pos = BlockPos.containing(entity.position());
                BlockState state = Blocks.WITHER_ROSE.defaultBlockState();
                if (entity.level().isEmptyBlock(pos) && state.canSurvive(entity.level(), pos)) {
