@@ -149,3 +149,68 @@
 
 ---
 
+## Phase-3 进度（2026-05-24 ~04:00 UTC+8）
+
+### 已完成
+
+| 动作 | 结果 |
+|---|---|
+| 嵌入 crackerslib 60 个反编译文件到 mdk 源码树 | `mdk/src/main/java/nonamecrackers2/crackerslib/` |
+| 写 `auto_migrate_inplace.ps1` | 合并 phase-1+2 规则、in-place 模式、类名级重命名 |
+| 修非幂等 bug（`LazyOptional.empty()` 嵌套注释） | 4 个文件清理 |
+| 全树重跑（670 文件） | 49 文件改了 130 处，主要是 `ForgeConfigSpec`→`ModConfigSpec` 类名引用 |
+| 本地 commit | 89 文件变更已 commit（push 因网络暂未成功） |
+
+### 当前编译状态：5286 错误 / 324 文件
+
+| 子项 | 错误数 |
+|---|---|
+| crackerslib（60 文件） | 1246（每文件 ~9 个 API 改动） |
+| witherstormmod（610 文件） | 4040 |
+
+### 净进展（横向对比）
+
+```
+phase-2 末（无 crackerslib，610 文件）：4744 错误
+phase-3 末（含 crackerslib，670 文件）：5286 错误
+新增 60 个 crackerslib 文件贡献：~542 错误
+即：把 212 个「找不到包」换成了「具体哪个 API 改了」的细粒度错误
+```
+
+### 剩下的硬骨头（必须手写）
+
+| 系统 | 影响范围 | 复杂度 |
+|---|---|---|
+| Capability API 重构 | crackerslib 40 + witherstormmod 600+ 错误 | ★★★★ 重写 RegisterCapabilitiesEvent + BlockCapability/EntityCapability/ItemCapability |
+| Packet API 重构 | crackerslib 2 个核心类 + 33 个子类 | ★★★★ `Packet` → `CustomPacketPayload`，`NetworkEvent.Context` → `IPayloadContext` |
+| AttachCapabilitiesEvent 删除 | crackerslib 12 + 多处下游 | ★★★ 必须用 RegisterCapabilitiesEvent 替代 |
+| ForgeConfigSpec 方法签名变化 | crackerslib config GUI 子系统 | ★★ 检查 ModConfigSpec 新 API |
+| DistExecutor 删除 | 全树多处 | ★★ 改为 `if (FMLEnvironment.dist == Dist.CLIENT)` |
+| NonNullSupplier 删除 | crackerslib 14 处 | ★★ 换 `Supplier<@NotNull T>` |
+
+### 自动化能力已耗尽
+
+3 轮自动迁移后，**剩下的错误全部需要语义层面的人工/AI 协作改造**，机械替换无法继续推进。
+
+### 工时复盘（本夜累计）
+
+| 阶段 | 工时 |
+|---|---|
+| Phase-1 + Phase-2 | 2.5h |
+| Phase-3（crackerslib 嵌入 + 类名规则） | 0.5h |
+| **本夜总计** | **3h** |
+
+### 醒来后的建议下一步（按优先）
+
+1. **Capability 系统重写**（最大解锁，~600+ 错误一波清）
+   - 读 `notes/MIGRATION/CAPABILITY_AUDIT.md`
+   - 重写 `nonamecrackers2/crackerslib/common/capability/CapUtil.java`（删除 ICapabilityProvider，改用 NeoForge 1.21 的 `Capabilities.<Kind>.<event>` API）
+   - 重写 witherstormmod 中所有 `AttachCapabilitiesEvent` 处理器为 `RegisterCapabilitiesEvent`
+2. **Packet 系统重写**（核心 2 文件，下游 33 文件模板化）
+   - 读 `notes/MIGRATION/PACKET_AUDIT.md`
+   - 把 `Packet` 改造成实现 `CustomPacketPayload` 的抽象类
+   - 33 个子类批量加 `StreamCodec<RegistryFriendlyByteBuf, Self>` 静态字段
+3. **DistExecutor / NonNullSupplier 清理**（小批量手动）
+
+---
+
