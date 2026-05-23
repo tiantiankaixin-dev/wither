@@ -51,12 +51,6 @@ public class SickenedZombie extends Zombie implements WitherSickened, RangedAtta
    public SickenedZombie(EntityType<? extends SickenedZombie> type, Level world) {
       super(type, world);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
          .add(Attributes.MAX_HEALTH, 24.0)

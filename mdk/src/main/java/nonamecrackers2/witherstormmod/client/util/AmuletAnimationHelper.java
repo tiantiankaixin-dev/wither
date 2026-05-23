@@ -148,34 +148,34 @@ public class AmuletAnimationHelper {
       Matrix4f matrix = stack.last().pose();
       float alpha = Mth.clamp(Mth.cos(((float)ticks + degreeOffset + partialTicks) * 0.2F) * pulseIntensity, 0.0F, 1.0F);
       if (alpha > 0.0F) {
-         consumer.vertex(matrix, 0.0F, 0.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(0.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 0.0F, 1.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(0.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 1.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(1.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 0.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(1.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
+         consumer.addVertex(matrix, 0.0F, 0.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(0.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix, 0.0F, 1.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(0.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix, 1.0F, 1.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(1.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix, 1.0F, 0.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(1.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+            ;
       }
 
       stack.popPose();

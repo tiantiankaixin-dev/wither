@@ -56,12 +56,6 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       super(type, level);
       this.setMaxUpStep(1.0F);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
          .add(Attributes.MAX_HEALTH, 60.0)

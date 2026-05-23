@@ -53,12 +53,6 @@ public class SickenedSkeleton extends AbstractSkeleton implements WitherSickened
       this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
       this.targetSelector.addGoal(3, new SickenedMobsAttackGoal(this));
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 24.0).add(Attributes.MOVEMENT_SPEED, 0.28);
    }

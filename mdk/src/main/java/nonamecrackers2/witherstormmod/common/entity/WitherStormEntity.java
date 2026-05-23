@@ -2361,12 +2361,6 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public boolean addEffect(@NotNull MobEffectInstance effect, @Nullable Entity entity) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected boolean canRide(@NotNull Entity entity) {
       return false;
    }
@@ -2407,7 +2401,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          }
 
          Entity entity1 = source.getEntity();
-         if (!(entity1 instanceof Player) && entity1 instanceof LivingEntity && ((LivingEntity)entity1).getMobType() == this.getMobType()) {
+         if (!(entity1 instanceof Player) && entity1 instanceof LivingEntity && entity1.getType().is(nonamecrackers2.witherstormmod.common.tags.WitherStormModEntityTags.SICKENED_MOBS)) {
             return false;
          } else {
             if (this.destroyBlocksTick <= 0) {

@@ -42,12 +42,6 @@ public class SickenedChicken extends Chicken implements WitherSickened, Enemy {
    public SickenedChicken(EntityType<? extends SickenedChicken> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected void registerGoals() {
       this.goalSelector.addGoal(0, new FloatGoal(this));
       this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.125, false));

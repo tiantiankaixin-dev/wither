@@ -424,12 +424,6 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
    public boolean canBeAffected(MobEffectInstance effect) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected float getStandingEyeHeight(Pose pose, EntityDimensions size) {
       return size.height / 2.0F;
    }

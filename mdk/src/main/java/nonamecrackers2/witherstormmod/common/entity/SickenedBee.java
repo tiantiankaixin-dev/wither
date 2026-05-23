@@ -53,12 +53,6 @@ public class SickenedBee extends Bee implements WitherSickened, Enemy {
    public SickenedBee(EntityType<? extends SickenedBee> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected void registerGoals() {
       super.registerGoals();
       this.goalSelector

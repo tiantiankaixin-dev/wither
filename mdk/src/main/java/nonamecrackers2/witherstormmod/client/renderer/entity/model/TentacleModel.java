@@ -86,7 +86,7 @@ public class TentacleModel extends EntityModel<TentacleEntity> {
       }
    }
 
-   public void renderToBuffer(PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-      this.base.render(stack, buffer, packedLight, packedOverlay);
+   public void renderToBuffer(PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+      this.base.render(stack, buffer, packedLight, packedOverlay, color);
    }
 }

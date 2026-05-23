@@ -44,12 +44,6 @@ public class SickenedWolf extends Wolf implements WitherSickened, Enemy {
    public SickenedWolf(EntityType<? extends SickenedWolf> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected void registerGoals() {
       this.goalSelector.addGoal(0, new FloatGoal(this));
       this.goalSelector.addGoal(1, new LeapAtTargetGoal(this, 0.4F));

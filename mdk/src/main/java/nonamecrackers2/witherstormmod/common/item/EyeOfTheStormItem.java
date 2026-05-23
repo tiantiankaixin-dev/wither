@@ -48,7 +48,7 @@ public class EyeOfTheStormItem extends CommandBlockSwordItem {
             int total = 5;
             int spread = 2;
             float hitAngle = (float)Mth.atan2(hit.getZ() - living.getZ(), hit.getX() - living.getX());
-            float damageModifier = EnchantmentHelper.getDamageBonus(stack, hit.getMobType());
+            float damageModifier = 0.0F; // TODO_MIG[ENCHANT]: 1.21 EnchantmentHelper.getDamageBonus signature changed; reimplement against new lookup-based API
             createSpike(living, hit.getX(), hit.getZ(), minHeight, maxHeight, hitAngle, 0, damageModifier);
 
             for (int i = 0; i < total; i++) {

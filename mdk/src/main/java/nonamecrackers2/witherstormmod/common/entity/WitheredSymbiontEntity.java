@@ -600,12 +600,6 @@ implements BossThemeEntity {
     public boolean causeFallDamage(float p_225503_1_, float p_225503_2_, @NotNull DamageSource source) {
         return false;
     }
-
-    @NotNull
-    public MobType getMobType() {
-        return WitherStormModMobTypes.SICKENED;
-    }
-
     @NotNull
     public AABB getBoundingBoxForCulling() {
         return super.getBoundingBoxForCulling().inflate(3.0);

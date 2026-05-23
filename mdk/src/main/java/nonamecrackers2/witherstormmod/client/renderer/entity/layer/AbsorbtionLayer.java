@@ -55,6 +55,6 @@ public class AbsorbtionLayer<T extends LivingEntity, M extends EntityModel<T>> e
    }
 
    private void renderOverlay(PoseStack stack, MultiBufferSource buffer, int packedLight, T entity, float alpha) {
-      this.getParentModel().renderToBuffer(stack, buffer.getBuffer(RENDER_TYPE), packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, alpha);
+      this.getParentModel().renderToBuffer(stack, buffer.getBuffer(RENDER_TYPE), packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), ((int)(alpha * 255.0F) & 0xFF) << 24 | 0xFFFFFF);
    }
 }

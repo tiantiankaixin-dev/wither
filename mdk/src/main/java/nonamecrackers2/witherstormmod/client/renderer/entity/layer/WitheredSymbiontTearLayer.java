@@ -32,6 +32,6 @@ public class WitheredSymbiontTearLayer extends RenderLayer<WitheredSymbiontEntit
    ) {
       VertexConsumer consumer = buffer.getBuffer(UtilRenderTypes.emissiveTranslucent(TEXTURE));
       ((WitheredSymbiontModel)this.getParentModel())
-         .renderToBuffer(stack, consumer, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, entity.getTearAlpha(partialTicks));
+         .renderToBuffer(stack, consumer, 15728640, OverlayTexture.NO_OVERLAY, ((int)(entity.getTearAlpha(partialTicks) * 255.0F) & 0xFF) << 24 | 0xFFFFFF);
    }
 }

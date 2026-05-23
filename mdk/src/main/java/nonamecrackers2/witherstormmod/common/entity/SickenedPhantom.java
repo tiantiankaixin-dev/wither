@@ -40,12 +40,6 @@ public class SickenedPhantom extends Phantom implements WitherSickened {
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.ATTACK_DAMAGE, 3.0);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new PhantomOrbitWitherStormGoal(this, 1));
       this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));

@@ -57,7 +57,7 @@ public class AsyncBufferedInstance extends BufferedInstance {
          RenderType type = this.getRenderType();
          BufferBuilder builder = new BufferBuilder(512);
          builder.begin(type.mode(), type.format());
-         this.bufferInto(stack, builder, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.bufferInto(stack, builder, 15728880, OverlayTexture.NO_OVERLAY, -1);
          return builder;
       }, pool).handle((b, e) -> {
          if (e != null) {

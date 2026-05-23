@@ -49,12 +49,6 @@ public class SickenedSpider extends Spider implements WitherSickened {
    public SickenedSpider(EntityType<? extends SickenedSpider> type, Level world) {
       super(type, world);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
          .add(Attributes.MAX_HEALTH, 20.0)

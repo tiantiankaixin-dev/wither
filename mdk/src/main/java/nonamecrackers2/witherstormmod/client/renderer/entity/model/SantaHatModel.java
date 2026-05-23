@@ -23,8 +23,8 @@ public class SantaHatModel extends Model {
       this.root = root;
    }
 
-   public void renderToBuffer(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, float r, float g, float b, float alpha) {
-      this.root.render(stack, consumer, packedLight, overlayTexture, r, g, b, alpha);
+   public void renderToBuffer(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, int color) {
+      this.root.render(stack, consumer, packedLight, overlayTexture, color);
    }
 
    public static LayerDefinition createLayerDefinition() {

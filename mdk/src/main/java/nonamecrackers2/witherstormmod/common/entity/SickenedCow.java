@@ -42,12 +42,6 @@ public class SickenedCow extends Cow implements WitherSickened, Enemy {
    public SickenedCow(EntityType<? extends SickenedCow> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.2).add(Attributes.MAX_HEALTH, 25.0).add(Attributes.FOLLOW_RANGE, 24.0);
    }

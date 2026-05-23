@@ -132,7 +132,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          RenderType decalType = shadersEnabled
             ? RenderType.entityDecal(this.getTextureLocation(entity))
             : UtilRenderTypes.witherStormDecal(this.getTextureLocation(entity));
-         this.model.render(entity, stack, buffer, decalType, emissive, massEmissive, hurtOverlay, packedLight, i, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.render(entity, stack, buffer, decalType, emissive, massEmissive, hurtOverlay, packedLight, i, -1);
       } else {
          this.model
             .render(
@@ -144,12 +144,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
                massEmissive,
                hurtOverlay,
                packedLight,
-               i,
-               1.0F,
-               1.0F,
-               1.0F,
-               1.0F
-            );
+               i, -1);
       }
 
       if (entity.isPowered()) {
@@ -174,7 +169,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
       this.swirlModel.setupAnimations(entity, partialTicks, bob, yRot, xRot);
       float xOffset = Mth.cos(bob * 0.02F) * 3.0F;
       RenderType type = RenderType.energySwirl(WITHER_ARMOR_LOCATION, xOffset % 1.0F, bob * 0.01F % 1.0F);
-      this.swirlModel.render(entity, stack, bufferSource, type, null, null, null, packedLight, overlayTexture, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.swirlModel.render(entity, stack, bufferSource, type, null, null, null, packedLight, overlayTexture, -1);
    }
 
    protected void renderChristmasFestivities(T entity, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int overlayTexture) {
@@ -188,7 +183,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             model.scale(stack);
             model.root().translateAndRotate(stack);
             this.santaHat
-               .renderToBuffer(stack, bufferSource.getBuffer(this.santaHat.renderType(SantaHatModel.TEXTURE)), packedLight, overlayTexture, 1.0F, 1.0F, 1.0F, 1.0F);
+               .renderToBuffer(stack, bufferSource.getBuffer(this.santaHat.renderType(SantaHatModel.TEXTURE)), packedLight, overlayTexture, -1);
             stack.popPose();
          }
       }
@@ -378,7 +373,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             float alpha = settings.alpha() * baseAlpha;
             Pose entry = stack.last();
             Matrix4f matrix4f = entry.pose();
-            Matrix3f matrix3f = entry.normal();
+            Matrix3f matrix3f = entry.setNormal();
             float u = 0.0F;
             float v = 0.0F;
             float uMax = 1.0F;
@@ -393,62 +388,62 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
                float angle2 = theta * (float)(i + 1) + tickCount;
                float x2 = Mth.cos(angle2);
                float z2 = Mth.sin(angle2);
-               debrisBuilder.vertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * topRadius, height, z * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * topRadius, height, z * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
+               debrisBuilder.addVertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x * topRadius, height, z * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x * topRadius, height, z * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
+               debrisBuilder.addVertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+                  ;
             }
 
             stack.popPose();
@@ -503,12 +498,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
                      ),
                   stack,
                   packedLight,
-                  OverlayTexture.NO_OVERLAY,
-                  1.0F,
-                  1.0F,
-                  1.0F,
-                  1.0F
-               );
+                  OverlayTexture.NO_OVERLAY, -1);
                if (flag) {
                   RenderBufferer.pushNoFog();
                   RenderBufferer.buildAndOrRender(
@@ -519,12 +509,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
                         ),
                      stack,
                      packedLight,
-                     OverlayTexture.NO_OVERLAY,
-                     1.0F,
-                     1.0F,
-                     1.0F,
-                     1.0F
-                  );
+                     OverlayTexture.NO_OVERLAY, -1);
                }
 
                RenderBufferer.popCullFaces();
@@ -553,177 +538,177 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          bstack.pushPose();
          bstack.translate(piece.x(), piece.y(), piece.z());
          Matrix4f matrix4f = bstack.last().pose();
-         Matrix3f matrix3f = bstack.last().normal();
+         Matrix3f matrix3f = bstack.last().setNormal();
          float startSize = piece.size();
          float endSize = -piece.size();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+            ;
          bstack.popPose();
       }
    }
@@ -814,34 +799,34 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          float xStretch = scale * (storm.getPhase() > 5 ? 1.5F : 1.0F);
          stack.translate(-xStretch / 2.0F, storm.getUnmodifiedHeight() / 2.0F - scale / 2.0F, scale / 2.0F);
          stack.scale(xStretch, scale, 1.0F);
-         consumer.vertex(matrix, 0.0F, 0.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(0.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 0.0F, 1.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(0.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 1.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(1.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 0.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(1.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
+         consumer.addVertex(matrix, 0.0F, 0.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(0.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+            ;
+         consumer.addVertex(matrix, 0.0F, 1.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(0.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+            ;
+         consumer.addVertex(matrix, 1.0F, 1.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(1.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+            ;
+         consumer.addVertex(matrix, 1.0F, 0.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(1.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+            ;
       }
    }
 
@@ -895,20 +880,20 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             Vec3 viewVector = storm.getViewVector(head.getHeadXRot(partialTick), head.getHeadYRot(partialTick), (float)box.getSize());
             Vec3 eyePos = head.getHeadPos();
             Matrix4f matrix4f = stack.last().pose();
-            Matrix3f matrix3f = stack.last().normal();
-            consumer.vertex(matrix4f, (float)eyePos.x, (float)eyePos.y, (float)eyePos.z)
-               .color(0, 0, 255, 255)
-               .normal(matrix3f, (float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
-               .endVertex();
-            consumer.vertex(
+            Matrix3f matrix3f = stack.last().setNormal();
+            consumer.addVertex(matrix4f, (float)eyePos.x, (float)eyePos.y, (float)eyePos.z)
+               .setColor(0, 0, 255, 255)
+               .setNormal((float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
+               ;
+            consumer.addVertex(
                   matrix4f,
                   (float)eyePos.x + (float)viewVector.x,
                   (float)eyePos.y + (float)viewVector.y,
                   (float)eyePos.z + (float)viewVector.z
                )
-               .color(0, 0, 255, 255)
-               .normal(matrix3f, (float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
-               .endVertex();
+               .setColor(0, 0, 255, 255)
+               .setNormal((float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
+               ;
          }
 
          if (storm.getPhase() > 4 && storm.partsEnabled) {

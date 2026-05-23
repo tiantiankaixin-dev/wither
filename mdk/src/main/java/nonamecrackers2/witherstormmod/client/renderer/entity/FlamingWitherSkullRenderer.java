@@ -36,9 +36,9 @@ public class FlamingWitherSkullRenderer<T extends FlamingWitherSkullEntity> exte
       float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
       VertexConsumer builder = buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
       this.model.setupAnim(partialTicks, f, f1);
-      this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, -1);
       VertexConsumer emissive = buffer.getBuffer(UtilRenderTypes.emissiveNoCull(this.getEmissiveTextureLocation(entity)));
-      this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, -1);
       stack.popPose();
       super.render(entity, p_225623_2_, partialTicks, stack, buffer, packedLight);
    }

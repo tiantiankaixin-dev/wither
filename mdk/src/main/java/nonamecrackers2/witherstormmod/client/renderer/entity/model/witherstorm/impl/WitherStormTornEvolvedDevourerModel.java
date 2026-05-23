@@ -87,7 +87,7 @@ public class WitherStormTornEvolvedDevourerModel<T extends WitherStormEntity> ex
       VertexConsumer builder = buffer.getBuffer(RenderType.lightning());
       Pose entry = stack.last();
       Matrix4f matrix4f = entry.pose();
-      Matrix3f matrix3f = entry.normal();
+      Matrix3f matrix3f = entry.setNormal();
       float aR = 0.5F;
       float aG = 0.3F;
       float aB = 0.8F;
@@ -103,62 +103,62 @@ public class WitherStormTornEvolvedDevourerModel<T extends WitherStormEntity> ex
          stack.translate(-0.12, -2.0, -0.9);
       }
 
-      builder.vertex(matrix4f, size * stretch, size, 0.0F)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, size * stretch, -size, -topZOffset)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, -size * stretch, -size, -topZOffset)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, -size * stretch, size, 0.0F)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, -size * stretch, size, 0.0F)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, -size * stretch, -size, -topZOffset)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, size * stretch, -size, -topZOffset)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
-      builder.vertex(matrix4f, size * stretch, size, 0.0F)
-         .color(aR, aG, aB, aA)
-         .uv(0.0F, 0.0F)
-         .overlayCoords(OverlayTexture.NO_OVERLAY)
-         .uv2(packedLight)
-         .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-         .endVertex();
+      builder.addVertex(matrix4f, size * stretch, size, 0.0F)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, size * stretch, -size, -topZOffset)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, -size * stretch, -size, -topZOffset)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, -size * stretch, size, 0.0F)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, -size * stretch, size, 0.0F)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, -size * stretch, -size, -topZOffset)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, size * stretch, -size, -topZOffset)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
+      builder.addVertex(matrix4f, size * stretch, size, 0.0F)
+         .setColor(aR, aG, aB, aA)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(packedLight)
+         .setNormal(0.0F, -1.0F, 0.0F)
+         ;
       stack.popPose();
    }
 }

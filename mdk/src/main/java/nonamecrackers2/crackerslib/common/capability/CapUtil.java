@@ -8,12 +8,12 @@ import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.capabilities.ICapabilitySerializable;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
+import java.util.function.Supplier;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: AttachCapabilitiesEvent removed, use RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class CapUtil {
-   public static void registerCap(AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable NonNullSupplier<?> object) {
+   public static void registerCap(AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable Supplier<?> object) {
       final LazyOptional<?> optional = LazyOptional.of(object);
       event.addCapability(id, new ICapabilityProvider() {
          @NotNull
@@ -25,7 +25,7 @@ public class CapUtil {
    }
 
    public static <T extends TagSerializable> void registerSerializableCap(
-      AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable NonNullSupplier<T> object
+      AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable Supplier<T> object
    ) {
       final LazyOptional<T> optional = LazyOptional.of(object);
       event.addCapability(id, new ICapabilitySerializable<CompoundTag>() {

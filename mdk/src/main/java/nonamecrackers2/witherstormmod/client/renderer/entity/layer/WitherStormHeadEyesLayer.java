@@ -41,7 +41,7 @@ public class WitherStormHeadEyesLayer extends EyesLayer<WitherStormHeadEntity, W
          builder = buffer.getBuffer(EYES);
       }
 
-      ((WitherStormHeadModel)this.getParentModel()).renderToBuffer(stack, builder, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      ((WitherStormHeadModel)this.getParentModel()).renderToBuffer(stack, builder, 15728640, OverlayTexture.NO_OVERLAY, -1);
    }
 
    public RenderType renderType() {

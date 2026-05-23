@@ -55,14 +55,14 @@ public class RibcageModel extends EntityModel<CommandBlockEntity> {
       return LayerDefinition.create(definition, 128, 128);
    }
 
-   public void renderToBuffer(PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+   public void renderToBuffer(PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
       stack.pushPose();
       stack.translate(0.0, -1.5, 0.0);
       ObjectIterator var9 = this.ribs.int2ObjectEntrySet().iterator();
 
       while (var9.hasNext()) {
          Entry<RibModel> entry = (Entry<RibModel>)var9.next();
-         ((RibModel)entry.getValue()).rib.render(stack, buffer, packedLight, packedOverlay);
+         ((RibModel)entry.getValue()).rib.render(stack, buffer, packedLight, packedOverlay, color);
       }
 
       stack.popPose();

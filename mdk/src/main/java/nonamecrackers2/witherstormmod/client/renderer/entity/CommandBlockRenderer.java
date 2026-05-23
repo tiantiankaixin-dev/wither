@@ -51,7 +51,7 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
          stack.mulPose(Axis.YN.rotationDegrees(-Mth.lerp(partialTicks, entity.yBodyRotO, entity.yBodyRot) + 90.0F));
          VertexConsumer builder = buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
          this.model.setupAnim(entity, entity.getModeAnim(partialTicks), partialTicks, 0.0F, entity.getYRot(), entity.getXRot());
-         this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, -1);
          stack.popPose();
       }
 
@@ -67,7 +67,7 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
       Pose entry = stack.last();
       if (health < 5 && health > 0) {
          RenderType type = (RenderType)ModelBakery.DESTROY_TYPES.get(health * 2);
-         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry.pose(), entry.normal(), 1.0F);
+         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry.pose(), entry.setNormal(), 1.0F);
          blockRenderer.getModelRenderer()
             .renderModel(
                entry,
@@ -112,18 +112,18 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
             float f4 = (random.nextFloat() + 0.2F) * 0.05F * f1;
             Matrix4f matrix4f = stack.last().pose();
             float sqrt = (float)(Math.sqrt(3.0) / 2.0);
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, 1.0F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, 1.0F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, f3, 1.0F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, f3, 1.0F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
          }
 
          stack.popPose();

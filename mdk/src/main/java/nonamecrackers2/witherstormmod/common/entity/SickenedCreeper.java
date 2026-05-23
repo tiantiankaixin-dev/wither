@@ -36,12 +36,6 @@ public class SickenedCreeper extends Creeper implements WitherSickened {
       mixinCreeper.setExplosionRadius(5);
       mixinCreeper.setMaxSwell(40);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.255).add(Attributes.MAX_HEALTH, 26.0).add(Attributes.FOLLOW_RANGE, 18.0);
    }

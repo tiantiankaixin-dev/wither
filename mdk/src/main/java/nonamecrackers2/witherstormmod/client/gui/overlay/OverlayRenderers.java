@@ -92,10 +92,10 @@ public class OverlayRenderers {
       RenderSystem.defaultBlendFunc();
       RenderSystem.setShader(GameRenderer::getPositionColorShader);
       builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-      builder.vertex(0.0, (double)height, 0.0).color(r, g, b, alpha).endVertex();
-      builder.vertex((double)width, (double)height, 0.0).color(r, g, b, alpha).endVertex();
-      builder.vertex((double)width, 0.0, 0.0).color(r, g, b, alpha).endVertex();
-      builder.vertex(0.0, 0.0, 0.0).color(r, g, b, alpha).endVertex();
+      builder.addVertex(0.0, (double)height, 0.0).setColor(r, g, b, alpha);
+      builder.addVertex((double)width, (double)height, 0.0).setColor(r, g, b, alpha);
+      builder.addVertex((double)width, 0.0, 0.0).setColor(r, g, b, alpha);
+      builder.addVertex(0.0, 0.0, 0.0).setColor(r, g, b, alpha);
       tesselator.end();
       RenderSystem.depthMask(true);
       RenderSystem.enableDepthTest();

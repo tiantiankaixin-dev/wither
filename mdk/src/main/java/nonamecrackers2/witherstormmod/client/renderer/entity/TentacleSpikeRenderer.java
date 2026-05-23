@@ -43,9 +43,9 @@ public class TentacleSpikeRenderer extends EntityRenderer<TentacleSpike> {
          stack.scale(-horzScale, -vertScale, horzScale);
          this.model.setupAnim(fang, animProg, 0.0F, 0.0F, fang.getYRot(), fang.getXRot());
          VertexConsumer consumer = buffers.getBuffer(this.model.renderType(this.getTextureLocation(fang)));
-         this.model.renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
          VertexConsumer emissive = buffers.getBuffer(RenderType.eyes(EMISSIVE));
-         this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, -1);
          stack.popPose();
          super.render(fang, p_114486_, partialTicks, stack, buffers, packedLight);
       }

@@ -63,12 +63,6 @@ public class SickenedSnowGolem extends SnowGolem implements WitherSickened, Enem
       this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
       this.targetSelector.addGoal(3, new SickenedMobsAttackGoal(this));
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.24);
    }

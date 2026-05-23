@@ -476,12 +476,6 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
    public boolean addEffect(@NotNull MobEffectInstance effect, @Nullable Entity entity) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public boolean canChangeDimensions() {
       return false;
    }

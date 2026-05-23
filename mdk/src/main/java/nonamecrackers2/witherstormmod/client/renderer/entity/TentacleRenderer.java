@@ -29,7 +29,7 @@ public class TentacleRenderer extends EntityRenderer<TentacleEntity> {
       VertexConsumer builder = buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
       this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
       int i = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
-      this.model.renderToBuffer(stack, builder, packedLight, i, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.model.renderToBuffer(stack, builder, packedLight, i, -1);
       stack.popPose();
    }
 

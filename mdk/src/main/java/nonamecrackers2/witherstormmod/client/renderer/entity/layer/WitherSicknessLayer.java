@@ -66,7 +66,7 @@ public class WitherSicknessLayer<T extends LivingEntity, M extends EntityModel<T
                      alpha = ((float)tracker.getCureDelay() - (float)tracker.getCureDelayTicks()) / (float)tracker.getCureDelay() * 0.5F * alpha * 2.0F;
                   }
 
-                  this.getModel().renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, alpha);
+                  this.getModel().renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, ((int)(alpha * 255.0F) & 0xFF) << 24 | 0xFFFFFF);
                   if (model instanceof VillagerHeadModel m) {
                      m.hatVisible(true);
                   }

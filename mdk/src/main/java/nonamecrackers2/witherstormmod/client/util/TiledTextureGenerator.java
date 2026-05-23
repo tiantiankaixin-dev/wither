@@ -89,7 +89,7 @@ public class TiledTextureGenerator extends DefaultedVertexConsumer {
    }
 
    public void endVertex() {
-      Vector3f vector3f = new Matrix3f(this.stack.last().normal()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
+      Vector3f vector3f = new Matrix3f(this.stack.last().setNormal()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
       Direction direction = Direction.getNearest(vector3f.x(), vector3f.y(), vector3f.z());
       Vector4f vector4f = new Matrix4f(this.stack.last().pose()).invert().transform(new Vector4f(this.x, this.y, this.z, 1.0F));
       vector4f.rotateY((float) Math.PI);
@@ -98,13 +98,13 @@ public class TiledTextureGenerator extends DefaultedVertexConsumer {
       float f = ((direction.getAxis() == Axis.X ? -1.0F : 1.0F) * vector4f.x() + 0.5F) * this.texScale + this.getUOffset(direction);
       float f1 = (vector4f.y() + 0.5F) * this.texScale + this.getVOffset(direction);
       this.delegate
-         .vertex((double)this.x, (double)this.y, (double)this.z)
-         .color(this.r, this.g, this.b, this.a)
-         .uv(f, f1)
-         .overlayCoords(this.overlayU, this.overlayV)
-         .uv2(this.lightCoords)
-         .normal(this.nx, this.ny, this.nz)
-         .endVertex();
+         .addVertex((double)this.x, (double)this.y, (double)this.z)
+         .setColor(this.r, this.g, this.b, this.a)
+         .setUv(f, f1)
+         .setOverlay(this.overlayU, this.overlayV)
+         .setLight(this.lightCoords)
+         .setNormal(this.nx, this.ny, this.nz)
+         ;
       this.resetState();
    }
 

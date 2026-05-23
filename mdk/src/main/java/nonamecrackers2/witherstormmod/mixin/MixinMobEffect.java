@@ -33,7 +33,7 @@ public class MixinMobEffect {
       )
    )
    public boolean redirectHurt(LivingEntity entity, DamageSource source, float amount) {
-      if (entity.getMobType() == WitherStormModMobTypes.SICKENED && !(entity instanceof WitherStormEntity)) {
+      if (entity.getType().is(nonamecrackers2.witherstormmod.common.tags.WitherStormModEntityTags.SICKENED_MOBS) && !(entity instanceof WitherStormEntity)) {
          return false;
       } else {
          return entity instanceof WitherStormEntity && ((WitherStormEntity)entity).getPhase() >= 3 ? false : entity.hurt(source, amount);

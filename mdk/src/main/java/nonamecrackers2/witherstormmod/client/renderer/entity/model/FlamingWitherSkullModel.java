@@ -47,8 +47,8 @@ public class FlamingWitherSkullModel extends SkullModelBase {
       return LayerDefinition.create(mesh, 32, 32);
    }
 
-   public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-      this.root.render(matrixStack, buffer, packedLight, packedOverlay);
+   public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+      this.root.render(matrixStack, buffer, packedLight, packedOverlay, color);
    }
 
    public void setupAnim(float f, float yRot, float xRot) {

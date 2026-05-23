@@ -34,12 +34,6 @@ public class SickenedPillager extends Pillager implements WitherSickened {
    public SickenedPillager(EntityType<? extends SickenedPillager> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
          .add(Attributes.MOVEMENT_SPEED, 0.37)
@@ -55,7 +49,7 @@ public class SickenedPillager extends Pillager implements WitherSickened {
    }
 
    public boolean isAlliedTo(Entity entity) {
-      if (entity instanceof LivingEntity living && living.getMobType() == MobType.ILLAGER) {
+      if (entity instanceof LivingEntity living && living.getType().is(net.minecraft.tags.EntityTypeTags.ILLAGER)) {
          return false;
       }
 

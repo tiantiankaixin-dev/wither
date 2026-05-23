@@ -65,7 +65,7 @@ public class BufferedInstance {
       RenderType type = this.getRenderType();
       BufferBuilder buffer = Tesselator.getInstance().getBuilder();
       buffer.begin(type.mode(), type.format());
-      this.bufferInto(stack, buffer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.bufferInto(stack, buffer, 15728880, OverlayTexture.NO_OVERLAY, -1);
       RenderedBuffer rendered = buffer.end();
       this.buffer.bind();
       this.buffer.upload(rendered);

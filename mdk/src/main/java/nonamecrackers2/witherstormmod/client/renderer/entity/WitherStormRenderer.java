@@ -98,18 +98,18 @@ public class WitherStormRenderer extends AbstractWitherStormRenderer<WitherStorm
             float f4 = random.nextFloat() * 10.0F + 1.0F + f2 * 2.0F;
             Matrix4f matrix4f = stack.last().pose();
             int k = (int)(255.0F * (1.0F - f2));
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, -((float)(Math.sqrt(3.0) / 2.0)) * f4, f3, -0.5F * f4).color(255, 0, 255, 0).endVertex();
-            builder.vertex(matrix4f, (float)(Math.sqrt(3.0) / 2.0) * f4, f3, -0.5F * f4).color(255, 0, 255, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, (float)(Math.sqrt(3.0) / 2.0) * f4, f3, -0.5F * f4).color(255, 0, 255, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, f4).color(255, 0, 255, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(255, 255, 255, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, f4).color(255, 0, 255, 0).endVertex();
-            builder.vertex(matrix4f, -((float)(Math.sqrt(3.0) / 2.0)) * f4, f3, -0.5F * f4).color(255, 0, 255, 0).endVertex();
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, -((float)(Math.sqrt(3.0) / 2.0)) * f4, f3, -0.5F * f4).setColor(255, 0, 255, 0);
+            builder.addVertex(matrix4f, (float)(Math.sqrt(3.0) / 2.0) * f4, f3, -0.5F * f4).setColor(255, 0, 255, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, (float)(Math.sqrt(3.0) / 2.0) * f4, f3, -0.5F * f4).setColor(255, 0, 255, 0);
+            builder.addVertex(matrix4f, 0.0F, f3, f4).setColor(255, 0, 255, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, k);
+            builder.addVertex(matrix4f, 0.0F, f3, f4).setColor(255, 0, 255, 0);
+            builder.addVertex(matrix4f, -((float)(Math.sqrt(3.0) / 2.0)) * f4, f3, -0.5F * f4).setColor(255, 0, 255, 0);
          }
 
          stack.popPose();

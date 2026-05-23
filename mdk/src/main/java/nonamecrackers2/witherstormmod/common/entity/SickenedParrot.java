@@ -41,12 +41,6 @@ public class SickenedParrot extends Parrot implements WitherSickened, Enemy {
    public SickenedParrot(EntityType<? extends SickenedParrot> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
-   }
-
    protected void registerGoals() {
       this.goalSelector.addGoal(0, new FloatGoal(this));
       this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.1, false));
