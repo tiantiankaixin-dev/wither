@@ -56,7 +56,7 @@ public class ChunkLoadingBlockEntities {
       List<BlockPos> loadingEntities = Lists.newArrayList();
 
       for (int i = 0; i < list.size(); i++) {
-         loadingEntities.add(NbtUtils.readBlockPos(list.getCompound(i)));
+         loadingEntities.add(NbtUtils.readBlockPos(list.getCompound(i).orElse(null)));
       }
 
       this.loadingEntities = loadingEntities;

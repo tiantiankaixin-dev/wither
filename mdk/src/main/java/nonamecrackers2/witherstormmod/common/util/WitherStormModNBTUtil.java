@@ -60,7 +60,7 @@ public class WitherStormModNBTUtil {
       for (int i = 0; i < list.size(); i++) {
          CompoundTag stateCompound = list.getCompound(i);
          BlockState state = NbtUtils.readBlockState(getter, stateCompound);
-         BlockPos pos = NbtUtils.readBlockPos(stateCompound, "RelativePos");
+         BlockPos pos = NbtUtils.readBlockPos(stateCompound, "RelativePos").orElse(null);
          blocks.put(pos, state);
       }
 

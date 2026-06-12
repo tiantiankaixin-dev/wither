@@ -1994,7 +1994,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       PlayDeadManager playDeadManager = this.getPlayDeadManager();
       playDeadManager.setPodiumPlaced(playDeadManagerNBT.getBoolean("PodiumPlaced"));
       if (playDeadManagerNBT.contains("PodiumPos")) {
-         playDeadManager.setPodiumPos(NbtUtils.readBlockPos(playDeadManagerNBT, "PodiumPos"));
+         playDeadManager.setPodiumPos(NbtUtils.readBlockPos(playDeadManagerNBT, "PodiumPos").orElse(null));
       }
 
       playDeadManager.setTickAmountAndO(playDeadManagerNBT.getInt("StateTicks"));
@@ -2045,7 +2045,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
       for (int i = 0; i < playingJukeboxes.size(); i++) {
          CompoundTag entry = playingJukeboxes.getCompound(i);
-         this.playingJukeboxes.add(NbtUtils.readBlockPos(entry, "Pos"));
+         this.playingJukeboxes.add(NbtUtils.readBlockPos(entry, "Pos").orElse(null));
       }
 
       this.isLocked = compound.getBoolean("IsConsumptionLocked");

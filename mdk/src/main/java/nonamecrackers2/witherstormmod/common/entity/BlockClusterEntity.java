@@ -233,7 +233,7 @@ public class BlockClusterEntity extends Entity {
 
    protected void readAdditionalSaveData(CompoundTag compound) {
       if (compound.contains("StartPos")) {
-         this.setStartPos(NbtUtils.readBlockPos(compound, "StartPos"));
+         this.setStartPos(NbtUtils.readBlockPos(compound, "StartPos").orElse(null));
       }
 
       if (compound.contains("Blocks")) {
@@ -276,7 +276,7 @@ public class BlockClusterEntity extends Entity {
       this.setSink(compound.getInt("GroundSink"));
       this.setAntiStacking(compound.getBoolean("AntiStacking"));
       if (compound.contains("StaticFadePos")) {
-         this.entityData.set(FADE_POINT, Optional.of(NbtUtils.readBlockPos(compound, "StaticFadePos")));
+         this.entityData.set(FADE_POINT, Optional.of(NbtUtils.readBlockPos(compound, "StaticFadePos").orElse(null)));
       }
 
       this.shouldCrumble = compound.getBoolean("ShouldCrumble");

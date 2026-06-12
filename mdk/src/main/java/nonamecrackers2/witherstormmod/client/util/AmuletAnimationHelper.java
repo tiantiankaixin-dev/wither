@@ -185,7 +185,7 @@ public class AmuletAnimationHelper {
    public static float getPulseIntensity(AbstractClientPlayer player, ClientLevel level, ItemStack stack, String id, int distance) {
       CompoundTag tag = stack.getOrCreateTag();
       if (tag.contains(id + "Pos")) {
-         BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(id + "Pos"));
+         BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(id + "Pos").orElse(null));
          float angle = (float)(Mth.atan2((double)pos.getX() - player.getX(), (double)pos.getZ() - player.getZ()) * (180.0 / Math.PI));
          float angleDiff = (Mth.wrapDegrees(-player.yHeadRot) - angle + 180.0F + 360.0F) % 360.0F - 180.0F;
          float value = 1.0F - Mth.clamp(Mth.abs(angleDiff * 0.03F), 0.0F, 0.8F);
