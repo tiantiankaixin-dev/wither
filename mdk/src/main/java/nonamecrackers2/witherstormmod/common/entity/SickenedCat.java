@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -125,9 +127,9 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -175,7 +177,7 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
          if (cat.isTame()) {
             this.setTame(true);
             this.setOwnerUUID(cat.getOwnerUUID());
-            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Sickened tamed mob health benefit", 1.4, Operation.MULTIPLY_BASE));
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Sickened tamed mob health benefit", 1.4, Operation.ADD_MULTIPLIED_BASE));
             this.setHealth(this.getMaxHealth());
          }
       }

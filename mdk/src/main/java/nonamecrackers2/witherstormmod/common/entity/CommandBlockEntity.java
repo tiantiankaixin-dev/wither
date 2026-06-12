@@ -103,6 +103,8 @@
  */
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.fml.loading.FMLEnvironment;
+
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -191,6 +193,7 @@ import nonamecrackers2.witherstormmod.common.entity.ai.commandblock.BowelsBossFi
 import nonamecrackers2.witherstormmod.common.entity.bossfight.BossfightManager;
 import nonamecrackers2.witherstormmod.common.entity.bossfight.BossfightPhase;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -320,12 +323,12 @@ BossThemeEntity {
         }
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STATE, State.IDLE);
-        this.entityData.define(MODE, Mode.NONE);
-        this.entityData.define(OWNER_UUID, Optional.empty());
-        this.entityData.define(PHASE_KEY, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STATE, State.IDLE);
+        builder.define(MODE, Mode.NONE);
+        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(PHASE_KEY, 0);
     }
 
     public void addAdditionalSaveData(@NotNull CompoundTag compound) {
@@ -342,7 +345,7 @@ BossThemeEntity {
         }
         this.tentacleStructure.addSaveData(compound);
         if (this.podiumCluster != null && this.podiumCluster.isAlive()) {
-            compound.putUUID("PodiumCluster", this.podiumCluster.getUUID());
+            compound.putUUID("PodiumCluster", this.podiumCluster.id());
         }
         compound.put("BossfightManager", (Tag)this.bossfightManager.write());
     }
@@ -469,7 +472,7 @@ BossThemeEntity {
                     this.getBossfightManager().goToNextPhase();
                     WitherStormEntity owner = this.getOwner();
                     if (owner != null && owner.isAlive()) {
-                        owner.getSegmentsManager().ifPresent(manager -> {
+                        { var manager = owner.getSegmentsManager().get();
                             for (WitherStormSegmentEntity segment : manager.getSegments()) {
                                 if (segment == null || !segment.isAlive()) continue;
                                 segment.getTrackedEntities().clearAndMakeAllFall();
@@ -478,7 +481,7 @@ BossThemeEntity {
                                     segment.getHeadManager().getHead(i).hurt(null, segment.getHeadManager().getHeadInjuryTime());
                                 }
                             }
-                        });
+                        }
                         owner.getTrackedEntities().clearAndMakeAllFall();
                         for (int i = 0; i < owner.getTotalHeads(); ++i) {
                             if (!(this.random.nextFloat() > 0.6f)) continue;
@@ -693,12 +696,12 @@ BossThemeEntity {
 
     @NotNull
     public net.minecraft.network.protocol.Packet<ClientGamePacketListener> getAddEntityPacket() {
-        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new ModeAnimationMessage(this.getId(), this.modeAnim));
+        WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(this), new ModeAnimationMessage(this.getId(), this.modeAnim));
         return super.getAddEntityPacket();
     }
 
     public void onAddedToWorld() {
-        super.onAddedToWorld();
+        super.onAddedToLevel();
         if (!this.level().isClientSide) {
             this.tentacleStructure.createTentacles();
         }
@@ -943,14 +946,14 @@ BossThemeEntity {
     }
 
     private void addHealthAttribute(Mob mob) {
-        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADDITION));
+        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADD_VALUE));
     }
 
     private void addSpeedAttribute(Mob mob) {
         if (mob instanceof SickenedVindicator || mob instanceof SickenedIronGolem) {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, AttributeModifier.Operation.ADD_VALUE));
         } else {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.06, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.06, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 
@@ -1052,7 +1055,7 @@ BossThemeEntity {
                 tentacle.setNoGravity(true);
                 tentacle.setAnimationOffset(this.entity.random.nextInt(35) * 10000);
                 tentacle.setCanStrangle(false);
-                Objects.requireNonNull(tentacle.getAttribute(Attributes.ATTACK_KNOCKBACK)).addPermanentModifier(new AttributeModifier(KNOCKBACK_MODIFIER, "Command block's tentacles knockback modifier", 5.0, AttributeModifier.Operation.ADDITION));
+                Objects.requireNonNull(tentacle.getAttribute(Attributes.ATTACK_KNOCKBACK)).addPermanentModifier(new AttributeModifier(KNOCKBACK_MODIFIER, "Command block's tentacles knockback modifier", 5.0, AttributeModifier.Operation.ADD_VALUE));
                 this.tentacleStructure[index] = tentacle;
             }
         }
@@ -1070,7 +1073,7 @@ BossThemeEntity {
         }
 
         public void addTentacles() {
-            if (this.entity.isAddedToWorld() && this.entity.isAlive()) {
+            if (this.entity.level() != null && this.entity.isAlive()) {
                 for (int i = 0; i < this.tentacleStructure.length; ++i) {
                     this.addTentacle(i);
                 }
@@ -1079,7 +1082,7 @@ BossThemeEntity {
 
         private void addTentacle(int index) {
             TentacleEntity tentacle = this.tentacleStructure[index];
-            if (tentacle != null && !tentacle.isAddedToWorld() && tentacle.isAlive()) {
+            if (tentacle != null && !tentacle.level() != null && tentacle.isAlive()) {
                 this.getOffsetsForTentacle(index).apply((LivingEntity)this.entity, tentacle);
                 this.entity.level().addFreshEntity((Entity)tentacle);
             }
@@ -1104,7 +1107,7 @@ BossThemeEntity {
             for (int i = 0; i < this.savedTentacleStructure.length; ++i) {
                 UUID uuid = this.savedTentacleStructure[i];
                 TentacleEntity preexisting = this.tentacleStructure[i];
-                if ((uuid == null || preexisting == null || preexisting.getUUID().equals(uuid)) && preexisting != null) continue;
+                if ((uuid == null || preexisting == null || preexisting.id().equals(uuid)) && preexisting != null) continue;
                 assert (uuid != null);
                 Entity entity = world.getEntity(uuid);
                 if (!(entity instanceof TentacleEntity)) continue;
@@ -1126,7 +1129,7 @@ BossThemeEntity {
             for (TentacleEntity tentacle : this.tentacleStructure) {
                 CompoundTag tentacleCompound = new CompoundTag();
                 if (tentacle != null) {
-                    tentacleCompound.putUUID("UUID", tentacle.getUUID());
+                    tentacleCompound.putUUID("UUID", tentacle.id());
                 }
                 list.add(tentacleCompound);
             }
@@ -1195,7 +1198,7 @@ BossThemeEntity {
                         double speed = 0.025;
                         Vec3 motion = entity.position().subtract(player.position()).normalize().multiply(speed, speed, speed);
                         player.setDeltaMovement(motion.x, player.getDeltaMovement().y, motion.z);
-                        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new PlayerMotionMessage(new Vec3(motion.x, player.getDeltaMovement().y, motion.z)));
+                        WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)player), new PlayerMotionMessage(new Vec3(motion.x, player.getDeltaMovement().y, motion.z)));
                         if ((double)player.distanceTo((Entity)entity) < 3.0) {
                             entity.setLuringPlayer(null);
                             entity.nextState();
@@ -1220,7 +1223,7 @@ BossThemeEntity {
                 entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.TREMBLE.get(), SoundSource.AMBIENT, 10.0f, 1.0f);
                 if (!entity.level().isClientSide) {
                     ShakeScreenMessage message = new ShakeScreenMessage(40.0f, 5.0f);
-                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+                    WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), message);
                 }
                 for (int i = 0; i < 10; ++i) {
                     entity.level().addParticle((ParticleOptions)WitherStormModParticleTypes.COMMAND_BLOCK.get(), entity.getX(), entity.getEyeY(), entity.getZ(), entity.random.nextGaussian() * 0.5, entity.random.nextGaussian() * 0.5, entity.random.nextGaussian() * 0.5);
@@ -1257,7 +1260,7 @@ BossThemeEntity {
                 super.init(entity);
                 if (!entity.level().isClientSide) {
                     ShakeScreenMessage message = new ShakeScreenMessage(120.0f, 5.0f);
-                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+                    WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), message);
                 }
                 entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.TREMBLE.get(), SoundSource.AMBIENT, 10.0f, 1.0f);
             }
@@ -1330,9 +1333,9 @@ BossThemeEntity {
         public void initWithOwner(WitherStormEntity owner, CommandBlockEntity entity) {
             if (owner.isAlive()) {
                 if (this.shouldShowOwnerBossBar()) {
-                    owner.getBossInfo().ifPresent(info -> info.setVisible(true));
+                    owner.getBossInfo().ifPresent(e -> e.setVisible(true));
                 } else {
-                    owner.getBossInfo().ifPresent(info -> info.setVisible(!owner.isPlayingDead()));
+                    owner.getBossInfo().ifPresent(e -> e.setVisible(!owner.isPlayingDead()));
                 }
             }
         }
@@ -1404,7 +1407,7 @@ BossThemeEntity {
         public void tick(CommandBlockEntity entity, State state) {
             ++entity.modeAnim;
             if (!entity.level().isClientSide && entity.tickCount % 120 == 0) {
-                WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ModeAnimationMessage(entity.getId(), entity.modeAnim));
+                WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ModeAnimationMessage(entity.getId(), entity.modeAnim));
             }
         }
 
@@ -1419,7 +1422,7 @@ BossThemeEntity {
 
         public void init(CommandBlockEntity entity, State state) {
             entity.modeAnim = 0;
-            if (!entity.level().isClientSide && entity.isAddedToWorld()) {
+            if (!entity.level().isClientSide && entity.level() != null) {
                 if (this == TENTACLES) {
                     entity.tentacleStructure.readdTentacles();
                 } else {
@@ -1462,16 +1465,17 @@ BossThemeEntity {
         }
 
         public Runnable getProcessor(NetworkEvent.Context context) {
-            return () -> DistExecutor.unsafeRunWhenOn((Dist)Dist.CLIENT, () -> () -> {
-                Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                optional.ifPresent(world -> {
-                    Entity entity = world.getEntity(this.id);
-                    if (entity instanceof CommandBlockEntity) {
-                        CommandBlockEntity commandBlock = (CommandBlockEntity)entity;
-                        commandBlock.modeAnim = this.anim;
+            return () -> {
+                if (FMLEnvironment.dist == Dist.CLIENT) {
+                    Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
+                    { var world = optional;
+                        Entity entity = world.getEntity(this.id);
+                        if (entity instanceof CommandBlockEntity commandBlock) {
+                            commandBlock.modeAnim = this.anim;
+                        }
                     }
-                });
-            });
+                }
+            };
         }
     }
 }

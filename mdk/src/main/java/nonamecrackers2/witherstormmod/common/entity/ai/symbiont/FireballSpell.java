@@ -17,6 +17,7 @@ import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.common.entity.FlamingWitherSkullEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.UpdateDamagingProjectileMessage;
@@ -92,7 +93,7 @@ public class FireballSpell extends SymbiontSpell {
                damaging.yPower = targetDelta.y();
                damaging.zPower = targetDelta.z();
                UpdateDamagingProjectileMessage message = new UpdateDamagingProjectileMessage(damaging);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> damaging), message);
+               WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(damaging), message);
             } else {
                damaging.setDeltaMovement(delta);
                ((ServerChunkCache)this.entity.getCommandSenderWorld().getChunkSource()).broadcast(damaging, new ClientboundSetEntityMotionPacket(damaging));

@@ -21,7 +21,7 @@ import nonamecrackers2.crackerslib.client.util.SortType;
 import nonamecrackers2.crackerslib.common.config.preset.ConfigPreset;
 
 public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionList.Entry> {
-   private static final Component NO_CONFIG_OPTIONS = Component.m_237115_("gui.crackerslib.config.noAvailableOptions");
+   private static final Component NO_CONFIG_OPTIONS = Component.translatable("gui.crackerslib.config.noAvailableOptions");
    private static final int ROW_HEIGHT = 30;
    private final List<ConfigListItem> items = Lists.newArrayList();
    private final List<ConfigCategory> categories = Lists.newArrayList();
@@ -39,8 +39,8 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
       this.modid = modid;
       this.type = type;
       this.spec = spec;
-      this.m_93488_(false);
-      this.m_93496_(true);
+      this.setVisible(false);
+      this.setFocused(true);
       this.valuesChangedResponder = valuesChangedResponder;
    }
 
@@ -50,13 +50,13 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
 
    public <T> void addConfigValue(String path, ConfigOptionList.ConfigEntryBuilder itemBuilder, Optional<ConfigCategory> category) {
       category.ifPresentOrElse(
-         c -> c.addChild(itemBuilder.build(this.f_93386_, this.modid, this.type, path, this.spec, this.valuesChangedResponder)),
-         () -> this.items.add(itemBuilder.build(this.f_93386_, this.modid, this.type, path, this.spec, this.valuesChangedResponder))
+         c -> c.addChild(itemBuilder.build(this.minecraft, this.modid, this.type, path, this.spec, this.valuesChangedResponder)),
+         () -> this.items.add(itemBuilder.build(this.minecraft, this.modid, this.type, path, this.spec, this.valuesChangedResponder))
       );
    }
 
    public ConfigCategory makeCategory(String path, Optional<ConfigCategory> previousCategory) {
-      ConfigCategory category = new ConfigCategory(this.f_93386_, this.modid, path, this);
+      ConfigCategory category = new ConfigCategory(this.minecraft, this.modid, path, this);
       previousCategory.ifPresentOrElse(c -> c.addChild(category), () -> this.items.add(category));
       this.categories.add(category);
       return category;
@@ -94,7 +94,7 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
    }
 
    public void buildList(String text, boolean expandOrContractCategories) {
-      this.m_93516_();
+      this.getSelected();
       this.sortType.sortList(this.items);
       List<ConfigListItem> items = Lists.newArrayList();
 
@@ -115,7 +115,7 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
       }
 
       for (ConfigListItem itemx : items) {
-         this.m_7085_(new ConfigOptionList.Entry(itemx));
+         this.removeEntry(new ConfigOptionList.Entry(itemx));
       }
 
       this.lastSearch = text;
@@ -165,35 +165,35 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
       }
    }
 
-   public int m_5759_() {
+   public int getRowWidth() {
       return this.getWidth() - 40;
    }
 
-   protected int m_5756_() {
+   protected int getScrollbarPosition() {
       return this.getLeft() + this.getWidth() - 5;
    }
 
-   protected void m_7733_(GuiGraphics stack) {
-      if (this.f_93386_.f_91073_ != null) {
-         stack.m_280024_(0, 0, this.f_93388_, this.f_93389_, -1072689136, -804253680);
+   protected void renderBackground(GuiGraphics stack) {
+      if (this.minecraft.level != null) {
+         stack.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
       } else {
          RenderSystem.setShaderColor(0.15F, 0.15F, 0.15F, 1.0F);
-         stack.m_280398_(Screen.f_279548_, 0, 0, 0, 0.0F, 0.0F, this.f_93388_, this.f_93389_, 32, 32);
+         stack.blit(Screen.MENU_BACKGROUND, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, 32, 32);
          RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       }
    }
 
-   public void m_88315_(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
-      super.m_88315_(stack, mouseX, mouseY, partialTick);
-      if (this.m_6702_().isEmpty()) {
-         stack.m_280653_(this.f_93386_.f_91062_, NO_CONFIG_OPTIONS, this.f_93388_ / 2, this.f_93389_ / 2, -1);
+   public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
+      super.render(stack, mouseX, mouseY, partialTick);
+      if (this.children().isEmpty()) {
+         stack.drawCenteredString(this.minecraft.font, NO_CONFIG_OPTIONS, this.width / 2, this.height / 2, -1);
       }
    }
 
    @Nullable
    public ConfigListItem getItemAt(int mouseX, int mouseY) {
-      ConfigOptionList.Entry entry = (ConfigOptionList.Entry)this.m_93412_(mouseX, mouseY);
-      return entry != null && entry.children.stream().anyMatch(w -> !w.m_274382_()) ? entry.item : null;
+      ConfigOptionList.Entry entry = (ConfigOptionList.Entry)this.getEntryAtPosition(mouseX, mouseY);
+      return entry != null && entry.children.stream().anyMatch(w -> !w.isHovered()) ? entry.item : null;
    }
 
    @Nullable
@@ -224,28 +224,28 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
       public Entry(ConfigListItem item) {
          this.item = item;
          ConfigCategory category = ConfigOptionList.this.getCategoryFor(item);
-         int x = (ConfigOptionList.this.getWidth() - ConfigOptionList.this.m_5759_()) / 2;
+         int x = (ConfigOptionList.this.getWidth() - ConfigOptionList.this.getRowWidth()) / 2;
          if (category != null) {
             x = category.getX() + 20;
          }
 
-         this.item.init(this.children, x, ConfigOptionList.this.getTop(), ConfigOptionList.this.m_5759_(), ConfigOptionList.this.f_93387_);
+         this.item.init(this.children, x, ConfigOptionList.this.getTop(), ConfigOptionList.this.getRowWidth(), ConfigOptionList.this.itemHeight);
          this.x = x;
       }
 
-      public List<? extends GuiEventListener> m_6702_() {
+      public List<? extends GuiEventListener> children() {
          return this.children;
       }
 
-      public List<? extends NarratableEntry> m_142437_() {
+      public List<? extends NarratableEntry> narratables() {
          return this.children;
       }
 
-      public void m_6311_(GuiGraphics stack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean selected, float partialTicks) {
-         stack.m_280637_(this.x, top, width - (this.x - left), height, -1426063361);
+      public void render(GuiGraphics stack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean selected, float partialTicks) {
+         stack.renderOutline(this.x, top, width - (this.x - left), height, -1426063361);
          if (this.x > left) {
-            stack.m_280509_(this.x - 20, top + height / 2, this.x - 4, top + height / 2 + 1, 1442840575);
-            stack.m_280509_(this.x - 20, top - height / 2 - 3, this.x - 19, top + height / 2, 1442840575);
+            stack.fill(this.x - 20, top + height / 2, this.x - 4, top + height / 2 + 1, 1442840575);
+            stack.fill(this.x - 20, top - height / 2 - 3, this.x - 19, top + height / 2, 1442840575);
          }
 
          this.item.render(stack, left, top, width, height, mouseX, mouseY, partialTicks);

@@ -105,7 +105,7 @@ public class WorldTainting {
             }
          }
       });
-      return count.getValue();
+      return count.get();
    }
 
    public boolean convertBlock(BlockPos pos, Level level) {
@@ -126,7 +126,7 @@ public class WorldTainting {
    }
 
    private static <T extends Comparable<T>> BlockState copyProperty(Property<T> property, BlockState from, BlockState to) {
-      return from.hasProperty(property) ? (BlockState)to.setValue(property, from.getValue(property)) : to;
+      return from.hasProperty(property) ? (BlockState)to.setValue(property, from.get(property)) : to;
    }
 
    public boolean canConvertMob(Entity entity, boolean fromWitherSickness) {
@@ -134,7 +134,7 @@ public class WorldTainting {
          MutableBoolean result = new MutableBoolean();
          this.getMobConversionFor(entity.getType())
             .ifPresent(conversion -> result.setValue(conversion.canBeConvertedFromWitherSickness() || !fromWitherSickness));
-         return result.getValue();
+         return result.get();
       } else {
          return false;
       }
@@ -184,7 +184,7 @@ public class WorldTainting {
                }
             }
          );
-      return result.getValue();
+      return result.get();
    }
 
    public static void copyExtraData(Mob from, Mob to) {

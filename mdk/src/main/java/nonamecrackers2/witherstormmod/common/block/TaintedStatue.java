@@ -24,11 +24,11 @@ public class TaintedStatue extends Block {
    }
 
    public BlockState rotate(BlockState pState, Rotation pRotation) {
-      return (BlockState)pState.setValue(FACING, pRotation.rotate((Direction)pState.getValue(FACING)));
+      return (BlockState)pState.setValue(FACING, pRotation.rotate((Direction)pState.get(FACING)));
    }
 
    public BlockState mirror(BlockState pState, Mirror pMirror) {
-      return pState.rotate(pMirror.getRotation((Direction)pState.getValue(FACING)));
+      return pState.rotate(pMirror.getRotation((Direction)pState.get(FACING)));
    }
 
    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {

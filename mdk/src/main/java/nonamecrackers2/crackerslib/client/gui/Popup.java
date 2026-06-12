@@ -38,7 +38,7 @@ public class Popup extends Screen {
 
    public Popup(@Nullable Screen previous, Popup.Initializer onInitialized, int width, int widgetsHeight, Component pMessage) {
       super(pMessage);
-      this.text = MultiLineLabel.m_94341_(Minecraft.m_91087_().f_91062_, pMessage, width - 20);
+      this.text = MultiLineLabel.create(Minecraft.getInstance().font, pMessage, width - 20);
       this.previous = previous;
       this.onInitialized = onInitialized;
       this.boxWidth = width;
@@ -47,45 +47,45 @@ public class Popup extends Screen {
 
    public static Popup createYesNoPopupWithCancel(@Nullable Screen screen, Runnable onAccepted, Runnable onNotAccepted, int width, Component message) {
       return new Popup(screen, (p, r) -> {
-         GridLayout layout = new GridLayout().m_267750_(5);
-         RowHelper row = layout.m_264606_(1);
-         GridLayout yesNoLayout = (GridLayout)row.m_264139_(new GridLayout().m_267749_(10));
-         RowHelper yesNoRow = yesNoLayout.m_264606_(2);
-         Button yes = (Button)yesNoRow.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.yes"), b -> {
+         GridLayout layout = new GridLayout().rowSpacing(5);
+         RowHelper row = layout.createRowHelper(1);
+         GridLayout yesNoLayout = (GridLayout)row.addChild(new GridLayout().columnSpacing(10));
+         RowHelper yesNoRow = yesNoLayout.createRowHelper(2);
+         Button yes = (Button)yesNoRow.addChild(Button.builder(Component.translatable("gui.popup.yes"), b -> {
             p.close();
             onAccepted.run();
-         }).m_252780_(80).m_253136_());
-         Button no = (Button)yesNoRow.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.no"), b -> {
+         }).width(80).build());
+         Button no = (Button)yesNoRow.addChild(Button.builder(Component.translatable("gui.popup.no"), b -> {
             p.close();
             onNotAccepted.run();
-         }).m_252780_(80).m_253136_());
-         GridLayout cancelLayout = (GridLayout)row.m_264139_(new GridLayout());
-         RowHelper cancelRow = cancelLayout.m_264606_(1);
-         Button cancel = (Button)cancelRow.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.cancel"), b -> p.close()).m_252780_(170).m_253136_());
-         layout.m_264036_();
-         FrameLayout.m_267781_(layout, r);
-         p.m_142416_(yes);
-         p.m_142416_(no);
-         p.m_142416_(cancel);
+         }).width(80).build());
+         GridLayout cancelLayout = (GridLayout)row.addChild(new GridLayout());
+         RowHelper cancelRow = cancelLayout.createRowHelper(1);
+         Button cancel = (Button)cancelRow.addChild(Button.builder(Component.translatable("gui.popup.cancel"), b -> p.close()).width(170).build());
+         layout.arrangeElements();
+         FrameLayout.centerInRectangle(layout, r);
+         p.addRenderableWidget(yes);
+         p.addRenderableWidget(no);
+         p.addRenderableWidget(cancel);
       }, width, 45, message).open();
    }
 
    public static Popup createYesNoPopup(@Nullable Screen screen, Runnable onAccepted, Runnable onNotAccepted, int width, Component message) {
       return new Popup(screen, (p, r) -> {
-         GridLayout layout = new GridLayout().m_267749_(10);
-         RowHelper row = layout.m_264606_(2);
-         Button yes = (Button)row.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.yes"), b -> {
+         GridLayout layout = new GridLayout().columnSpacing(10);
+         RowHelper row = layout.createRowHelper(2);
+         Button yes = (Button)row.addChild(Button.builder(Component.translatable("gui.popup.yes"), b -> {
             p.close();
             onAccepted.run();
-         }).m_252780_(80).m_253136_());
-         Button no = (Button)row.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.no"), b -> {
+         }).width(80).build());
+         Button no = (Button)row.addChild(Button.builder(Component.translatable("gui.popup.no"), b -> {
             p.close();
             onNotAccepted.run();
-         }).m_252780_(80).m_253136_());
-         layout.m_264036_();
-         FrameLayout.m_267781_(layout, r);
-         p.m_142416_(yes);
-         p.m_142416_(no);
+         }).width(80).build());
+         layout.arrangeElements();
+         FrameLayout.centerInRectangle(layout, r);
+         p.addRenderableWidget(yes);
+         p.addRenderableWidget(no);
       }, width, 20, message).open();
    }
 
@@ -94,28 +94,28 @@ public class Popup extends Screen {
    }
 
    public static Popup createTextFieldPopup(@Nullable Screen screen, Consumer<String> onAccepted, int width, Component message, Predicate<String> filter) {
-      Minecraft mc = Minecraft.m_91087_();
+      Minecraft mc = Minecraft.getInstance();
       return new Popup(screen, (p, r) -> {
          GridLayout layout = new GridLayout();
-         layout.m_264211_().m_264356_().m_264623_().m_264174_(5);
-         RowHelper row = layout.m_264606_(1);
-         GridLayout textLayout = (GridLayout)row.m_264139_(new GridLayout());
-         RowHelper textSubmit = textLayout.m_264606_(1);
-         EditBox box = (EditBox)textSubmit.m_264139_(new EditBox(mc.f_91062_, 0, 0, width / 2, 20, CommonComponents.f_237098_));
-         box.m_94153_(filter);
-         GridLayout buttonLayout = (GridLayout)row.m_264139_(new GridLayout());
-         buttonLayout.m_264211_().m_264215_(5);
-         RowHelper buttonRow = buttonLayout.m_264606_(2);
-         Button submit = (Button)buttonRow.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.submit"), b -> {
+         layout.columnSpacing().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
+         RowHelper row = layout.createRowHelper(1);
+         GridLayout textLayout = (GridLayout)row.addChild(new GridLayout());
+         RowHelper textSubmit = textLayout.createRowHelper(1);
+         EditBox box = (EditBox)textSubmit.addChild(new EditBox(mc.font, 0, 0, width / 2, 20, CommonComponents.EMPTY));
+         box.setFilter(filter);
+         GridLayout buttonLayout = (GridLayout)row.addChild(new GridLayout());
+         buttonLayout.columnSpacing().columnSpacing(5);
+         RowHelper buttonRow = buttonLayout.createRowHelper(2);
+         Button submit = (Button)buttonRow.addChild(Button.builder(Component.translatable("gui.popup.submit"), b -> {
             p.close();
-            onAccepted.accept(box.m_94155_());
-         }).m_252780_(80).m_253136_());
-         Button cancel = (Button)buttonRow.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.cancel"), b -> p.close()).m_252780_(80).m_253136_());
-         layout.m_264036_();
-         FrameLayout.m_267781_(layout, r);
-         p.m_142416_(box);
-         p.m_142416_(submit);
-         p.m_142416_(cancel);
+            onAccepted.accept(box.get());
+         }).width(80).build());
+         Button cancel = (Button)buttonRow.addChild(Button.builder(Component.translatable("gui.popup.cancel"), b -> p.close()).width(80).build());
+         layout.arrangeElements();
+         FrameLayout.centerInRectangle(layout, r);
+         p.addRenderableWidget(box);
+         p.addRenderableWidget(submit);
+         p.addRenderableWidget(cancel);
       }, width, 45, message).open();
    }
 
@@ -126,28 +126,28 @@ public class Popup extends Screen {
    public static <T> Popup createOptionListPopup(
       @Nullable Screen screen, Consumer<SelectableNamedObjectList<T>> valueApplier, Consumer<T> onAccepted, int width, int listHeight, Component message
    ) {
-      Minecraft mc = Minecraft.m_91087_();
+      Minecraft mc = Minecraft.getInstance();
       return new Popup(screen, (p, r) -> {
          GridLayout layout = new GridLayout();
-         layout.m_264211_().m_264356_().m_264623_().m_264174_(5);
-         RowHelper row = layout.m_264606_(2);
+         layout.columnSpacing().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
+         RowHelper row = layout.createRowHelper(2);
          int listWidth = (int)(width / 1.2F);
-         int listY = r.m_274449_();
+         int listY = r.top();
          SelectableNamedObjectList<T> list = new SelectableNamedObjectList<>(mc, listWidth, listHeight, listY, listY + listHeight);
-         list.m_93507_(p.boxX() + p.boxWidth() / 2 - list.getWidth() / 2);
+         list.setX(p.boxX() + p.boxWidth() / 2 - list.getWidth() / 2);
          valueApplier.accept(list);
-         Button select = (Button)row.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.select"), b -> {
+         Button select = (Button)row.addChild(Button.builder(Component.translatable("gui.popup.select"), b -> {
             p.close();
             onAccepted.accept(list.getSelectedObject());
-         }).m_252780_(80).m_253136_());
-         select.f_93623_ = false;
-         list.setOnObjectSelectedCallback(t -> select.f_93623_ = true);
-         Button cancel = (Button)row.m_264139_(Button.m_253074_(Component.m_237115_("gui.popup.cancel"), b -> p.close()).m_252780_(80).m_253136_());
-         layout.m_264036_();
-         FrameLayout.m_264159_(layout, r.m_274563_(), list.getBottom() + 5, r.f_263770_(), 30);
-         p.m_142416_((T)select);
-         p.m_142416_((T)cancel);
-         p.m_142416_((T)list);
+         }).width(80).build());
+         select.active = false;
+         list.setOnObjectSelectedCallback(t -> select.active = true);
+         Button cancel = (Button)row.addChild(Button.builder(Component.translatable("gui.popup.cancel"), b -> p.close()).width(80).build());
+         layout.arrangeElements();
+         FrameLayout.alignInRectangle(layout, r.left(), list.getBottom() + 5, r.width(), 30);
+         p.addRenderableWidget((T)select);
+         p.addRenderableWidget((T)cancel);
+         p.addRenderableWidget((T)list);
       }, width, listHeight + 30, message).open();
    }
 
@@ -156,11 +156,11 @@ public class Popup extends Screen {
             screen,
             (p, r) -> {
                int buttonWidth = 100;
-               Button close = Button.m_253074_(Component.m_237115_("gui.popup.close"), b -> p.close())
-                  .m_252794_(p.boxX() + width / 2 - buttonWidth / 2, p.boxY() + p.boxHeight() - 30)
-                  .m_252780_(buttonWidth)
-                  .m_253136_();
-               p.m_142416_(close);
+               Button close = Button.builder(Component.translatable("gui.popup.close"), b -> p.close())
+                  .pos(p.boxX() + width / 2 - buttonWidth / 2, p.boxY() + p.boxHeight() - 30)
+                  .width(buttonWidth)
+                  .build();
+               p.addRenderableWidget(close);
             },
             width,
             20,
@@ -185,14 +185,14 @@ public class Popup extends Screen {
       return this.boxHeight;
    }
 
-   protected void m_7856_() {
+   protected void init() {
       this.boxHeight = 40 + this.messageHeight() + this.widgetsHeight;
-      this.x = this.f_96543_ / 2 - this.boxWidth / 2;
-      this.y = this.f_96544_ / 2 - this.boxHeight / 2;
+      this.x = this.width / 2 - this.boxWidth / 2;
+      this.y = this.height / 2 - this.boxHeight / 2;
       ScreenRectangle widgetsRectangle = new ScreenRectangle(this.x, this.messageTop() + this.messageHeight() + 10, this.boxWidth, this.widgetsHeight);
       this.onInitialized.init(this, widgetsRectangle);
       if (this.previous != null) {
-         this.previous.m_6575_(this.f_96541_, this.f_96543_, this.f_96544_);
+         this.previous.init(this.minecraft, this.width, this.height);
       }
    }
 
@@ -201,53 +201,53 @@ public class Popup extends Screen {
    }
 
    private int messageHeight() {
-      return this.text.m_5770_() * 9;
+      return this.text.getLineCount() * 9;
    }
 
-   public <T extends GuiEventListener & Renderable & NarratableEntry> T m_142416_(T pWidget) {
-      return (T)super.m_142416_(pWidget);
+   public <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T pWidget) {
+      return (T)super.addRenderableWidget(pWidget);
    }
 
    private void close() {
       if (!POPUP_QUEUE.isEmpty()) {
-         this.f_96541_.m_91152_(POPUP_QUEUE.poll());
+         this.minecraft.setScreen(POPUP_QUEUE.poll());
       } else if (this.previous != null) {
-         this.f_96541_.m_91152_(this.previous);
+         this.minecraft.setScreen(this.previous);
       } else {
-         this.f_96541_.popGuiLayer();
+         this.minecraft.popGuiLayer();
       }
    }
 
    private Popup open() {
-      Minecraft mc = Minecraft.m_91087_();
-      if (mc.f_91080_ instanceof Popup) {
+      Minecraft mc = Minecraft.getInstance();
+      if (mc.screen instanceof Popup) {
          POPUP_QUEUE.add(this);
       } else {
-         mc.m_91152_(this);
+         mc.setScreen(this);
       }
 
       return this;
    }
 
-   public void m_86600_() {
+   public void tick() {
       if (this.previous != null) {
-         this.previous.m_86600_();
+         this.previous.tick();
       }
    }
 
-   public void m_88315_(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
+   public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
       if (this.previous != null) {
-         this.previous.m_88315_(stack, mouseX, mouseY, partialTicks);
+         this.previous.render(stack, mouseX, mouseY, partialTicks);
       }
 
-      RenderSystem.clear(256, Minecraft.f_91002_);
-      stack.m_280024_(0, 0, this.f_96543_, this.f_96544_, -1072689136, -804253680);
-      stack.m_280509_(this.x, this.y, this.x + this.boxWidth, this.y + this.boxHeight, 1426063360);
-      this.text.m_6514_(stack, this.x + this.boxWidth / 2, this.messageTop(), 9, -1);
-      super.m_88315_(stack, mouseX, mouseY, partialTicks);
+      RenderSystem.clear(256, Minecraft.ON_OSX);
+      stack.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+      stack.fill(this.x, this.y, this.x + this.boxWidth, this.y + this.boxHeight, 1426063360);
+      this.text.renderCentered(stack, this.x + this.boxWidth / 2, this.messageTop(), 9, -1);
+      super.render(stack, mouseX, mouseY, partialTicks);
    }
 
-   public void m_7379_() {
+   public void onClose() {
       this.close();
    }
 

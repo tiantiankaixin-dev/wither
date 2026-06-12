@@ -50,12 +50,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -97,10 +97,10 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       this.setBlockState(state);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(BLOCK_STATE, Optional.empty());
-      this.entityData.define(START_FUSE, 0);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(BLOCK_STATE, Optional.empty());
+      builder.define(START_FUSE, 0);
    }
 
    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
@@ -221,7 +221,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       explode(this.level(), this.getOwner(), 48 + this.level().random.nextInt(9), 3, this.getX(), this.getY(), this.getZ());
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR.with(TargetPoint.p(this.getX(), this.getY(), this.getZ(), 100.0, this.level().dimension())),
+            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), this.getX(), this.getY(), this.getZ(), 100.0),
             new ShakeScreenMessage(480.0F, 24.0F)
          );
    }
@@ -242,7 +242,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
 
    @NotNull
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+      return /* TODO: NetworkHooks removed in NeoForge 1.21 */;
    }
 
    public static void explode(Level world, @Nullable Entity entity, int radius, int squish, double x, double y, double z) {
@@ -288,7 +288,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       world.playSound(null, x, y, z, WitherStormModSoundEvents.TREMBLE.get(), SoundSource.BLOCKS, 32.0F, 1.0F);
       if (!world.isClientSide) {
          FormidibombExplosionMessage message = new FormidibombExplosionMessage(entity, x, y, z, radius, squish);
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(world::dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)world), message);
          float diameter = (float)radius * 2.0F;
          int minX = Mth.floor(x - (double)diameter - 1.0);
          int maxX = Mth.floor(x + (double)diameter + 1.0);

@@ -2,7 +2,7 @@ package nonamecrackers2.crackerslib.client.event.impl;
 
 import com.google.common.collect.Maps;
 import java.util.Map;
-import net.neoforged.neoforge.client.ConfigScreenHandler.ConfigScreenFactory;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.ModList;
@@ -45,8 +45,8 @@ public class RegisterConfigScreensEvent extends Event implements IModBusEvent {
             .getModContainerById(this.modid)
             .ifPresentOrElse(
                mod -> mod.registerExtensionPoint(
-                  ConfigScreenFactory.class,
-                  () -> new ConfigScreenFactory((mc, screen) -> this.factory.build(this.modid, this.specsByType, mc.f_91073_ != null, mc.m_91091_(), screen))
+                  IConfigScreenFactory.class,
+                  (mc, screen) -> this.factory.build(this.modid, this.specsByType, mc.level != null, mc.options, screen)
                ),
                () -> {
                   throw new IllegalArgumentException("Unknown mod with id '" + this.modid + "'");

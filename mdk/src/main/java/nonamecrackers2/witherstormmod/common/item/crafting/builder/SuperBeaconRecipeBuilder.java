@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.nbt.CompoundTag;
@@ -75,7 +75,7 @@ public abstract class SuperBeaconRecipeBuilder implements RecipeBuilder {
       return null;
    }
 
-   public abstract static class Result implements FinishedRecipe {
+   public abstract static class Result implements RecipeOutput {
       private final ResourceLocation id;
       private final SuperBeaconRecipe.Condition condition;
       private final String group;

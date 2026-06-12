@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarget;
 
+import net.neoforged.api.distmarker.Dist;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -98,7 +100,7 @@ public class UltimateTargetManager {
       List<ServerPlayer> players = ((ServerLevel)this.entity.level())
          .players()
          .stream()
-         .filter(p -> !p.getUUID().equals(this.ignoredTarget))
+         .filter(p -> !p.id().equals(this.ignoredTarget))
          .collect(Collectors.toList());
       LivingEntity ultimateTarget = this.findUltimateTarget(players);
       if (ultimateTarget != this.ultimateTarget) {
@@ -117,7 +119,7 @@ public class UltimateTargetManager {
             && this.entity.position().subtract(ultimateTarget.position()).horizontalDistance() < 150.0) {
             this.cannotReachTargetFor++;
             if (this.cannotReachTargetFor > this.timeTillIgnoreTarget) {
-               this.ignoredTarget = ultimateTarget.getUUID();
+               this.ignoredTarget = ultimateTarget.id();
                this.ignoringTargetFor = 12000 + this.entity.getRandom().nextInt(6000);
             }
          } else if (this.cannotReachTargetFor > 0) {
@@ -898,12 +900,12 @@ public class UltimateTargetManager {
                if (!survivalPlayers.isEmpty()) {
                   int randomizer = random.nextInt(survivalPlayers.size());
                   randomPlayer = survivalPlayers.get(randomizer);
-                  manager.randomPlayer = randomPlayer.getUUID();
+                  manager.randomPlayer = randomPlayer.id();
                   UltimateTargetManager.LOGGER.info("RANDOM_PLAYER: Chose a player: " + randomPlayer + ", Going to them for 5 minutes");
                } else {
                   ServerPlayer nearestPlayer = NEAREST.getPlayer(manager, storm, players, predicate);
                   if (nearestPlayer != null) {
-                     manager.randomPlayer = nearestPlayer.getUUID();
+                     manager.randomPlayer = nearestPlayer.id();
                      randomPlayer = nearestPlayer;
                      UltimateTargetManager.LOGGER.info("RANDOM_PLAYER: Couldn't find a valid player in Survival, changing to NEAREST for 5 minutes");
                   }

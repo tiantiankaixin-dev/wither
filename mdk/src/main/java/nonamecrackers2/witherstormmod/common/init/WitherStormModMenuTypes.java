@@ -10,14 +10,14 @@ import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperSupportB
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.WitheredPhlegmMenu;
 
 public class WitherStormModMenuTypes {
-   public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(NeoBuiltInRegistries.MENU, "witherstormmod");
-   public static final DeferredHolder<MenuType<SuperBeaconMenu>> SUPER_BEACON = MENU_TYPES.register(
+   public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, "witherstormmod");
+   public static final DeferredHolder<MenuType<?>, MenuType<SuperBeaconMenu>> SUPER_BEACON = MENU_TYPES.register(
       "super_beacon", () -> new MenuType(SuperBeaconMenu::new, FeatureFlags.DEFAULT_FLAGS)
    );
-   public static final DeferredHolder<MenuType<SuperSupportBeaconMenu>> SUPER_SUPPORT_BEACON = MENU_TYPES.register(
+   public static final DeferredHolder<MenuType<?>, MenuType<SuperSupportBeaconMenu>> SUPER_SUPPORT_BEACON = MENU_TYPES.register(
       "super_support_beacon", () -> new MenuType(SuperSupportBeaconMenu::new, FeatureFlags.DEFAULT_FLAGS)
    );
-   public static final DeferredHolder<MenuType<WitheredPhlegmMenu>> WITHERED_PHLEGM = MENU_TYPES.register(
+   public static final DeferredHolder<MenuType<?>, MenuType<WitheredPhlegmMenu>> WITHERED_PHLEGM = MENU_TYPES.register(
       "withered_phlegm", () -> new MenuType(WitheredPhlegmMenu::new, FeatureFlags.DEFAULT_FLAGS)
    );
 }

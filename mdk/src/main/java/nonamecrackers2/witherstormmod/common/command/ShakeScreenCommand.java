@@ -14,6 +14,7 @@ import net.minecraft.commands.arguments.TimeArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 
@@ -47,7 +48,7 @@ public class ShakeScreenCommand {
          float strength = FloatArgumentType.getFloat(context, "strength");
 
          for (ServerPlayer player : players) {
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> player), new ShakeScreenMessage((float)time, strength));
+            WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer(player), new ShakeScreenMessage((float)time, strength));
          }
 
          stack.sendSuccess(() -> Component.translatable("commands.witherstormmod.screenShake.success", new Object[]{players.size()}), true);

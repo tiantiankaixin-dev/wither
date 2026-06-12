@@ -10,12 +10,12 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ItemCraftSuperBeaconR
 import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRecipe;
 
 public class WitherStormModRecipeTypes {
-   public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(NeoBuiltInRegistries.RECIPE_TYPE, "witherstormmod");
-   public static final DeferredHolder<RecipeType<ResummonSuperBeaconRecipe>> SUPER_BEACON_RESUMMON = register("super_beacon_resummon");
-   public static final DeferredHolder<RecipeType<ItemCraftSuperBeaconRecipe>> SUPER_BEACON_ITEM = register("super_beacon_item");
-   public static final DeferredHolder<RecipeType<AnvilRecipe>> ANVIL = register("anvil");
+   public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, "witherstormmod");
+   public static final DeferredHolder<RecipeType<?>, RecipeType<ResummonSuperBeaconRecipe>> SUPER_BEACON_RESUMMON = register("super_beacon_resummon");
+   public static final DeferredHolder<RecipeType<?>, RecipeType<ItemCraftSuperBeaconRecipe>> SUPER_BEACON_ITEM = register("super_beacon_item");
+   public static final DeferredHolder<RecipeType<?>, RecipeType<AnvilRecipe>> ANVIL = register("anvil");
 
-   private static <T extends Recipe<?>> DeferredHolder<RecipeType<T>> register(String id) {
+   private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> register(String id) {
       return RECIPE_TYPES.register(id, () -> new RecipeType<T>() {
             @Override
             public String toString() {

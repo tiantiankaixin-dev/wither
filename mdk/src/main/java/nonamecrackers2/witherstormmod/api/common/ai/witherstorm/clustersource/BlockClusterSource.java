@@ -28,7 +28,7 @@ public abstract class BlockClusterSource {
    }
 
    public void tick(WitherStormEntity storm) {
-      if (EventHooks.getMobGriefingEvent(storm.level(), storm) && this.canUse(storm) && storm.tickCount % this.getPickupInterval(storm) == 0) {
+      if (EventHooks.canEntityGrief(storm.level(), storm) && this.canUse(storm) && storm.tickCount % this.getPickupInterval(storm) == 0) {
          this.createCluster(storm);
       }
    }

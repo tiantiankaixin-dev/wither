@@ -1,13 +1,12 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.google.common.collect.Lists;
 import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class StormMetadataMessage extends DistantRendererMessage {
@@ -65,8 +64,8 @@ public class StormMetadataMessage extends DistantRendererMessage {
       this.packedItems = packedData;
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processStormMetadataMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processStormMetadataMessage(this));
    }
 
    public String toString() {

@@ -1,46 +1,8 @@
 package nonamecrackers2.crackerslib.common.capability;
 
-import javax.annotation.Nullable;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.capabilities.ICapabilitySerializable;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null;
-import java.util.function.Supplier;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: AttachCapabilitiesEvent removed, use RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
-
+/**
+ * Legacy capability utility — no longer needed with NeoForge 1.21.1 Data Attachments.
+ * Retained as empty class to avoid missing-class errors from any reflection-based references.
+ */
 public class CapUtil {
-   public static void registerCap(AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable Supplier<?> object) {
-      final LazyOptional<?> optional = LazyOptional.of(object);
-      event.addCapability(id, new ICapabilityProvider() {
-         @NotNull
-         public <M> LazyOptional<M> getCapability(@NotNull Capability<M> in, @Nullable Direction side) {
-            return in == cap ? optional.cast() : null /* MIG_LAZYOPT */;
-         }
-      });
-      event.addListener(optional::invalidate);
-   }
-
-   public static <T extends TagSerializable> void registerSerializableCap(
-      AttachCapabilitiesEvent<?> event, ResourceLocation id, final Capability<?> cap, @Nullable Supplier<T> object
-   ) {
-      final LazyOptional<T> optional = LazyOptional.of(object);
-      event.addCapability(id, new ICapabilitySerializable<CompoundTag>() {
-         @NotNull
-         public <M> LazyOptional<M> getCapability(@NotNull Capability<M> in, @Nullable Direction side) {
-            return in == cap ? optional.cast() : null /* MIG_LAZYOPT */;
-         }
-
-         public CompoundTag serializeNBT() {
-            return ((TagSerializable)optional.orElse(null)).write();
-         }
-
-         public void deserializeNBT(CompoundTag nbt) {
-            ((TagSerializable)optional.orElse(null)).read(nbt);
-         }
-      });
-   }
 }

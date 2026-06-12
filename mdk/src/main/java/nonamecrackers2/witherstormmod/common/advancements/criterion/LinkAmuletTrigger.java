@@ -1,29 +1,20 @@
 package nonamecrackers2.witherstormmod.common.advancements.criterion;
 
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.advancements.critereon.MinMaxBounds.Ints;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 
-public class LinkAmuletTrigger extends SimpleCriterionTrigger<LinkAmuletTrigger.Instance> {
-   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "link_amulet");
-
-   public ResourceLocation getId() {
-      return ID;
-   }
-
-   protected LinkAmuletTrigger.Instance createInstance(JsonObject object, ContextAwarePredicate player, DeserializationContext context) {
-      ContextAwarePredicate linked = EntityPredicate.fromJson(object, "linked", context);
-      Ints totalLinked = Ints.fromJson(object.get("total_linked"));
-      return new LinkAmuletTrigger.Instance(player, linked, totalLinked);
+public class LinkAmuletTrigger extends SimpleCriterionTrigger<LinkAmuletTrigger.TriggerInstance> {
+   @Override
+   public Codec<TriggerInstance> codec() {
+      return TriggerInstance.CODEC;
    }
 
    public void trigger(ServerPlayer player, Entity linked, int totalLinked) {
@@ -31,25 +22,21 @@ public class LinkAmuletTrigger extends SimpleCriterionTrigger<LinkAmuletTrigger.
       this.trigger(player, instance -> instance.matches(context, totalLinked));
    }
 
-   public static class Instance extends AbstractCriterionTriggerInstance {
-      private final ContextAwarePredicate linked;
-      private final Ints totalLinked;
-
-      public Instance(ContextAwarePredicate player, ContextAwarePredicate linked, Ints totalLinked) {
-         super(LinkAmuletTrigger.ID, player);
-         this.linked = linked;
-         this.totalLinked = totalLinked;
-      }
+   public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ContextAwarePredicate> linked, MinMaxBounds.Ints totalLinked) implements SimpleInstance {
+      public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+         EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+         EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("linked").forGetter(TriggerInstance::linked),
+         MinMaxBounds.Ints.CODEC.optionalFieldOf("total_linked", MinMaxBounds.Ints.ANY).forGetter(TriggerInstance::totalLinked)
+      ).apply(instance, TriggerInstance::new));
 
       public boolean matches(LootContext context, int totalLinked) {
-         return this.linked.matches(context) && this.totalLinked.matches(totalLinked);
+         if (this.linked.isPresent() && !this.linked.get().matches(context)) return false;
+         return this.totalLinked.matches(totalLinked);
       }
 
-      public JsonObject serializeToJson(SerializationContext context) {
-         JsonObject obj = super.serializeToJson(context);
-         obj.add("linked", this.linked.toJson(context));
-         obj.add("total_linked", this.totalLinked.serializeToJson());
-         return obj;
+      @Override
+      public Optional<ContextAwarePredicate> player() {
+         return player;
       }
    }
 }

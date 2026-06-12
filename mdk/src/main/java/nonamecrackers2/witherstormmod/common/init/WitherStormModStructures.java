@@ -1,6 +1,6 @@
 package nonamecrackers2.witherstormmod.common.init;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -15,10 +15,10 @@ import nonamecrackers2.witherstormmod.common.world.gen.feature.structure.StormSp
 public class WitherStormModStructures {
    public static final StructurePieceType PLATFORM = setTemplatePieceId(StormSpawnPlatformStructure.Piece::new);
    public static final DeferredRegister<StructureType<?>> STRUCTURE_FEATURES = DeferredRegister.create(Registries.STRUCTURE_TYPE, "witherstormmod");
-   public static final DeferredHolder<StructureType<StormSpawnPlatformStructure>> STORM_SPAWN_PLATFORM = STRUCTURE_FEATURES.register(
+   public static final DeferredHolder<StructureType<?>, StructureType<StormSpawnPlatformStructure>> STORM_SPAWN_PLATFORM = STRUCTURE_FEATURES.register(
       "storm_spawn_platform", () -> () -> StormSpawnPlatformStructure.CODEC
    );
-   public static final DeferredHolder<StructureType<BowelsStructure>> BOWELS = STRUCTURE_FEATURES.register("bowels", () -> () -> BowelsStructure.CODEC);
+   public static final DeferredHolder<StructureType<?>, StructureType<BowelsStructure>> BOWELS = STRUCTURE_FEATURES.register("bowels", () -> () -> BowelsStructure.CODEC);
 
    private static StructurePieceType setTemplatePieceId(StructureTemplateType type) {
       return type;

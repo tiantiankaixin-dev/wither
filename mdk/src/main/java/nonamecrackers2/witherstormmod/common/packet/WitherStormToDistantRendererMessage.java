@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.google.common.collect.Lists;
 import io.netty.buffer.Unpooled;
 import java.util.List;
@@ -16,10 +18,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
@@ -45,7 +44,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       this.entity = entity;
       this.id = entity.getId();
       this.uuid = entity.getUUID();
-      this.type = NeoBuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+      this.type = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
       this.pos = new Vec3(entity.getX(), entity.getY(), entity.getZ());
       this.yRot = (byte)((int)(entity.getYRot() * 256.0F / 360.0F));
       this.xRot = (byte)((int)(entity.getXRot() * 256.0F / 360.0F));
@@ -147,7 +146,7 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
 
       for (int i = 0; i < attributeSize; i++) {
          ResourceLocation location = buffer.readResourceLocation();
-         Attribute attribute = (Attribute)BuiltInRegistries.ATTRIBUTES.getValue(location);
+         Attribute attribute = BuiltInRegistries.ATTRIBUTE.get(location);
          double base = buffer.readDouble();
          List<AttributeModifier> list = Lists.newArrayList();
          int modifierSize = buffer.readVarInt();
@@ -195,14 +194,14 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       buffer.writeInt(this.attributes.size());
 
       for (AttributeSnapshot snapshot : this.attributes) {
-         buffer.writeResourceLocation(BuiltInRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
-         buffer.writeDouble(snapshot.getBase());
-         buffer.writeVarInt(snapshot.getModifiers().size());
+         buffer.writeResourceLocation(BuiltInRegistries.ATTRIBUTE.getKey(snapshot.attribute()));
+         buffer.writeDouble(snapshot.base());
+         buffer.writeVarInt(snapshot.modifiers().size());
 
-         for (AttributeModifier modifier : snapshot.getModifiers()) {
+         for (AttributeModifier modifier : snapshot.modifiers()) {
             buffer.writeUUID(modifier.getId());
             buffer.writeDouble(modifier.getAmount());
-            buffer.writeByte(modifier.getOperation().toValue());
+            buffer.writeByte(modifier.operation().toValue());
          }
       }
 
@@ -217,8 +216,8 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       extra.release();
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processWitherStormToDistantRendererMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processWitherStormToDistantRendererMessage(this));
    }
 
    public String toString() {

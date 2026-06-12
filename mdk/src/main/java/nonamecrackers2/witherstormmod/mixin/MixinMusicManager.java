@@ -40,7 +40,7 @@ public abstract class MixinMusicManager {
 
       ClientLevel level = this.minecraft.level;
       if (level != null) {
-         BossThemeManager manager = (BossThemeManager)level.getCapability(WitherStormModClientCapabilities.BOSS_THEME_MANAGER).orElse(null);
+         BossThemeManager manager = (BossThemeManager)level.getData(WitherStormModClientCapabilities.BOSS_THEME_MANAGER);
          if (manager != null && manager.isPlaying()) {
             if (this.currentMusic != null) {
                this.stopPlaying();

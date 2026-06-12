@@ -30,11 +30,11 @@ public class MixinGameRenderer {
    public void bobViewTail(PoseStack stack, float partialTicks, CallbackInfo ci) {
       Minecraft mc = Minecraft.getInstance();
       if (mc.getCameraEntity() instanceof LocalPlayer player) {
-         player.getCapability(WitherStormModClientCapabilities.CAMERA_SHAKER).ifPresent(shaker -> {
+         { var shaker = player.getData(WitherStormModClientCapabilities.CAMERA_SHAKER.get());
             float x = shaker.getXShake(partialTicks);
             float y = shaker.getYShake(partialTicks);
             stack.translate((double)Mth.sin((float)Math.toRadians((double)x)), (double)Mth.sin((float)Math.toRadians((double)y)), 0.0);
-         });
+         }
       }
    }
 

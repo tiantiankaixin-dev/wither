@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.client.renderer.blockentity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;

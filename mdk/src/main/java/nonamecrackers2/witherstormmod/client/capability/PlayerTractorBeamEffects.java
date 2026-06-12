@@ -1,11 +1,11 @@
 package nonamecrackers2.witherstormmod.client.capability;
 
+
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.PlayerTickEvent
 import nonamecrackers2.witherstormmod.api.common.entity.WitherStormBase;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.util.TractorBeamHelper;
@@ -57,8 +57,6 @@ public class PlayerTractorBeamEffects {
    }
 
    public static void onPlayerTick(PlayerTickEvent event) {
-      if (event.phase == Phase.END) {
-         event.player.getCapability(WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS).ifPresent(PlayerTractorBeamEffects::tick);
-      }
+      event.player.getData(WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS.get()).tick();
    }
 }

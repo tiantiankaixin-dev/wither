@@ -11,7 +11,6 @@ import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.common.commands.IEntitySelectorType;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 
 public class WitherStormSelector implements IEntitySelectorType {

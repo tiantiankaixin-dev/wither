@@ -215,20 +215,20 @@ public class BlockClusterEntity extends Entity {
       this.time = time;
    }
 
-   protected void defineSynchedData() {
-      this.entityData.define(START_POS, BlockPos.ZERO);
-      this.entityData.define(BLOCKS, new HashMap());
-      this.entityData.define(TILE_DATA, new ArrayList());
-      this.entityData.define(ROTATION_DELTA, new Vec2(0.0F, 0.0F));
-      this.entityData.define(PHYSICS, true);
-      this.entityData.define(FORCE_RENDER, false);
-      this.entityData.define(X_SIZE, 1.0F);
-      this.entityData.define(Y_SIZE, 1.0F);
-      this.entityData.define(Z_SIZE, 1.0F);
-      this.entityData.define(SHAKE_TIME, 0);
-      this.entityData.define(FADE_POINT, Optional.empty());
-      this.entityData.define(FADE_STRENGTH, 10.0F);
-      this.entityData.define(FADE_DISTANCE_OFFSET, 0);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      builder.define(START_POS, BlockPos.ZERO);
+      builder.define(BLOCKS, new HashMap());
+      builder.define(TILE_DATA, new ArrayList());
+      builder.define(ROTATION_DELTA, new Vec2(0.0F, 0.0F));
+      builder.define(PHYSICS, true);
+      builder.define(FORCE_RENDER, false);
+      builder.define(X_SIZE, 1.0F);
+      builder.define(Y_SIZE, 1.0F);
+      builder.define(Z_SIZE, 1.0F);
+      builder.define(SHAKE_TIME, 0);
+      builder.define(FADE_POINT, Optional.empty());
+      builder.define(FADE_STRENGTH, 10.0F);
+      builder.define(FADE_DISTANCE_OFFSET, 0);
    }
 
    protected void readAdditionalSaveData(CompoundTag compound) {
@@ -423,7 +423,7 @@ public class BlockClusterEntity extends Entity {
             if ((float)pos.getY() + this.getBbHeight() <= (float)this.level().getMinBuildHeight() || this.time > 600) {
                if (this.dropItems && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                   for (Entry<BlockPos, BlockState> entryx : blocks.entrySet()) {
-                     BlockState state = entryx.getValue();
+                     BlockState state = entryx.get();
                      BlockPos position = pos.offset((Vec3i)entryx.getKey());
                      this.spawnAtSpecificLocation(state.getBlock().asItem(), position);
                   }
@@ -572,7 +572,7 @@ public class BlockClusterEntity extends Entity {
    }
 
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+      return /* TODO: NetworkHooks removed in NeoForge 1.21 */;
    }
 
    public int getSize() {

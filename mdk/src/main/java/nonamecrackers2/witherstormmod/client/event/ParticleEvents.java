@@ -9,8 +9,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import nonamecrackers2.witherstormmod.client.particle.CommandBlockParticle;
 import nonamecrackers2.witherstormmod.client.particle.PhlegmBlockParticle;
 import nonamecrackers2.witherstormmod.client.particle.TractorBeamParticle;
@@ -25,9 +23,9 @@ public class ParticleEvents {
       event.registerSpriteSet((ParticleType)WitherStormModParticleTypes.PHLEGM.get(), PhlegmBlockParticle.Factory::new);
    }
 
-   public static void onClientTick(ClientTickEvent event) {
+   public static void onClientTick(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
       Minecraft mc = Minecraft.getInstance();
-      if (event.phase == Phase.START && !mc.isPaused() && mc.level != null) {
+      if (!mc.isPaused() && mc.level != null) {
          ClientLevel world = mc.level;
 
          for (Entity entity : world.entitiesForRendering()) {

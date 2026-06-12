@@ -42,7 +42,7 @@ public class WitherStormEvents {
       if (!entity.level().isClientSide) {
          boolean flag = false;
          if (attacker instanceof WitherStormEntity storm) {
-            if (EventHooks.getMobGriefingEvent(entity.level(), entity)) {
+            if (EventHooks.canEntityGrief(entity.level(), entity)) {
                BlockPos pos = BlockPos.containing(entity.position());
                BlockState state = Blocks.WITHER_ROSE.defaultBlockState();
                if (entity.level().isEmptyBlock(pos) && state.canSurvive(entity.level(), pos)) {
@@ -57,7 +57,7 @@ public class WitherStormEvents {
             }
 
             if (entity instanceof ServerPlayer player) {
-               player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.setKilledByStorm(storm.getUUID()));
+                              player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setKilledByStorm(storm.id());
             }
          }
       }
@@ -66,7 +66,7 @@ public class WitherStormEvents {
    @SubscribeEvent
    public static void onPlayerRespawn(PlayerRespawnEvent event) {
       if (event.getEntity() instanceof ServerPlayer player && !event.isEndConquered()) {
-         player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA)
+         player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get())
             .ifPresent(
                data -> {
                   UUID id = data.getKilledByStorm();

@@ -94,7 +94,7 @@ public abstract class BlockTaintingRecipeProvider implements DataProvider {
          JsonObject object = new JsonObject();
          recipe.serializeFrom(object);
          if (recipe.effect() != null) {
-            object.addProperty("potion_effect", NeoBuiltInRegistries.MOB_EFFECT.getKey(recipe.effect()).toString());
+            object.addProperty("potion_effect", BuiltInRegistries.MOB_EFFECT.getKey(recipe.effect()).toString());
          }
 
          object.add("replacement", (JsonElement)BlockState.CODEC.encodeStart(JsonOps.INSTANCE, recipe.replacement()).result().get());

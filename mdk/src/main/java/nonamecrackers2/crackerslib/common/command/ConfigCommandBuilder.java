@@ -48,7 +48,7 @@ public class ConfigCommandBuilder {
    }
 
    public static ConfigCommandBuilder builder(CommandDispatcher<CommandSourceStack> dispatcher, String modid) {
-      return new ConfigCommandBuilder(modid, (LiteralArgumentBuilder<CommandSourceStack>)Commands.m_82127_(modid).requires(src -> src.m_6761_(2)), dispatcher);
+      return new ConfigCommandBuilder(modid, (LiteralArgumentBuilder<CommandSourceStack>)Commands.literal(modid).requires(src -> src.hasPermission(2)), dispatcher);
    }
 
    public ConfigCommandBuilder addSpec(Type type, ModConfigSpec spec) {
@@ -61,12 +61,12 @@ public class ConfigCommandBuilder {
    }
 
    public void register() {
-      LiteralArgumentBuilder<CommandSourceStack> root = Commands.m_82127_("config");
+      LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("config");
 
       for (Entry<Type, ModConfigSpec> entry : this.specs.entrySet()) {
          Type type = entry.getKey();
          ModConfigSpec spec = entry.getValue();
-         LiteralArgumentBuilder<CommandSourceStack> specArgument = Commands.m_82127_(type.extension());
+         LiteralArgumentBuilder<CommandSourceStack> specArgument = Commands.literal(type.extension());
          addArgumentsForSpec(spec, this.modid, type, specArgument);
          root.then(specArgument);
       }
@@ -77,55 +77,55 @@ public class ConfigCommandBuilder {
 
    private static void addArgumentsForSpec(ModConfigSpec spec, String modid, Type type, LiteralArgumentBuilder<CommandSourceStack> specArgument) {
       Map<String, ValueSpec> allValues = ConfigHelper.getAllSpecs(spec);
-      LiteralArgumentBuilder<CommandSourceStack> setArg = (LiteralArgumentBuilder<CommandSourceStack>)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)Commands.m_82127_(
+      LiteralArgumentBuilder<CommandSourceStack> setArg = (LiteralArgumentBuilder<CommandSourceStack>)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)Commands.literal(
                      "set"
                   )
                   .then(
-                     ((RequiredArgumentBuilder)Commands.m_82129_("double", ConfigArgument.arg(allValues, Double.class))
+                     ((RequiredArgumentBuilder)Commands.addVertex("double", ConfigArgument.arg(allValues, Double.class))
                            .then(
-                              Commands.m_82129_("value", DoubleArgumentType.doubleArg())
+                              Commands.addVertex("value", DoubleArgumentType.doubleArg())
                                  .executes(ctx -> set(ctx, "double", DoubleArgumentType::getDouble, spec, modid, type))
                            ))
-                        .then(Commands.m_82127_("default").executes(ctx -> setDefault(ctx, "double", spec, modid, type)))
+                        .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "double", spec, modid, type)))
                   ))
                .then(
-                  ((RequiredArgumentBuilder)Commands.m_82129_("boolean", ConfigArgument.arg(allValues, Boolean.class))
+                  ((RequiredArgumentBuilder)Commands.addVertex("boolean", ConfigArgument.arg(allValues, Boolean.class))
                         .then(
-                           Commands.m_82129_("value", BoolArgumentType.bool())
+                           Commands.addVertex("value", BoolArgumentType.bool())
                               .executes(ctx -> set(ctx, "boolean", BoolArgumentType::getBool, spec, modid, type))
                         ))
-                     .then(Commands.m_82127_("default").executes(ctx -> setDefault(ctx, "boolean", spec, modid, type)))
+                     .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "boolean", spec, modid, type)))
                ))
             .then(
-               ((RequiredArgumentBuilder)Commands.m_82129_("integer", ConfigArgument.arg(allValues, Integer.class))
+               ((RequiredArgumentBuilder)Commands.addVertex("integer", ConfigArgument.arg(allValues, Integer.class))
                      .then(
-                        Commands.m_82129_("value", IntegerArgumentType.integer())
+                        Commands.addVertex("value", IntegerArgumentType.integer())
                            .executes(ctx -> set(ctx, "integer", IntegerArgumentType::getInteger, spec, modid, type))
                      ))
-                  .then(Commands.m_82127_("default").executes(ctx -> setDefault(ctx, "integer", spec, modid, type)))
+                  .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "integer", spec, modid, type)))
             ))
          .then(
-            ((RequiredArgumentBuilder)Commands.m_82129_("string", ConfigArgument.arg(allValues, String.class))
+            ((RequiredArgumentBuilder)Commands.addVertex("string", ConfigArgument.arg(allValues, String.class))
                   .then(
-                     Commands.m_82129_("value", StringArgumentType.greedyString())
+                     Commands.addVertex("value", StringArgumentType.greedyString())
                         .executes(ctx -> set(ctx, "string", StringArgumentType::getString, spec, modid, type))
                   ))
-               .then(Commands.m_82127_("default").executes(ctx -> setDefault(ctx, "string", spec, modid, type)))
+               .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "string", spec, modid, type)))
          );
 
       for (Class<Enum> clazz : gatherEnumValueClasses(allValues)) {
          String name = clazz.getSimpleName();
          setArg.then(
-            ((RequiredArgumentBuilder)Commands.m_82129_(name, ConfigArgument.arg(allValues, clazz))
+            ((RequiredArgumentBuilder)Commands.addVertex(name, ConfigArgument.arg(allValues, clazz))
                   .then(
-                     Commands.m_82129_("value", EnumArgument.enumArgument(clazz))
+                     Commands.addVertex("value", EnumArgument.enumArgument(clazz))
                         .executes(ctx -> set(ctx, name, (ctx1, arg) -> (Enum)ctx1.getArgument(arg, clazz), spec, modid, type))
                   ))
-               .then(Commands.m_82127_("default").executes(ctx -> setDefault(ctx, name, spec, modid, type)))
+               .then(Commands.literal("default").executes(ctx -> setDefault(ctx, name, spec, modid, type)))
          );
       }
 
-      specArgument.then(Commands.m_82127_("get").then(Commands.m_82129_("value", ConfigArgument.any(allValues)).executes(ctx -> get(ctx, spec))));
+      specArgument.then(Commands.literal("get").then(Commands.addVertex("value", ConfigArgument.any(allValues)).executes(ctx -> get(ctx, spec))));
       specArgument.then(setArg);
    }
 
@@ -167,18 +167,11 @@ public class ConfigCommandBuilder {
          if (!Objects.equals(config.get(), value) && valueSpec.test(value)) {
             config.set(value);
             String joinedPath = ConfigHelper.DOT_JOINER.join(config.getPath());
-            Component result = Component.m_237110_("commands.crackerslib.setConfig.set.success", new Object[]{joinedPath, value});
-            source.m_288197_(() -> result, true);
-            if (valueSpec.needsWorldRestart()) {
-               source.m_288197_(
-                  () -> Component.m_237110_("commands.crackerslib.setConfig.set.note", new Object[]{joinedPath}).m_130940_(ChatFormatting.GRAY), false
-               );
-               return 2;
-            } else {
-               return 1;
-            }
+            Component result = Component.translatable("commands.crackerslib.setConfig.set.success", new Object[]{joinedPath, value});
+            source.sendSuccess(() -> result, true);
+            return 1;
          } else {
-            source.m_81352_(Component.m_237115_("commands.crackerslib.setConfig.set.fail"));
+            source.sendFailure(Component.translatable("commands.crackerslib.setConfig.set.fail"));
             return 0;
          }
       }
@@ -188,8 +181,8 @@ public class ConfigCommandBuilder {
       ConfigValue<Object> config = ConfigArgument.get(context, "value", spec);
       Object val = config.get();
       ((CommandSourceStack)context.getSource())
-         .m_288197_(
-            () -> Component.m_237110_("commands.crackerslib.getConfig.get", new Object[]{ConfigHelper.DOT_JOINER.join(config.getPath()), config.get()}), false
+         .getBuffer(
+            () -> Component.translatable("commands.crackerslib.getConfig.get", new Object[]{ConfigHelper.DOT_JOINER.join(config.getPath()), config.get()}), false
          );
       if (val instanceof Integer integer) {
          return integer;
@@ -211,15 +204,9 @@ public class ConfigCommandBuilder {
       if (flag) {
          config.set(config.getDefault());
          String name = ConfigHelper.DOT_JOINER.join(config.getPath());
-         source.m_288197_(() -> Component.m_237110_("commands.crackerslib.setDefault.success", new Object[]{name, config.get()}), true);
-         if (valueSpec.needsWorldRestart()) {
-            source.m_288197_(() -> Component.m_237110_("commands.crackerslib.setConfig.set.note", new Object[]{name}).m_130940_(ChatFormatting.GRAY), false);
-            return 2;
-         } else {
-            return 1;
-         }
+         source.sendSuccess(() -> Component.translatable("commands.crackerslib.setDefault.success", new Object[]{name, config.get()}), true);
       } else {
-         source.m_81352_(Component.m_237115_("commands.crackerslib.setConfig.set.fail"));
+         source.sendFailure(Component.translatable("commands.crackerslib.setConfig.set.fail"));
          return 0;
       }
    }

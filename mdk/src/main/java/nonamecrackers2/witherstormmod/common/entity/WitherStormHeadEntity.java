@@ -50,6 +50,7 @@ import nonamecrackers2.witherstormmod.common.entity.goal.NearestDistractionGoal;
 import nonamecrackers2.witherstormmod.common.entity.goal.YAffectedLookRandomlyGoal;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.PlayerMotionMessage;
@@ -95,12 +96,12 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
       return new EmptyBodyController(this);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(IS_ACTIVE, true);
-      this.entityData.define(IS_ROARING, false);
-      this.entityData.define(IS_BITING, false);
-      this.entityData.define(IS_HURT, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(IS_ACTIVE, true);
+      builder.define(IS_ROARING, false);
+      builder.define(IS_BITING, false);
+      builder.define(IS_HURT, false);
    }
 
    protected void registerGoals() {
@@ -371,7 +372,7 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
             }
 
             if (target instanceof Player) {
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)target), new PlayerMotionMessage(delta));
+               WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)target), new PlayerMotionMessage(delta));
             }
 
             if (this.getBoundingBox().intersects(target.getBoundingBox())) {
@@ -489,7 +490,7 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
    }
 
    protected float getStandingEyeHeight(@NotNull Pose pose, EntityDimensions size) {
-      return size.height / 1.5F;
+      return size.height() / 1.5F;
    }
 
    public void startSleeping(@NotNull BlockPos pos) {

@@ -91,7 +91,7 @@ public class WireBlock extends Block {
       VoxelShape voxelshape = SHAPE_DOT;
 
       for (Direction direction : Plane.HORIZONTAL) {
-         RedstoneSide redstoneside = (RedstoneSide)state.getValue((Property)PROPERTY_BY_DIRECTION.get(direction));
+         RedstoneSide redstoneside = (RedstoneSide)state.get((Property)PROPERTY_BY_DIRECTION.get(direction));
          if (redstoneside == RedstoneSide.SIDE) {
             voxelshape = Shapes.or(voxelshape, SHAPES_FLOOR.get(direction));
          } else if (redstoneside == RedstoneSide.UP) {
@@ -116,10 +116,10 @@ public class WireBlock extends Block {
       if (flag && isDot(state)) {
          return state;
       } else {
-         boolean flag1 = ((RedstoneSide)state.getValue(NORTH)).isConnected();
-         boolean flag2 = ((RedstoneSide)state.getValue(SOUTH)).isConnected();
-         boolean flag3 = ((RedstoneSide)state.getValue(EAST)).isConnected();
-         boolean flag4 = ((RedstoneSide)state.getValue(WEST)).isConnected();
+         boolean flag1 = ((RedstoneSide)state.get(NORTH)).isConnected();
+         boolean flag2 = ((RedstoneSide)state.get(SOUTH)).isConnected();
+         boolean flag3 = ((RedstoneSide)state.get(EAST)).isConnected();
+         boolean flag4 = ((RedstoneSide)state.get(WEST)).isConnected();
          boolean flag5 = !flag1 && !flag2;
          boolean flag6 = !flag3 && !flag4;
          if (!flag4 && flag5) {
@@ -146,7 +146,7 @@ public class WireBlock extends Block {
       boolean flag = !reader.getBlockState(pos.above()).isRedstoneConductor(reader, pos);
 
       for (Direction direction : Plane.HORIZONTAL) {
-         if (!((RedstoneSide)state.getValue((Property)PROPERTY_BY_DIRECTION.get(direction))).isConnected()) {
+         if (!((RedstoneSide)state.get((Property)PROPERTY_BY_DIRECTION.get(direction))).isConnected()) {
             RedstoneSide redstoneside = this.getConnectingSide(reader, pos, direction, flag);
             state = (BlockState)state.setValue((Property)PROPERTY_BY_DIRECTION.get(direction), redstoneside);
          }
@@ -162,31 +162,31 @@ public class WireBlock extends Block {
          return this.getConnectionState(world, state, pos);
       } else {
          RedstoneSide redstoneside = this.getConnectingSide(world, pos, direction);
-         return redstoneside.isConnected() == ((RedstoneSide)state.getValue((Property)PROPERTY_BY_DIRECTION.get(direction))).isConnected() && !isCross(state)
+         return redstoneside.isConnected() == ((RedstoneSide)state.get((Property)PROPERTY_BY_DIRECTION.get(direction))).isConnected() && !isCross(state)
             ? (BlockState)state.setValue((Property)PROPERTY_BY_DIRECTION.get(direction), redstoneside)
             : this.getConnectionState(world, (BlockState)this.defaultBlockState().setValue((Property)PROPERTY_BY_DIRECTION.get(direction), redstoneside), pos);
       }
    }
 
    protected static boolean isCross(BlockState state) {
-      return ((RedstoneSide)state.getValue(NORTH)).isConnected()
-         && ((RedstoneSide)state.getValue(SOUTH)).isConnected()
-         && ((RedstoneSide)state.getValue(EAST)).isConnected()
-         && ((RedstoneSide)state.getValue(WEST)).isConnected();
+      return ((RedstoneSide)state.get(NORTH)).isConnected()
+         && ((RedstoneSide)state.get(SOUTH)).isConnected()
+         && ((RedstoneSide)state.get(EAST)).isConnected()
+         && ((RedstoneSide)state.get(WEST)).isConnected();
    }
 
    protected static boolean isDot(BlockState state) {
-      return !((RedstoneSide)state.getValue(NORTH)).isConnected()
-         && !((RedstoneSide)state.getValue(SOUTH)).isConnected()
-         && !((RedstoneSide)state.getValue(EAST)).isConnected()
-         && !((RedstoneSide)state.getValue(WEST)).isConnected();
+      return !((RedstoneSide)state.get(NORTH)).isConnected()
+         && !((RedstoneSide)state.get(SOUTH)).isConnected()
+         && !((RedstoneSide)state.get(EAST)).isConnected()
+         && !((RedstoneSide)state.get(WEST)).isConnected();
    }
 
    public void updateIndirectNeighbourShapes(BlockState state, LevelAccessor world, BlockPos pos, int p_196248_4_, int p_196248_5_) {
       MutableBlockPos blockpos$mutable = new MutableBlockPos();
 
       for (Direction direction : Plane.HORIZONTAL) {
-         RedstoneSide redstoneside = (RedstoneSide)state.getValue((Property)PROPERTY_BY_DIRECTION.get(direction));
+         RedstoneSide redstoneside = (RedstoneSide)state.get((Property)PROPERTY_BY_DIRECTION.get(direction));
          if (redstoneside != RedstoneSide.NONE && !world.getBlockState(blockpos$mutable.setWithOffset(pos, direction)).is(this)) {
             blockpos$mutable.move(Direction.DOWN);
             BlockState blockstate = world.getBlockState(blockpos$mutable);
@@ -324,7 +324,7 @@ public class WireBlock extends Block {
 
    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
       for (Direction direction : Plane.HORIZONTAL) {
-         RedstoneSide redstoneside = (RedstoneSide)state.getValue((Property)PROPERTY_BY_DIRECTION.get(direction));
+         RedstoneSide redstoneside = (RedstoneSide)state.get((Property)PROPERTY_BY_DIRECTION.get(direction));
          switch (redstoneside) {
             case UP:
                this.spawnParticlesAlongLine(world, random, pos, this.color, direction, Direction.UP, -0.5F, 0.5F);
@@ -341,20 +341,20 @@ public class WireBlock extends Block {
    public BlockState rotate(BlockState state, Rotation rotation) {
       switch (rotation) {
          case CLOCKWISE_180:
-            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.getValue(SOUTH)))
-                     .setValue(EAST, (RedstoneSide)state.getValue(WEST)))
-                  .setValue(SOUTH, (RedstoneSide)state.getValue(NORTH)))
-               .setValue(WEST, (RedstoneSide)state.getValue(EAST));
+            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.get(SOUTH)))
+                     .setValue(EAST, (RedstoneSide)state.get(WEST)))
+                  .setValue(SOUTH, (RedstoneSide)state.get(NORTH)))
+               .setValue(WEST, (RedstoneSide)state.get(EAST));
          case COUNTERCLOCKWISE_90:
-            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.getValue(EAST)))
-                     .setValue(EAST, (RedstoneSide)state.getValue(SOUTH)))
-                  .setValue(SOUTH, (RedstoneSide)state.getValue(WEST)))
-               .setValue(WEST, (RedstoneSide)state.getValue(NORTH));
+            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.get(EAST)))
+                     .setValue(EAST, (RedstoneSide)state.get(SOUTH)))
+                  .setValue(SOUTH, (RedstoneSide)state.get(WEST)))
+               .setValue(WEST, (RedstoneSide)state.get(NORTH));
          case CLOCKWISE_90:
-            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.getValue(WEST)))
-                     .setValue(EAST, (RedstoneSide)state.getValue(NORTH)))
-                  .setValue(SOUTH, (RedstoneSide)state.getValue(EAST)))
-               .setValue(WEST, (RedstoneSide)state.getValue(SOUTH));
+            return (BlockState)((BlockState)((BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.get(WEST)))
+                     .setValue(EAST, (RedstoneSide)state.get(NORTH)))
+                  .setValue(SOUTH, (RedstoneSide)state.get(EAST)))
+               .setValue(WEST, (RedstoneSide)state.get(SOUTH));
          default:
             return state;
       }
@@ -363,9 +363,9 @@ public class WireBlock extends Block {
    public BlockState mirror(BlockState state, Mirror mirror) {
       switch (mirror) {
          case LEFT_RIGHT:
-            return (BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.getValue(SOUTH))).setValue(SOUTH, (RedstoneSide)state.getValue(NORTH));
+            return (BlockState)((BlockState)state.setValue(NORTH, (RedstoneSide)state.get(SOUTH))).setValue(SOUTH, (RedstoneSide)state.get(NORTH));
          case FRONT_BACK:
-            return (BlockState)((BlockState)state.setValue(EAST, (RedstoneSide)state.getValue(WEST))).setValue(WEST, (RedstoneSide)state.getValue(EAST));
+            return (BlockState)((BlockState)state.setValue(EAST, (RedstoneSide)state.get(WEST))).setValue(WEST, (RedstoneSide)state.get(EAST));
          default:
             return super.mirror(state, mirror);
       }

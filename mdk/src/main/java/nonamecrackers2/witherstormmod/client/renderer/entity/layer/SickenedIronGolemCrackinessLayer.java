@@ -8,18 +8,17 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.IronGolem.Crackiness;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentity.SickenedIronGolemModel;
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 
 public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
-   private static final Map<Crackiness, ResourceLocation> LAYERS = ImmutableMap.of(
-      Crackiness.LOW,
+   private static final Map<IronGolem.Crackiness, ResourceLocation> LAYERS = ImmutableMap.of(
+      IronGolem.Crackiness.NONE,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
-      Crackiness.MEDIUM,
+      IronGolem.Crackiness.NONE,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
-      Crackiness.HIGH,
+      IronGolem.Crackiness.NONE,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
    );
 
@@ -40,9 +39,9 @@ public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGo
       float p_117358_
    ) {
       if (!entity.isInvisible()) {
-         Crackiness irongolem$crackiness = entity.getCrackiness();
-         if (irongolem$crackiness != Crackiness.NONE) {
-            ResourceLocation resourcelocation = LAYERS.get(irongolem$crackiness);
+         IronGolem.Crackiness irongolem$int /* Crackiness removed */ = entity.getCrackiness();
+         if (irongolem$int /* Crackiness removed */ != IronGolem.Crackiness.NONE) {
+            ResourceLocation resourcelocation = LAYERS.get(irongolem$int /* Crackiness removed */);
             renderColoredCutoutModel(this.getParentModel(), resourcelocation, stack, buffer, p_117351_, entity, 1.0F, 1.0F, 1.0F);
          }
       }

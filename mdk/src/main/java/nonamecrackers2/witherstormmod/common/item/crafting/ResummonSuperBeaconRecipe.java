@@ -74,7 +74,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
 
          String rawEntityId = GsonHelper.getAsString(object, "entity");
          ResourceLocation entityId = new ResourceLocation(rawEntityId);
-         EntityType<?> type = (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(entityId);
+         EntityType<?> type = (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(entityId);
          if (type == null) {
             throw new JsonSyntaxException("Unknown entity of id '" + rawEntityId + "'");
          } else {
@@ -94,7 +94,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
       @Nullable
       public ResummonSuperBeaconRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
          NonNullList<Ingredient> ingredients = (NonNullList<Ingredient>)buffer.readCollection(NonNullList::createWithCapacity, b -> Ingredient.fromNetwork(b));
-         EntityType<?> type = (EntityType<?>)buffer.readRegistryId();
+         EntityType<?> type = (EntityType<?>)buffer.readId();
          CompoundTag tag = buffer.readNbt();
          SuperBeaconRecipe.Condition condition = (SuperBeaconRecipe.Condition)buffer.readEnum(SuperBeaconRecipe.Condition.class);
          return new ResummonSuperBeaconRecipe(id, ingredients, type, tag, condition);
@@ -102,7 +102,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
 
       public void toNetwork(FriendlyByteBuf buffer, ResummonSuperBeaconRecipe recipe) {
          buffer.writeCollection(recipe.ingredients, (b, i) -> i.toNetwork(b));
-         buffer.writeRegistryId(NeoBuiltInRegistries.ENTITY_TYPE, recipe.entity);
+         buffer.writeRegistryId(BuiltInRegistries.ENTITY_TYPE, recipe.entity);
          buffer.writeNbt(recipe.nbt);
          buffer.writeEnum(recipe.getCondition());
       }

@@ -23,6 +23,7 @@ import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.common.entity.BlockClusterEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -94,7 +95,7 @@ public class PulseSpell extends SymbiontSpell {
             entity.setDeltaMovement(deltaMovement);
             if (entity instanceof ServerPlayer) {
                PlayerMotionMessage message = new PlayerMotionMessage(deltaMovement);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), message);
+               WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)entity), message);
             }
          }
       }

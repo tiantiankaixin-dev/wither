@@ -19,9 +19,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.RenderTickEvent
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -303,7 +300,7 @@ public class RenderBufferer {
 
       while (iterator.hasNext()) {
          Entry<Object, BufferedInstance> instance = iterator.next();
-         instance.getValue().close();
+         instance.get().close();
          iterator.remove();
       }
    }
@@ -321,18 +318,16 @@ public class RenderBufferer {
 
    public static class Events {
       @SubscribeEvent
-      public static void onClientTick(ClientTickEvent event) {
+      public static void onClientTick(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
          Minecraft mc = Minecraft.getInstance();
-         if (event.phase == Phase.START && !mc.isPaused() && mc.level != null) {
+         if (!mc.isPaused() && mc.level != null) {
             RenderBufferer.INSTANCE.tick();
          }
       }
 
       @SubscribeEvent
-      public static void onRender(RenderTickEvent event) {
-         if (event.phase == Phase.START) {
-            RenderBufferer.INSTANCE.renderTick();
-         }
+      public static void onRender(net.neoforged.neoforge.client.event.RenderFrameEvent.Post event) {
+         RenderBufferer.INSTANCE.renderTick();
       }
    }
 }

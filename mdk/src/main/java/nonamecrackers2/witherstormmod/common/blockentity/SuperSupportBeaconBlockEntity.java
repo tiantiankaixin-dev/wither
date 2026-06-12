@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperSupportBeaconMenu;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
@@ -110,7 +109,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
             Vec3 pos = Vec3.atCenterOf(this.getConnectedBeacon());
             WitherStormModPacketHandlers.MAIN
                .send(
-                  PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+                  SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
                   new ShakeScreenMessage(80.0F, 10.0F)
                );
          }
@@ -195,7 +194,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    }
 
    @Override
-   public void load(CompoundTag tag) {
+   public void loadAdditional(CompoundTag tag) {
       super.load(tag);
       int colorIndex = tag.getInt("Color");
       if (colorIndex >= 0 && colorIndex < AbstractSuperBeaconBlockEntity.Color.values().length) {

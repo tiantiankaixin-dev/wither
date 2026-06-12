@@ -1,12 +1,11 @@
 package nonamecrackers2.witherstormmod.common.packet;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
@@ -31,10 +30,10 @@ public class SuperBeaconValidEffectsMessage extends Packet {
    }
 
    public void encode(FriendlyByteBuf buffer) {
-      buffer.writeCollection(this.effects, (buf, effect) -> buf.writeVarInt(MobEffect.getId(effect)));
+      buffer.writeCollection(this.effects, (buf, effect) -> buf.writeVarInt(BuiltInRegistries.MOB_EFFECT.getId(effect)));
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processSuperBeaconValidEffectsMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processSuperBeaconValidEffectsMessage(this));
    }
 }

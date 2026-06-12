@@ -23,7 +23,7 @@ public class BowelsInstanceManager {
 
    public void loadInstance() {
       ServerLevel bowels = WitherStormMod.bowels((ServerLevel)this.storm.level());
-      bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).ifPresent(manager -> {
+      { var manager = bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get());
          WitherStormBowelsManager.BowelsInstance instance = manager.getOrCreateInstanceFor(this.storm);
          if (instance != null) {
             manager.add(instance);
@@ -31,7 +31,7 @@ public class BowelsInstanceManager {
             instance.doChunkLoading(bowels);
             this.instance = instance;
          }
-      });
+      }
    }
 
    public void tick() {

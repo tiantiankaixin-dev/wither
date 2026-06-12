@@ -38,6 +38,6 @@ public record TractorBeamParticleOptions(int storm, int head) implements Particl
    }
 
    public String writeToString() {
-      return NeoBuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()) + " " + this.storm + " " + this.head;
+      return BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()) + " " + this.storm + " " + this.head;
    }
 }

@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -98,7 +100,7 @@ public interface WitherSickened {
          assert t != null;
          if (true) {
             t.setHealth(cast.getHealth());
-            t.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(WitherSicknessTracker::cure);
+            t.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()).cure();
             t.removeAllEffects();
             t.copyPosition(cast);
             t.setBaby(cast.isBaby());
@@ -205,7 +207,7 @@ public interface WitherSickened {
       WitherSickened.Data data = this.getData();
       if (compound.contains("OriginalType")) {
          ResourceLocation location = ResourceLocation.tryParse(compound.getString("OriginalType"));
-         EntityType<?> type = (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(location);
+         EntityType<?> type = (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(location);
          data.setOriginal(type, compound.contains("OriginalData") ? compound.getCompound("OriginalData") : null);
       }
 
@@ -360,7 +362,7 @@ public interface WitherSickened {
             return null;
          } else {
             EntityType<?> type = this.original;
-            ResourceLocation location = NeoBuiltInRegistries.ENTITY_TYPE.getKey(type);
+            ResourceLocation location = BuiltInRegistries.ENTITY_TYPE.getKey(type);
             return type.canSerialize() && location != null ? location.toString() : null;
          }
       }

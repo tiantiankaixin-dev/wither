@@ -11,7 +11,7 @@ public class WitherStormModMemoryTypes {
    public static final DeferredRegister<MemoryModuleType<?>> MEMORY_MODULE_TYPES = DeferredRegister.create(
       BuiltInRegistries.MEMORY_MODULE_TYPES, "witherstormmod"
    );
-   public static final DeferredHolder<MemoryModuleType<WitherStormEntity>> NEAREST_WITHER_STORM = MEMORY_MODULE_TYPES.register(
+   public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<WitherStormEntity>> NEAREST_WITHER_STORM = MEMORY_MODULE_TYPES.register(
       "nearest_wither_storm", () -> new MemoryModuleType(Optional.empty())
    );
 }

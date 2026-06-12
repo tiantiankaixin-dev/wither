@@ -1,4 +1,5 @@
 package nonamecrackers2.crackerslib.client.gui;
+import net.neoforged.fml.ModList;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -9,7 +10,8 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.neoforged.fml.ModLoader;
+import net.neoforged.fml.ModList;
+// 
 import nonamecrackers2.crackerslib.client.event.impl.ConfigMenuButtonEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +33,7 @@ public class ConfigMenuButtons {
       } else {
          Builder<String, ConfigMenuButtons.Factory> factories = ImmutableMap.builder();
          List<ConfigMenuButtonEvent> postedEvents = Lists.newArrayList();
-         ModLoader.get().runEventGenerator(mod -> {
+         ModList.get().runEventGenerator(mod -> {
             ConfigMenuButtonEvent event = new ConfigMenuButtonEvent(mod.getModId());
             postedEvents.add(event);
             return event;

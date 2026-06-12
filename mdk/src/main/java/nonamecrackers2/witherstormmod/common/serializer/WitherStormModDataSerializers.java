@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoBuiltInRegistries.Keys;
+import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
 import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
@@ -69,11 +69,11 @@ public class WitherStormModDataSerializers {
    public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VECTOR_3D = new EntityDataSerializer<Optional<Vec3>>() {
       public void write(FriendlyByteBuf buffer, Optional<Vec3> vector) {
          buffer.writeBoolean(vector.isPresent());
-         vector.ifPresent(pos -> {
+         { var pos = vector;
             buffer.writeDouble(pos.x());
             buffer.writeDouble(pos.y());
             buffer.writeDouble(pos.z());
-         });
+         }
       }
 
       public Optional<Vec3> read(FriendlyByteBuf buffer) {
@@ -90,7 +90,7 @@ public class WitherStormModDataSerializers {
       }
 
       public SpellType read(FriendlyByteBuf buffer) {
-         return (SpellType)buffer.readRegistryId();
+         return (SpellType)buffer.readId();
       }
 
       public SpellType copy(SpellType type) {

@@ -124,21 +124,21 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
 
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
-         .add((Attribute)WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED.get(), 0.4)
-         .add((Attribute)WitherStormModAttributes.SLOW_FLYING_SPEED.get(), 0.05)
-         .add((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get(), 1.0)
+         .add(WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED.get(), 0.4)
+         .add(WitherStormModAttributes.SLOW_FLYING_SPEED.get(), 0.05)
+         .add(WitherStormModAttributes.EVOLUTION_SPEED.get(), 1.0)
          .add(Attributes.FLYING_SPEED, 0.0)
          .add(Attributes.MAX_HEALTH, 4000.0)
          .add(Attributes.MOVEMENT_SPEED, 0.6)
          .add(Attributes.FOLLOW_RANGE, 160.0)
-         .add((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get(), 40.0)
+         .add(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get(), 40.0)
          .add(Attributes.ARMOR, 6.0);
    }
 
    @Override
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(PARENT_UUID, Optional.empty());
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(PARENT_UUID, Optional.empty());
    }
 
    @Override
@@ -179,13 +179,13 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
          }
 
          if (this.isOnDistantRenderer()) {
-            this.level().getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER).ifPresent(renderer -> {
+            { var renderer = this.level().getData(WitherStormModClientCapabilities.DISTANT_RENDERER.get());
                for (WitherStormEntity stormx : renderer.getKnown()) {
-                  if (this.getParentUUID().equals(stormx.getUUID())) {
+                  if (this.getParentUUID().equals(stormx.id())) {
                      this.setParent(stormx);
                   }
                }
-            });
+            }
          }
       }
 
@@ -331,7 +331,7 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
    public EntityDimensions getDimensions(@NotNull Pose pose) {
       EntityDimensions size = this.getUnmodifiedDimensions(pose);
       if ((Boolean)WitherStormModConfig.SERVER.squashHitbox.get() && this.getPhase() > 3) {
-         size = EntityDimensions.scalable(size.width, 1.0F);
+         size = EntityDimensions.scalable(size.width(), 1.0F);
       }
 
       return size;
@@ -376,7 +376,7 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
    public void setParent(WitherStormEntity parent) {
       this.parent = parent;
       if (parent != null) {
-         this.entityData.set(PARENT_UUID, Optional.of(parent.getUUID()));
+         this.entityData.set(PARENT_UUID, Optional.of(parent.id()));
 
          assert this.getParent() != null;
 
@@ -522,13 +522,13 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
    protected boolean isInsideOtherTractorBeam(LivingEntity entity, int head) {
       if (this.getParent() != null) {
          List<WitherStormEntity> storms = Lists.newArrayList(new WitherStormEntity[]{this.getParent()});
-         this.getParent().getSegmentsManager().ifPresent(manager -> {
+         { var manager = this.getParent().getSegmentsManager().get();
             for (WitherStormSegmentEntity segment : manager.getSegments()) {
                if (segment != null && segment.isAlive()) {
                   storms.add(segment);
                }
             }
-         });
+         }
 
          for (WitherStormEntity storm : storms) {
             Pair<Boolean, Integer> flag = TractorBeamHelper.isInsideTractorBeam(entity, storm, 5.0);

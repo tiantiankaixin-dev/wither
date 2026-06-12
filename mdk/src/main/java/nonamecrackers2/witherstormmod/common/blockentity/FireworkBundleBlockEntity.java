@@ -40,7 +40,7 @@ public class FireworkBundleBlockEntity extends BlockEntity {
       tag.putInt("LaunchDuration", this.launchDuration);
    }
 
-   public void load(CompoundTag tag) {
+   public void loadAdditional(CompoundTag tag) {
       super.load(tag);
       this.fuse = tag.getInt("Fuse");
       this.launchDuration = tag.getInt("LaunchDuration");

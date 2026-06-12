@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.client.audio;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,11 +81,11 @@ public class WitherStormSoundLoop extends FadingSoundLoop implements IForceStopp
       this.x = this.pos.x;
       this.y = this.pos.y;
       this.z = this.pos.z;
-      this.entity.ifPresent(entity -> {
-         if (entity.isDeadOrDying() || !entity.isAddedToWorld()) {
+      { var entity = this.entity;
+         if (entity.isDeadOrDying() || !entity.level() != null) {
             this.stopSound();
          }
-      });
+      }
       super.tick();
    }
 

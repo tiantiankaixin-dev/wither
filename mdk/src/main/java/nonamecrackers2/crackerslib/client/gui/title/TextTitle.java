@@ -8,21 +8,21 @@ import net.neoforged.fml.ModList;
 
 public record TextTitle(Component title, int width, int height) implements TitleLogo {
    public static TextTitle ofModDisplayName(String modid, Style style) {
-      Minecraft mc = Minecraft.m_91087_();
+      Minecraft mc = Minecraft.getInstance();
       return ModList.get().getModContainerById(modid).map(container -> {
-         Component text = Component.m_237113_(container.getModInfo().getDisplayName()).m_130948_(style);
-         return new TextTitle(text, mc.f_91062_.m_92852_(text), 9);
+         Component text = Component.literal(container.getModInfo().getDisplayName()).withStyle(style);
+         return new TextTitle(text, mc.font.width(text), 9);
       }).orElseThrow(() -> new NullPointerException("Could not find mod with id '" + modid + "'"));
    }
 
    public static TextTitle ofModDisplayName(String modid) {
-      return ofModDisplayName(modid, Style.f_131099_.m_131136_(true).m_131162_(true));
+      return ofModDisplayName(modid, Style.EMPTY.withBold(true).withUnderlined(true));
    }
 
    @Override
    public void blit(GuiGraphics stack, int x, int y, float partialTicks) {
-      Minecraft mc = Minecraft.m_91087_();
-      stack.m_280430_(mc.f_91062_, this.title, x, y, -1);
+      Minecraft mc = Minecraft.getInstance();
+      stack.drawString(mc.font, this.title, x, y, -1);
    }
 
    @Override

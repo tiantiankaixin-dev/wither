@@ -51,8 +51,8 @@ public class TentaclePartEntity<T extends LivingEntity & IMultipartHurtable<Tent
       super.tick();
       if (!this.isBase) {
          float rot = this.getXRot() * this.xCurl;
-         this.newWidth = Math.abs(Mth.sin(rot * (float) (Math.PI / 180.0))) * (this.size.width - this.size.height) + this.size.height;
-         this.newHeight = Math.abs(Mth.sin(rot * (float) (Math.PI / 180.0))) * (this.size.height - this.size.width) + this.size.width;
+         this.newWidth = Math.abs(Mth.sin(rot * (float) (Math.PI / 180.0))) * (this.size.width() - this.size.height()) + this.size.height();
+         this.newHeight = Math.abs(Mth.sin(rot * (float) (Math.PI / 180.0))) * (this.size.height() - this.size.width()) + this.size.width();
       }
 
       this.refreshDimensions();

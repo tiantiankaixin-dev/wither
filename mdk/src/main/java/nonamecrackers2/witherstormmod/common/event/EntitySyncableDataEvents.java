@@ -9,6 +9,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.EntitySyncableDataMessage;
 import nonamecrackers2.witherstormmod.common.util.EntitySyncableData;
@@ -45,7 +46,7 @@ public class EntitySyncableDataEvents {
    public static void sendChanges(ServerPlayer player, Entity entity) {
       if (entity instanceof EntitySyncableData) {
          EntitySyncableDataMessage message = new EntitySyncableDataMessage(entity.getId(), (EntitySyncableData)entity);
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> player), message);
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer(player), message);
       }
    }
 }

@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
@@ -48,7 +50,7 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
    public static final Map<VillagerProfession, ItemListing[]> SICKENED_TRADES = Util.make(
       Maps.newHashMap(),
       map -> {
-         for (VillagerProfession profession : NeoBuiltInRegistries.VILLAGER_PROFESSION.getValues()) {
+         for (VillagerProfession profession : BuiltInRegistries.VILLAGER_PROFESSION.getValues()) {
             if (profession != VillagerProfession.NONE && profession != VillagerProfession.NITWIT) {
                if (profession == VillagerProfession.CLERIC) {
                   map.put(profession, makeDefaultWitheredItems(new BasicItemListing(1, new ItemStack((ItemLike)WitherStormModItems.TAINTED_DUST.get()), 12, 2)));
@@ -103,9 +105,9 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
    }
 
    @Override
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
    }
 
    @Override

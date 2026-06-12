@@ -118,12 +118,12 @@ public class WitherStormModItemModelProvider extends ItemModelProvider {
    }
 
    private void handheld(Item item) {
-      ResourceLocation id = NeoBuiltInRegistries.ITEM.getKey(item);
+      ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
       ((ItemModelBuilder)this.withExistingParent(id.getPath(), "item/handheld")).texture("layer0", this.modLoc("item/" + id.getPath()));
    }
 
    private void spawnEgg(Item item) {
-      ResourceLocation id = NeoBuiltInRegistries.ITEM.getKey(item);
+      ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
       this.withExistingParent(id.getPath(), "item/template_spawn_egg");
    }
 }

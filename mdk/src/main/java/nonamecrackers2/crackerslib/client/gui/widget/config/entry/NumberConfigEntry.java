@@ -13,19 +13,19 @@ public abstract class NumberConfigEntry<T extends Number> extends ConfigEntry<T,
    }
 
    protected EditBox buildWidget(int x, int y, int width, int height) {
-      EditBox box = new EditBox(this.mc.f_91062_, x + 6, y + height / 2 - 10, 60, 20, CommonComponents.f_237098_);
-      box.m_94144_(String.valueOf(this.value.get()));
-      box.m_94151_(value -> {
+      EditBox box = new EditBox(this.mc.font, x + 6, y + height / 2 - 10, 60, 20, CommonComponents.EMPTY);
+      box.setFocused(String.valueOf(this.value.get()));
+      box.setResponder(value -> {
          try {
             this.getValueUpdatedResponder().run();
             T val = this.parseValue(value);
             if (this.valueSpec.test(val)) {
-               this.widget.m_94202_(-1);
+               this.widget.setEditable(-1);
             } else {
-               this.widget.m_94202_(ChatFormatting.RED.m_126665_());
+               this.widget.setEditable(ChatFormatting.RED.getColor());
             }
          } catch (NumberFormatException var3x) {
-            this.widget.m_94202_(ChatFormatting.RED.m_126665_());
+            this.widget.setEditable(ChatFormatting.RED.getColor());
          }
       });
       return box;
@@ -33,14 +33,14 @@ public abstract class NumberConfigEntry<T extends Number> extends ConfigEntry<T,
 
    protected T getCurrentValue() {
       try {
-         return this.parseValue(this.widget.m_94155_());
+         return this.parseValue(this.widget.get());
       } catch (NumberFormatException var2) {
          return (T)this.value.get();
       }
    }
 
    protected void setCurrentValue(T value) {
-      this.widget.m_94144_(String.valueOf(value));
+      this.widget.setFocused(String.valueOf(value));
    }
 
    protected abstract T parseValue(String var1) throws NumberFormatException;

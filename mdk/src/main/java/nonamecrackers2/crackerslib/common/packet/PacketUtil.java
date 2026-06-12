@@ -1,120 +1,86 @@
 package nonamecrackers2.crackerslib.common.packet;
 
-import com.google.common.collect.Maps;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkDirection;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: SimpleChannel removed, use IPayloadRegistrar;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Bridge utility: registers legacy Packet subclasses as NeoForge 1.21.1 CustomPacketPayloads.
+ * Each Packet subclass is wrapped in a PacketPayload record for network transport.
+ */
 public class PacketUtil {
    @Nullable
    private static Throwable lastException;
-   private static final Map<SimpleChannel, AtomicInteger> CURRENT_IDS = Maps.newHashMap();
    private static final Logger LOGGER = LogManager.getLogger();
 
-   public static <T extends Packet> void registerToClient(SimpleChannel channel, Class<T> clazz) {
-      channel.registerMessage(
-         CURRENT_IDS.computeIfAbsent(channel, c -> new AtomicInteger()).incrementAndGet(),
-         clazz,
-         Packet::encodeCheck,
-         buffer -> Packet.decode(
-            () -> {
-               try {
-                  return clazz.getDeclaredConstructor().newInstance();
-               } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException var2) {
-                  LOGGER.error("Failed to create blank packet from class {}", clazz);
-                  var2.printStackTrace();
-                  return null;
-               }
-            },
-            buffer
-         ),
-         PacketUtil::receiveClientMessage,
-         Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+   /**
+    * Register a packet that travels server → client.
+    */
+   public static <T extends Packet> void registerToClient(PayloadRegistrar registrar, String modId, String name, Class<T> clazz) {
+      CustomPacketPayload.Type<PacketPayload<T>> type = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(modId, name));
+      StreamCodec<FriendlyByteBuf, PacketPayload<T>> codec = StreamCodec.of(
+         (buf, payload) -> Packet.encodeCheck(payload.packet(), buf),
+         buf -> new PacketPayload<>(Packet.decode(instantiate(clazz), buf), type)
       );
+      registrar.playToClient(type, codec, (payload, ctx) -> handlePacket(payload.packet(), ctx));
    }
 
-   public static <T extends Packet> void registerToServer(SimpleChannel channel, Class<T> clazz) {
-      channel.registerMessage(
-         CURRENT_IDS.computeIfAbsent(channel, c -> new AtomicInteger()).incrementAndGet(),
-         clazz,
-         Packet::encodeCheck,
-         buffer -> Packet.decode(
-            () -> {
-               try {
-                  return clazz.getDeclaredConstructor().newInstance();
-               } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException var2) {
-                  LOGGER.error("Failed to create blank packet from class {}", clazz);
-                  var2.printStackTrace();
-                  return null;
-               }
-            },
-            buffer
-         ),
-         PacketUtil::receiveServerMessage,
-         Optional.of(NetworkDirection.PLAY_TO_SERVER)
+   /**
+    * Register a packet that travels client → server.
+    */
+   public static <T extends Packet> void registerToServer(PayloadRegistrar registrar, String modId, String name, Class<T> clazz) {
+      CustomPacketPayload.Type<PacketPayload<T>> type = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(modId, name));
+      StreamCodec<FriendlyByteBuf, PacketPayload<T>> codec = StreamCodec.of(
+         (buf, payload) -> Packet.encodeCheck(payload.packet(), buf),
+         buf -> new PacketPayload<>(Packet.decode(instantiate(clazz), buf), type)
       );
+      registrar.playToServer(type, codec, (payload, ctx) -> handlePacket(payload.packet(), ctx));
    }
 
-   private static <T extends Packet> void receiveClientMessage(T message, Supplier<Context> supplier) {
-      Context context = supplier.get();
-      LogicalSide sideReceived = context.getDirection().getReceptionSide();
-      context.setPacketHandled(true);
-      if (sideReceived != LogicalSide.CLIENT) {
-         LOGGER.warn(message.toString() + " was received on the wrong side: " + sideReceived);
-      } else if (!message.isMessageValid()) {
+   private static <T extends Packet> void handlePacket(T message, IPayloadContext ctx) {
+      if (!message.isMessageValid()) {
          LOGGER.warn(message.toString() + " was invalid");
-      } else {
-         context.enqueueWork(message.getProcessor(context)).handle((v, e) -> {
-            if (e != null) {
-               if (lastException == null || !lastException.getClass().equals(e.getClass())) {
-                  LOGGER.error("Failed to process packet {}: {}", message, e);
-                  e.printStackTrace();
-               }
-
-               lastException = e;
-            }
-
-            return (Void)v;
-         });
+         return;
       }
+      ctx.enqueueWork(message.getProcessor(ctx)).handle((v, e) -> {
+         if (e != null) {
+            if (lastException == null || !lastException.getClass().equals(e.getClass())) {
+               LOGGER.error("Failed to process packet {}: {}", message, e);
+               e.printStackTrace();
+            }
+            lastException = e;
+         }
+         return v;
+      });
    }
 
-   private static <T extends Packet> void receiveServerMessage(T message, Supplier<Context> supplier) {
-      Context context = supplier.get();
-      LogicalSide sideReceived = context.getDirection().getReceptionSide();
-      context.setPacketHandled(true);
-      if (sideReceived != LogicalSide.SERVER) {
-         LOGGER.warn(message.toString() + " was received on the wrong side: " + sideReceived);
-      } else if (!message.isMessageValid()) {
-         LOGGER.warn(message.toString() + " was invalid");
-      } else {
-         ServerPlayer player = context.getSender();
-         if (player == null) {
-            LOGGER.warn("The sending player is not present when " + message.toString() + " was received");
-         } else {
-            context.enqueueWork(message.getProcessor(context)).handle((v, e) -> {
-               if (e != null) {
-                  if (lastException == null || !lastException.getClass().equals(e.getClass())) {
-                     LOGGER.error("Failed to process packet {}: {}", message, e);
-                     e.printStackTrace();
-                  }
-
-                  lastException = e;
-               }
-
-               return (Void)v;
-            });
+   private static <T extends Packet> Supplier<T> instantiate(Class<T> clazz) {
+      return () -> {
+         try {
+            return clazz.getDeclaredConstructor().newInstance();
+         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException ex) {
+            LOGGER.error("Failed to create blank packet from class {}", clazz);
+            ex.printStackTrace();
+            return null;
          }
+      };
+   }
+
+   /**
+    * Wrapper record that makes any legacy Packet a CustomPacketPayload.
+    */
+   public record PacketPayload<T extends Packet>(T packet, CustomPacketPayload.Type<PacketPayload<T>> payloadType) implements CustomPacketPayload {
+      @Override
+      public Type<? extends CustomPacketPayload> type() {
+         return payloadType;
       }
    }
 }

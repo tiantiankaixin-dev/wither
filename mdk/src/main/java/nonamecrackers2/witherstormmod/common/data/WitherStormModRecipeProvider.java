@@ -2,7 +2,7 @@ package nonamecrackers2.witherstormmod.common.data;
 
 import java.util.function.Consumer;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -36,7 +36,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
       super(output);
    }
 
-   protected void buildRecipes(@NotNull Consumer<FinishedRecipe> result) {
+   protected void buildRecipes(@NotNull RecipeOutput result) {
       SpecialRecipeBuilder.special((RecipeSerializer)WitherStormModRecipeSerializers.LOCK_AMULET.get()).save(result, "witherstormmod:amulet_lock");
       unlockedByItems(
             ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, (ItemLike)WitherStormModItems.AMULET.get())
@@ -674,7 +674,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
       return builder;
    }
 
-   private static void reubenPig(Consumer<FinishedRecipe> consumer) {
+   private static void reubenPig(RecipeOutput consumer) {
       CompoundTag pigTag = new CompoundTag();
       pigTag.putInt("Age", -1200);
       CompoundTag name = new CompoundTag();
@@ -685,7 +685,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
          .save(consumer, ResourceLocation.fromNamespaceAndPath("witherstormmod", "summon_pig"));
    }
 
-   private static void cmdTool(Consumer<FinishedRecipe> result, Item required, RecipeCategory category, Item output) {
+   private static void cmdTool(RecipeOutput result, Item required, RecipeCategory category, Item output) {
       AnvilRecipeBuilder.commandBlockTool(required, output).save(result, WitherStormMod.id(getItemName(output) + "_anvil"));
    }
 }

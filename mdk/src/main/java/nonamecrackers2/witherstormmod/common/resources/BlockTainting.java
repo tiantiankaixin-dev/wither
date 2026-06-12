@@ -55,7 +55,7 @@ public class BlockTainting extends SimpleJsonResourceReloadListener {
                ResourceLocation rawEffectId = (ResourceLocation)ResourceLocation.read(GsonHelper.getAsString(object, "potion_effect")).resultOrPartial(m -> {
                   throw new JsonSyntaxException(m);
                }).get();
-               effect = (MobEffect)NeoBuiltInRegistries.MOB_EFFECT.getValue(rawEffectId);
+               effect = BuiltInRegistries.MOB_EFFECT.get(rawEffectId);
                if (effect == null) {
                   throw new JsonSyntaxException("Unknown effect with id '" + rawEffectId + "'");
                }
@@ -100,11 +100,11 @@ public class BlockTainting extends SimpleJsonResourceReloadListener {
                ResourceLocation blockId = (ResourceLocation)ResourceLocation.read(blockEntry).resultOrPartial(ex -> {
                   throw new JsonSyntaxException(ex);
                }).get();
-               if (!NeoBuiltInRegistries.BLOCK.containsKey(blockId)) {
+               if (!BuiltInRegistries.BLOCK.containsKey(blockId)) {
                   throw new JsonSyntaxException("Unknown block with id '" + blockEntry + "'");
                }
 
-               Block block = (Block)NeoBuiltInRegistries.BLOCK.getValue(blockId);
+               Block block = (Block)BuiltInRegistries.BLOCK.get(blockId);
                recipes.put(id, new SingleBlockTaintRecipe(block, effect, replacement, properties));
             }
          } catch (IllegalStateException | JsonSyntaxException var19) {

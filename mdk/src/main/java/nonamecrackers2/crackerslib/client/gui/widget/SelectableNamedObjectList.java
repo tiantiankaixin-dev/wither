@@ -14,8 +14,8 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
 
    public SelectableNamedObjectList(Minecraft pMinecraft, int pWidth, int pHeight, int pY0, int pY1) {
       super(pMinecraft, pWidth, pHeight, pY0, pY1, 9 + 5);
-      this.m_93488_(false);
-      this.m_93496_(false);
+      this.setVisible(false);
+      this.setFocused(false);
    }
 
    public void setOnObjectSelectedCallback(Consumer<T> callback) {
@@ -23,24 +23,24 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
    }
 
    public void addObject(Component name, T object) {
-      this.m_7085_(new SelectableNamedObjectList.Entry<T>(this, name, object));
+      this.removeEntry(new SelectableNamedObjectList.Entry<T>(this, name, object));
    }
 
-   public int m_5759_() {
+   public int getRowWidth() {
       return this.getWidth();
    }
 
    @Nullable
    public T getSelectedObject() {
-      return this.m_93511_() != null ? ((SelectableNamedObjectList.Entry)this.m_93511_()).object : null;
+      return this.getSelected() != null ? ((SelectableNamedObjectList.Entry)this.getSelected()).object : null;
    }
 
-   protected int m_5756_() {
+   protected int getScrollbarPosition() {
       return this.getLeft() + this.getWidth() - 5;
    }
 
-   protected void m_7733_(GuiGraphics stack) {
-      stack.m_280509_(this.f_93393_, this.f_93390_, this.f_93392_, this.f_93391_, 1426063360);
+   protected void renderBackground(GuiGraphics stack) {
+      stack.fill(this.x0, this.y0, this.x1, this.y1, 1426063360);
    }
 
    public void setSelected(SelectableNamedObjectList.Entry<T> pSelected) {
@@ -48,7 +48,7 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
          this.onObjectSelected.accept(pSelected.object);
       }
 
-      super.m_6987_(pSelected);
+      super.setSelected(pSelected);
    }
 
    public static class Entry<T> extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<SelectableNamedObjectList.Entry<T>> {
@@ -62,18 +62,18 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
          this.object = object;
       }
 
-      public Component m_142172_() {
+      public Component getNarration() {
          return this.text;
       }
 
-      public void m_6311_(
+      public void render(
          GuiGraphics stack, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pIsMouseOver, float pPartialTick
       ) {
-         Font font = this.list.f_93386_.f_91062_;
-         stack.m_280430_(font, this.text, pLeft + 2, pTop + pHeight / 2 - 9 / 2, -1);
+         Font font = this.list.minecraft.font;
+         stack.drawString(font, this.text, pLeft + 2, pTop + pHeight / 2 - 9 / 2, -1);
       }
 
-      public boolean m_6375_(double pMouseX, double pMouseY, int pButton) {
+      public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
          if (pButton == 0) {
             this.list.setSelected(this);
             return true;

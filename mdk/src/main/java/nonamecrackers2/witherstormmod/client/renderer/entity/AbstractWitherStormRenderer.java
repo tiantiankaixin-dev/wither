@@ -373,7 +373,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             float alpha = settings.alpha() * baseAlpha;
             Pose entry = stack.last();
             Matrix4f matrix4f = entry.pose();
-            Matrix3f matrix3f = entry.setNormal();
+            Matrix3f matrix3f = entry;
             float u = 0.0F;
             float v = 0.0F;
             float uMax = 1.0F;
@@ -538,7 +538,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          bstack.pushPose();
          bstack.translate(piece.x(), piece.y(), piece.z());
          Matrix4f matrix4f = bstack.last().pose();
-         Matrix3f matrix3f = bstack.last().setNormal();
+         Matrix3f matrix3f = bstack.last();
          float startSize = piece.size();
          float endSize = -piece.size();
          consumer.addVertex(matrix4f, startSize, startSize, endSize)
@@ -880,7 +880,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             Vec3 viewVector = storm.getViewVector(head.getHeadXRot(partialTick), head.getHeadYRot(partialTick), (float)box.getSize());
             Vec3 eyePos = head.getHeadPos();
             Matrix4f matrix4f = stack.last().pose();
-            Matrix3f matrix3f = stack.last().setNormal();
+            Matrix3f matrix3f = stack.last();
             consumer.addVertex(matrix4f, (float)eyePos.x, (float)eyePos.y, (float)eyePos.z)
                .setColor(0, 0, 255, 255)
                .setNormal((float)viewVector.x, (float)viewVector.y, (float)viewVector.z)

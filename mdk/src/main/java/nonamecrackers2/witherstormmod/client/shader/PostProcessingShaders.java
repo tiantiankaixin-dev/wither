@@ -37,7 +37,7 @@ public class PostProcessingShaders implements ResourceManagerReloadListener {
          }
 
          ClientLevel world = this.minecraft.level;
-         world.getCapability(WitherStormModClientCapabilities.FORMIDIBOMB_EFFECTS).ifPresent(effects -> {
+         { var effects = world.getData(WitherStormModClientCapabilities.FORMIDIBOMB_EFFECTS.get());
             if (effects.getStartFuse() > 0) {
                float multiplier = ((float)effects.getStartFuse() - (float)effects.getLife()) / (float)effects.getStartFuse();
 
@@ -48,7 +48,7 @@ public class PostProcessingShaders implements ResourceManagerReloadListener {
                this.aberrationEffect.process(partialTicks);
                this.minecraft.getMainRenderTarget().bindWrite(false);
             }
-         });
+         }
       }
 
       this.minecraft.getProfiler().pop();

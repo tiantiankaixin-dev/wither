@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: /* LazyOptional_REMOVED */ removed, new Capability API returns T or null
 import nonamecrackers2.witherstormmod.common.capability.WitherSicknessTracker;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
@@ -25,14 +25,14 @@ public class WitherSicknessEffect extends MobEffect {
    }
 
    public void applyEffectTick(LivingEntity entity, int amplifier) {
-      LazyOptional<WitherSicknessTracker> trackerOptional = entity.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER);
-      trackerOptional.ifPresent(tracker -> {
+      entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
+      { var tracker = trackerOptional;
          if (!tracker.isBeingCured()) {
             float damagex = entity.getType().is(WitherStormModEntityTags.HIGH_IMMUNITY) ? 1.0F : 2.0F;
             entity.hurt(WitherStormModDamageTypes.source(entity.level().registryAccess(), WitherStormModDamageTypes.WITHER_SICKNESS), damagex);
             this.addToMaxHealthModifier(entity, -0.5, amplifier);
          }
-      });
+      }
       if (!trackerOptional.isPresent()) {
          float damage = entity.getType().is(WitherStormModEntityTags.HIGH_IMMUNITY) ? 1.0F : 2.0F;
          entity.hurt(WitherStormModDamageTypes.source(entity.level().registryAccess(), WitherStormModDamageTypes.WITHER_SICKNESS), damage);
@@ -47,24 +47,24 @@ public class WitherSicknessEffect extends MobEffect {
 
    public void addToMaxHealthModifier(LivingEntity entity, double amount, int amplifier) {
       Attribute attribute = Attributes.MAX_HEALTH;
-      if (this.getAttributeModifiers().containsKey(attribute)) {
-         UUID id = ((AttributeModifier)this.getAttributeModifiers().get(attribute)).getId();
-         AttributeModifier modifier = entity.getAttribute(attribute).getModifier(id);
+      if (this.getAttributeModifiers().containsKey) {
+         UUID id = ((AttributeModifier)this.getAttributeModifiers().get).getId();
+         AttributeModifier modifier = entity.getAttribute.getModifier(id);
          if (modifier != null) {
             double value = modifier.getAmount();
-            value = Math.max(entity.getAttributeBaseValue(attribute) * -1.0 + 1.0, value + amount);
+            value = Math.max(entity.getAttributeBaseValue* -1.0 + 1.0, value + amount);
             this.updateAttributeModifier(entity, Attributes.MAX_HEALTH, value + amount, amplifier);
          }
       }
    }
 
    public void updateAttributeModifier(LivingEntity entity, Attribute attribute, double amount, int amplifier) {
-      UUID id = ((AttributeModifier)this.getAttributeModifiers().get(attribute)).getId();
-      AttributeModifier modifier = entity.getAttribute(attribute).getModifier(id);
-      AttributeInstance instance = entity.getAttributes().getInstance(attribute);
+      UUID id = ((AttributeModifier)this.getAttributeModifiers().get).getId();
+      AttributeModifier modifier = entity.getAttribute.getModifier(id);
+      AttributeInstance instance = entity.getAttributes().getInstance;
       if (instance != null) {
          instance.removeModifier(modifier);
-         AttributeModifier newModifier = new AttributeModifier(modifier.getId(), this.getDescriptionId() + " " + amplifier, amount, modifier.getOperation());
+         AttributeModifier newModifier = new AttributeModifier(modifier.getId(), this.getDescriptionId() + " " + amplifier, amount, modifier.operation());
          instance.addPermanentModifier(newModifier);
       }
    }
@@ -76,13 +76,13 @@ public class WitherSicknessEffect extends MobEffect {
             AttributeModifier modifier = entry.getValue();
             if (!instance.hasModifier(modifier)) {
                instance.addPermanentModifier(
-                  new AttributeModifier(modifier.getId(), this.getDescriptionId() + " " + amplifier, this.getAttributeModifierValue(amplifier, modifier), modifier.getOperation())
+                  new AttributeModifier(modifier.getId(), this.getDescriptionId() + " " + amplifier, this.getAttributeModifierValue(amplifier, modifier), modifier.operation())
                );
             } else {
                AttributeModifier original = instance.getModifier(modifier.getId());
                instance.removeModifier(modifier);
                instance.addPermanentModifier(
-                  new AttributeModifier(original.getId(), this.getDescriptionId() + " " + amplifier, this.getAttributeModifierValue(amplifier, original), original.getOperation())
+                  new AttributeModifier(original.getId(), this.getDescriptionId() + " " + amplifier, this.getAttributeModifierValue(amplifier, original), original.operation())
                );
             }
          }

@@ -89,7 +89,7 @@ public class TiledTextureGenerator extends DefaultedVertexConsumer {
    }
 
    public void endVertex() {
-      Vector3f vector3f = new Matrix3f(this.stack.last().setNormal()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
+      Vector3f vector3f = new Matrix3f(this.stack.last()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
       Direction direction = Direction.getNearest(vector3f.x(), vector3f.y(), vector3f.z());
       Vector4f vector4f = new Matrix4f(this.stack.last().pose()).invert().transform(new Vector4f(this.x, this.y, this.z, 1.0F));
       vector4f.rotateY((float) Math.PI);

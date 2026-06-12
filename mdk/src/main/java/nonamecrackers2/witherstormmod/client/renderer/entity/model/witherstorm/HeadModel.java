@@ -235,7 +235,7 @@ public class HeadModel<T extends LivingEntity & WitherStormBase> {
       stack.translate(this.pivotOffsetX / 8.0F * this.scale, this.pivotOffsetY / 8.0F * this.scale, this.pivotOffsetZ / 8.0F * this.scale);
       com.mojang.blaze3d.vertex.PoseStack.Pose entry = stack.last();
       Matrix4f matrix4f = entry.pose();
-      Matrix3f matrix3f = entry.setNormal();
+      Matrix3f matrix3f = entry;
       VertexConsumer builder = buffer.getBuffer(RenderType.lightning());
       float distance = this.tractorBeamDistance;
       if (tractorBeamCutoff != -1.0) {

@@ -34,7 +34,7 @@ public class FormidibombBlockEntity extends BlockEntity implements IFormidibomb 
       tag.putInt("StartFuse", this.getStartFuse());
    }
 
-   public void load(CompoundTag compound) {
+   public void loadAdditional(CompoundTag compound) {
       super.load(compound);
       if (compound.contains("Fuse")) {
          this.setLifeFuse(compound.getInt("Fuse"));

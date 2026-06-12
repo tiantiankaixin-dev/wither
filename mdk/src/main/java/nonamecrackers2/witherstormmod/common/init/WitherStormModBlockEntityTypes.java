@@ -13,21 +13,21 @@ import nonamecrackers2.witherstormmod.common.blockentity.SuperSupportBeaconBlock
 import nonamecrackers2.witherstormmod.common.blockentity.WitheredPhlegmBlockEntity;
 
 public class WitherStormModBlockEntityTypes {
-   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(NeoBuiltInRegistries.BLOCK_ENTITY_TYPE, "witherstormmod");
-   public static final DeferredHolder<BlockEntityType<FormidibombBlockEntity>> FORMIDIBOMB = BLOCK_ENTITIES.register(
+   public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, "witherstormmod");
+   public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FormidibombBlockEntity>> FORMIDIBOMB = BLOCK_ENTITIES.register(
       "formidibomb", () -> Builder.of(FormidibombBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.FORMIDIBOMB.get()}).build(null)
    );
-   public static final DeferredHolder<BlockEntityType<SuperBeaconBlockEntity>> SUPER_BEACON = BLOCK_ENTITIES.register(
+   public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SuperBeaconBlockEntity>> SUPER_BEACON = BLOCK_ENTITIES.register(
       "super_beacon", () -> Builder.of(SuperBeaconBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.SUPER_BEACON.get()}).build(null)
    );
-   public static final DeferredHolder<BlockEntityType<SuperSupportBeaconBlockEntity>> SUPER_SUPPORT_BEACON = BLOCK_ENTITIES.register(
+   public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SuperSupportBeaconBlockEntity>> SUPER_SUPPORT_BEACON = BLOCK_ENTITIES.register(
       "super_support_beacon",
       () -> Builder.of(SuperSupportBeaconBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.SUPER_SUPPORT_BEACON.get()}).build(null)
    );
-   public static final DeferredHolder<BlockEntityType<FireworkBundleBlockEntity>> FIREWORK_BUNDLE = BLOCK_ENTITIES.register(
+   public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FireworkBundleBlockEntity>> FIREWORK_BUNDLE = BLOCK_ENTITIES.register(
       "firework_bundle", () -> Builder.of(FireworkBundleBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.FIREWORK_BUNDLE.get()}).build(null)
    );
-   public static final DeferredHolder<BlockEntityType<WitheredPhlegmBlockEntity>> WITHERED_PHLEGM = BLOCK_ENTITIES.register(
+   public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WitheredPhlegmBlockEntity>> WITHERED_PHLEGM = BLOCK_ENTITIES.register(
       "withered_phlegm",
       () -> Builder.of(WitheredPhlegmBlockEntity::new, new Block[]{(Block)WitherStormModBlocks.WITHERED_PHLEGM_BLOCK.get()}).build(null)
    );

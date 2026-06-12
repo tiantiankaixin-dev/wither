@@ -2,9 +2,7 @@ package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
@@ -34,7 +32,7 @@ public class UpdateWitherSicknessTrackerMessage extends Packet {
    public UpdateWitherSicknessTrackerMessage(Entity entity) {
       super(true);
       this.id = entity.getId();
-      entity.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> {
+      { var tracker = entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
          this.requiredProximityTicks = tracker.getRawRequiredProximityTicks();
          this.applicationDelay = tracker.getRawApplicationDelay();
          this.cureDelay = tracker.getRawCureDelay();
@@ -54,7 +52,7 @@ public class UpdateWitherSicknessTrackerMessage extends Packet {
          this.totalCures = tracker.getTotalCures();
          this.isBeingCured = tracker.isBeingCured();
          this.isActuallyImmune = tracker.isActuallyImmune();
-      });
+      }
    }
 
    public UpdateWitherSicknessTrackerMessage() {
@@ -187,8 +185,8 @@ public class UpdateWitherSicknessTrackerMessage extends Packet {
       buffer.writeBoolean(this.isActuallyImmune);
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processUpdateWitherSicknessTrackerMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processUpdateWitherSicknessTrackerMessage(this));
    }
 
    public String toString() {

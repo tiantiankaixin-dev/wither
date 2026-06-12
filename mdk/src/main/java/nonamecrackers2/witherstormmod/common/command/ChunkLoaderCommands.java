@@ -47,7 +47,7 @@ public class ChunkLoaderCommands {
 
    private static int get(CommandContext<CommandSourceStack> context, boolean hasStorm) throws CommandSyntaxException {
       CommandSourceStack source = (CommandSourceStack)context.getSource();
-      WitherStormModChunkLoader loader = (WitherStormModChunkLoader)source.getLevel().getCapability(WitherStormModCapabilities.CHUNK_LOADER).orElse(null);
+      WitherStormModChunkLoader loader = (WitherStormModChunkLoader)source.getLevel().getData(WitherStormModCapabilities.CHUNK_LOADER.get());
       if (loader != null) {
          if (!hasStorm) {
             Map<UUID, WitherStormModChunkLoader.Instance> instances = loader.getInstances();
@@ -87,7 +87,7 @@ public class ChunkLoaderCommands {
 
          Entity entity = EntityArgument.getEntity(context, "storm");
          if (entity instanceof WitherStormEntity storm) {
-            WitherStormModChunkLoader.Instance instance = loader.getInstance(storm.getUUID());
+            WitherStormModChunkLoader.Instance instance = loader.getInstance(storm.id());
             if (instance != null) {
                source.sendSuccess(
                   () -> Component.translatable(
@@ -120,7 +120,7 @@ public class ChunkLoaderCommands {
 
    private static int refresh(CommandContext<CommandSourceStack> context) {
       CommandSourceStack source = (CommandSourceStack)context.getSource();
-      WitherStormModChunkLoader loader = (WitherStormModChunkLoader)source.getLevel().getCapability(WitherStormModCapabilities.CHUNK_LOADER).orElse(null);
+      WitherStormModChunkLoader loader = (WitherStormModChunkLoader)source.getLevel().getData(WitherStormModCapabilities.CHUNK_LOADER.get());
       if (loader != null) {
          loader.refreshAllLoaders();
          source.sendSuccess(() -> Component.translatable("commands.witherstormmod.chunkloader.refresh"), true);

@@ -77,15 +77,15 @@ implements LivingEntityAccessor {
     @Inject(method={"dropAllDeathLoot"}, at={@At(value="INVOKE", target="Lnet/minecraft/world/entity/LivingEntity;dropExperience()V")}, cancellable=true)
     public void witherstormmod$preventDrops_dropAllDeathLoot(DamageSource source, CallbackInfo ci) {
         MutableBoolean flag = new MutableBoolean();
-        PhlegmGravestoneHelper.findPotentialPhlegmClusterPos((LivingEntity)((LivingEntity)(Object)this), (DamageSource)source).ifPresent(pos -> {
+        { var pos = PhlegmGravestoneHelper.findPotentialPhlegmClusterPos((LivingEntity)((LivingEntity)(Object)this), (DamageSource)source);
             List<ItemStack> items = this.captureDrops().stream().map(ItemEntity::getItem).toList();
             if (!items.isEmpty()) {
                 PhlegmGravestoneHelper.spawnForEntity((LivingEntity)((LivingEntity)(Object)this), (Vec3)pos, items);
                 this.captureDrops(null);
                 flag.setTrue();
             }
-        });
-        if (flag.getValue().booleanValue()) {
+        }
+        if (flag.get().booleanValue()) {
             ci.cancel();
         }
     }

@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod;
 
+import net.neoforged.fml.loading.FMLEnvironment;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -20,15 +22,12 @@ import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.commands.EntitySelectorManager;
 import net.neoforged.bus.api.IEventBus;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import nonamecrackers2.crackerslib.common.extending.BlockEntityTypeExtender;
 import nonamecrackers2.witherstormmod.api.common.ai.witherstorm.WitherStormWorldInteractions;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
@@ -92,16 +91,15 @@ public class WitherStormMod {
    private static ArtifactVersion version;
    private static boolean isAprilFools;
 
-   public WitherStormMod() {
+   public WitherStormMod(IEventBus modEventBus) {
       ModLoadingContext context = ModLoadingContext.get();
       version = context.getActiveContainer().getModInfo().getVersion();
       context.registerConfig(Type.CLIENT, WitherStormModConfig.CLIENT_SPEC);
       context.registerConfig(Type.COMMON, WitherStormModConfig.COMMON_SPEC);
       context.registerConfig(Type.SERVER, WitherStormModConfig.SERVER_SPEC);
-      IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
       modEventBus.addListener(WitherStormModEntityTypes::addEntityAttributes);
       modEventBus.addListener(WitherStormModEntityTypes::registerSpawnPlacements);
-      modEventBus.addListener(WitherStormModCapabilities::registerCapabilities);
+      WitherStormModCapabilities.ATTACHMENT_TYPES.register(modEventBus);
       modEventBus.addListener(WitherStormModDataEvents::gatherData);
       modEventBus.addListener(WitherStormModConfig::registerPresets);
       modEventBus.addListener(WitherStormModClusterInteractionEvents::registerClusterInteractions);
@@ -130,12 +128,10 @@ public class WitherStormMod {
       WitherStormModPotions.POTIONS.register(modEventBus);
       WitherStormModSymbiontSpellTypes.register(modEventBus);
       IEventBus forgeBus = NeoForge.EVENT_BUS;
-      forgeBus.addGenericListener(Level.class, WitherStormModCapabilities::attachWorldCapabilities);
-      forgeBus.addGenericListener(Entity.class, WitherStormModCapabilities::attachEntityCapabilities);
       forgeBus.addListener(WitherStormModDataEvents::addResourceListeners);
-      DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+      if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(WitherStormModRegisterBlockColors::registerBlockColors);
-            modEventBus.addListener(WitherStormModClientCapabilities::registerCapabilities);
+            WitherStormModClientCapabilities.ATTACHMENT_TYPES.register(modEventBus);
             modEventBus.addListener(ParticleEvents::registerFactories);
             modEventBus.addListener(OverlayRenderers::registerOverlays);
             modEventBus.addListener(WitherStormModRecipeBookTypes::registerRecipeBookCategories);
@@ -145,15 +141,13 @@ public class WitherStormMod {
             modEventBus.addListener(WitherStormModClientConfigEvents::addPackFindersEvent);
             modEventBus.register(WitherStormModRenderers.class);
             modEventBus.register(WitherStormModShaders.class);
-            forgeBus.addGenericListener(Level.class, WitherStormModClientCapabilities::attachWorldCapabilities);
-            forgeBus.addGenericListener(Entity.class, WitherStormModClientCapabilities::attachEntityCapabilities);
             Minecraft mc = Minecraft.getInstance();
             if (mc != null) {
                ReloadableResourceManager manager = (ReloadableResourceManager)mc.getResourceManager();
                manager.registerReloadListener(PostProcessingShaders.INSTANCE);
                manager.registerReloadListener(WitherStormResourceConfigManager.INSTANCE);
             }
-         });
+      }
       int month = DATE.get(ChronoField.MONTH_OF_YEAR);
       int day = DATE.get(ChronoField.DAY_OF_MONTH);
       isAprilFools = month == 4 && day == 1;

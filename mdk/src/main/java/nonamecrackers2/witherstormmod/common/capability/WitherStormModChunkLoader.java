@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.capability;
 
+
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableMap;
@@ -15,8 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.LevelTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.ChunkLoader;
@@ -134,10 +134,8 @@ public class WitherStormModChunkLoader {
       }
 
       @SubscribeEvent
-      public static void onLevelTick(LevelTickEvent event) {
-         if (event.phase == Phase.START) {
-            event.level.getCapability(WitherStormModCapabilities.CHUNK_LOADER).ifPresent(WitherStormModChunkLoader::tick);
-         }
+      public static void onLevelTick(LevelTickEvent.Post event) {
+         event.getLevel().getData(WitherStormModCapabilities.CHUNK_LOADER.get()).tick();
       }
    }
 

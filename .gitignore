@@ -2,6 +2,7 @@
 build/
 run/
 runs/
+会话/
 
 *.log
 errors*.txt

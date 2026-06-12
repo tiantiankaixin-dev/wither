@@ -22,7 +22,7 @@ public class ConfigMenuButtonEvent extends Event implements IModBusEvent {
 
    public void defaultButtonWithSingleCharacter(char character, int color) {
       this.factory = onPress -> {
-         Button button = Button.m_253074_(Component.m_237113_(String.valueOf(character)), onPress).m_253136_();
+         Button button = Button.builder(Component.literal(String.valueOf(character)), onPress).build();
          button.setFGColor(color);
          return button;
       };

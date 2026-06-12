@@ -33,13 +33,13 @@ public interface ConfigListItem extends Comparable<ConfigListItem> {
    boolean matchesSearch(String var1);
 
    static Component shortenText(Component name, int allowedWidth) {
-      Minecraft mc = Minecraft.m_91087_();
+      Minecraft mc = Minecraft.getInstance();
       String text = name.getString();
       int currentSize = 0;
       int lastIndex = -1;
 
       for (int i = 0; i < text.length(); i++) {
-         currentSize += mc.f_91062_.m_92852_(FormattedText.m_130762_(String.valueOf(text.charAt(i)), name.m_7383_()));
+         currentSize += mc.font.width(FormattedText.of(String.valueOf(text.charAt(i)), name.getStyle()));
          lastIndex = i;
          if (currentSize > allowedWidth) {
             break;
@@ -52,9 +52,9 @@ public interface ConfigListItem extends Comparable<ConfigListItem> {
             newText = newText + "...";
          }
 
-         return Component.m_237113_(newText).m_130948_(name.m_7383_());
+         return Component.literal(newText).withStyle(name.getStyle());
       } else {
-         return CommonComponents.f_237098_;
+         return CommonComponents.EMPTY;
       }
    }
 

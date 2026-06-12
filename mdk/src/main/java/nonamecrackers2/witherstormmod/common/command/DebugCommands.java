@@ -27,7 +27,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -43,6 +43,7 @@ import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarge
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModFeatures;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.CreateDebrisMessage;
 import nonamecrackers2.witherstormmod.common.util.EvolutionProfiler;
@@ -180,7 +181,7 @@ public class DebugCommands {
          if (entity instanceof WitherStormEntity storm) {
             phase = storm.getPhase();
             WitherStormModPacketHandlers.MAIN
-               .send(PacketDistributor.DIMENSION.with(() -> storm.level().dimension()), new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
+               .send(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)storm.level()), new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
             source.sendSuccess(() -> Component.translatable("commands.witherstormmod.createDebris.success", new Object[]{storm.getDisplayName()}), true);
          } else {
             source.sendFailure(Component.translatable("commands.witherstormmod.entity.arg.invalid"));
@@ -208,7 +209,7 @@ public class DebugCommands {
 
    private static int resetPlayerBeaconData(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
       ServerPlayer player = EntityArgument.getPlayer(context, "player");
-      player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.setActivatedSuperBeacon(false));
+            player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setActivatedSuperBeacon(false);
       return 0;
    }
 
@@ -262,7 +263,7 @@ public class DebugCommands {
       Entity entity = EntityArgument.getEntity(context, "symbiont");
       ResourceLocation spell = (ResourceLocation)context.getArgument("spell", ResourceLocation.class);
       if (entity instanceof WitheredSymbiontEntity symbiont) {
-         SpellType type = (SpellType)WitherStormModRegistries.SPELL_TYPES.get().getValue(spell);
+         SpellType type = (SpellType)WitherStormModRegistries.SPELL_TYPES.get().get(spell);
          if (type != null) {
             symbiont.setTarget(((CommandSourceStack)context.getSource()).getPlayer());
             symbiont.setAndCastSpell(type);
@@ -278,8 +279,8 @@ public class DebugCommands {
       ServerPlayer player = ((CommandSourceStack)context.getSource()).getPlayer();
       ThrownPotion potion = new ThrownPotion(player.level(), player);
       ItemStack item = new ItemStack(Items.SPLASH_POTION);
-      PotionUtils.setPotion(item, Potions.WATER);
-      PotionUtils.setCustomEffects(item, Lists.newArrayList(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 60, 2)}));
+      PotionContents.setPotion(item, Potions.WATER);
+      PotionContents.setCustomEffects(item, Lists.newArrayList(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 60, 2)}));
       potion.setItem(item);
       player.level().addFreshEntity(potion);
       return 0;

@@ -42,7 +42,7 @@ public class SetEvolutionAttributeCommand {
       if (entity != null) {
          if (entity instanceof WitherStormEntity storm) {
             phase = storm.getPhase();
-            storm.getAttribute((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get()).setBaseValue(value);
+            storm.getAttribute(WitherStormModAttributes.EVOLUTION_SPEED.get()).setBaseValue(value);
             storm.setPhase(storm.getPhase());
             MutableComponent component = Component.translatable("commands.witherstormmod.setevolution.success", new Object[]{value, storm.getDisplayName()});
             source.sendSuccess(() -> component, true);

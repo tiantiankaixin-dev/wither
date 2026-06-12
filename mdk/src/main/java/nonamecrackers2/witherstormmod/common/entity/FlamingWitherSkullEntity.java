@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,11 +30,11 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
@@ -134,14 +136,13 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
    }
 
    protected void explodeAndDiscard() {
-      boolean flag = EventHooks.getMobGriefingEvent(this.level(), this.getOwner());
+      boolean flag = EventHooks.canEntityGrief(this.level(), this.getOwner());
       this.playSound(
          WitherStormModSoundEvents.FLAMING_SKULL_IMPACT.get(), 6.0F, (this.random.nextFloat() - this.random.nextFloat()) * -0.2F + 1.0F
       );
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR
-               .with(TargetPoint.p(this.position().x, this.position().y, this.position().z, 45.0, this.level().dimension())),
+            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), this.position().x, this.position().y, this.position().z, 45.0),
             new ShakeScreenMessage(20.0F, 4.0F)
          );
       this.level()
@@ -164,7 +165,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
             boolean flag = super.hurt(source, amount);
             if (flag && !this.level().isClientSide()) {
                item.hurtAndBreak(120 + this.random.nextInt(140), entity, e -> e.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateDamagingProjectileMessage(this));
+               WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(this), new UpdateDamagingProjectileMessage(this));
             }
 
             return flag;
@@ -184,7 +185,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
 
    @NotNull
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+      return /* TODO: NetworkHooks removed in NeoForge 1.21 */;
    }
 
    public void writeSpawnData(FriendlyByteBuf buffer) {

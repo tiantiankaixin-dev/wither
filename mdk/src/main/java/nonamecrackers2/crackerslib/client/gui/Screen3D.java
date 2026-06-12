@@ -59,18 +59,18 @@ public abstract class Screen3D extends Screen {
       this.renderOrigin = flag;
    }
 
-   public boolean m_7979_(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-      if (!super.m_7979_(pMouseX, pMouseY, pButton, pDragX, pDragY)) {
+   public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+      if (!super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY)) {
          if (pButton == 1) {
             if (this.canRotate()) {
-               this.camRotX = Mth.m_14036_(this.camRotX + (float)pDragY, 90.0F, 270.0F);
-               this.camRotY = (float)Mth.m_14175_(this.camRotY + pDragX);
+               this.camRotX = Mth.clamp(this.camRotX + (float)pDragY, 90.0F, 270.0F);
+               this.camRotY = (float)Mth.wrapDegrees(this.camRotY + pDragX);
                this.onRotate();
             }
          } else if (pButton == 0 && this.canMove()) {
             Vector3f move = new Vector3f((float)(-pDragX) / (this.zoom * this.zoomConstant), (float)pDragY / (this.zoom * this.zoomConstant), 0.0F);
-            move.rotate(Axis.f_252529_.m_252977_(this.camRotX));
-            move.rotate(Axis.f_252392_.m_252977_(this.camRotY));
+            move.rotate(Axis.XP.rotationDegrees(this.camRotX));
+            move.rotate(Axis.YN.rotationDegrees(this.camRotY));
             this.offset.add(move);
             this.onMove();
          }
@@ -81,8 +81,8 @@ public abstract class Screen3D extends Screen {
       }
    }
 
-   public boolean m_6050_(double pMouseX, double pMouseY, double pDelta) {
-      if (!super.m_6050_(pMouseX, pMouseY, pDelta)) {
+   public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+      if (!super.mouseScrolled(pMouseX, pMouseY, pDelta)) {
          if (this.canZoom()) {
             this.zoom = Math.max(this.zoom + (float)pDelta * (this.zoom / 10.0F), 1.0F);
             this.onZoom();
@@ -94,18 +94,18 @@ public abstract class Screen3D extends Screen {
       }
    }
 
-   public void m_88315_(GuiGraphics stack, int pMouseX, int pMouseY, float pPartialTick) {
+   public void render(GuiGraphics stack, int pMouseX, int pMouseY, float pPartialTick) {
       if (this.moveFor > 0.0F) {
          this.moveFor = this.moveFor - pPartialTick * Math.max(this.moveFor / this.moveForTime, 1.0E-4F);
          if (this.moveForTime > 0 && this.moveTo != null && this.moveFrom != null) {
             Vector3f finalPos = this.moveTo.get();
             if (finalPos != null) {
                float transition = this.moveFor / this.moveForTime;
-               float x = Mth.m_14179_(transition, finalPos.x, this.moveFrom.x);
-               float y = Mth.m_14179_(transition, finalPos.y, this.moveFrom.y);
-               float z = Mth.m_14179_(transition, finalPos.z, this.moveFrom.z);
+               float x = Mth.lerp(transition, finalPos.x, this.moveFrom.x);
+               float y = Mth.lerp(transition, finalPos.y, this.moveFrom.y);
+               float z = Mth.lerp(transition, finalPos.z, this.moveFrom.z);
                this.offset = new Vector3f(x, y, z);
-               this.zoom = Mth.m_14179_(transition, this.finalZoom, this.initialZoom);
+               this.zoom = Mth.lerp(transition, this.finalZoom, this.initialZoom);
             }
          }
 
@@ -119,52 +119,52 @@ public abstract class Screen3D extends Screen {
 
       Quaternionf rot = new Quaternionf().rotateX(this.camRotX * (float) (Math.PI / 180.0)).rotateY((float) Math.PI + this.camRotY * (float) (Math.PI / 180.0));
       Matrix4f prevProjMat = RenderSystem.getProjectionMatrix();
-      Window window = this.f_96541_.m_91268_();
+      Window window = this.minecraft.getWindow();
       Matrix4f matrix4f = new Matrix4f()
-         .setOrtho(0.0F, (float)(window.m_85441_() / window.m_85449_()), (float)(window.m_85442_() / window.m_85449_()), 0.0F, 0.0F, this.farPlane);
-      RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.f_276633_);
-      PoseStack modelViewStack = RenderSystem.getModelViewStack();
-      modelViewStack.m_85836_();
-      modelViewStack.m_166856_();
-      RenderSystem.applyModelViewMatrix();
-      stack.m_280168_().m_85836_();
-      stack.m_280168_().m_85837_(this.f_96543_ / 2, this.f_96544_ / 2, 0.0);
-      stack.m_280168_().m_252931_(new Matrix4f().scaling(this.zoom * this.zoomConstant, this.zoom * this.zoomConstant, -1.0F));
-      stack.m_280168_().m_85837_(0.0, 0.0, this.farPlane / 2.0F);
-      stack.m_280168_().m_252781_(rot);
-      stack.m_280168_().m_252880_(this.offset.x, this.offset.y, this.offset.z);
-      Lighting.m_166384_();
-      BufferSource bufferSource = this.f_96541_.m_91269_().m_110104_();
+         .setOrtho(0.0F, (float)(window.getWidth() / window.getGuiScale()), (float)(window.getHeight() / window.getGuiScale()), 0.0F, 0.0F, this.farPlane);
+      RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
+      PoseStack modelViewStack = new PoseStack();
+      modelViewStack.pushPose();
+      modelViewStack.setIdentity();
+      // applyModelViewMatrix removed in 1.21
+      stack.pushPose();
+      stack.translate(this.width / 2, this.height / 2, 0.0);
+      stack.mulPoseMatrix(new Matrix4f().scaling(this.zoom * this.zoomConstant, this.zoom * this.zoomConstant, -1.0F));
+      stack.translate(0.0, 0.0, this.farPlane / 2.0F);
+      stack.mulPose(rot);
+      stack.translate(this.offset.x, this.offset.y, this.offset.z);
+      Lighting.setupForEntityInInventory();
+      BufferSource bufferSource = this.minecraft.renderBuffers().bufferSource();
       if (this.renderOrigin) {
-         VertexConsumer consumer = bufferSource.m_6299_(RenderType.m_110504_());
-         Matrix4f pose = stack.m_280168_().m_85850_().m_252922_();
-         Matrix3f normal = stack.m_280168_().m_85850_().m_252943_();
-         consumer.m_252986_(pose, 0.0F, 0.0F, 0.0F).m_85950_(0.0F, 1.0F, 0.0F, 1.0F).m_252939_(normal, 0.0F, 1.0F, 0.0F).m_5752_();
-         consumer.m_252986_(pose, 0.0F, 1.0F, 0.0F).m_85950_(0.0F, 1.0F, 0.0F, 1.0F).m_252939_(normal, 0.0F, 1.0F, 0.0F).m_5752_();
-         consumer.m_252986_(pose, 0.0F, 0.0F, 0.0F).m_85950_(1.0F, 0.0F, 0.0F, 1.0F).m_252939_(normal, 1.0F, 0.0F, 0.0F).m_5752_();
-         consumer.m_252986_(pose, 1.0F, 0.0F, 0.0F).m_85950_(1.0F, 0.0F, 0.0F, 1.0F).m_252939_(normal, 1.0F, 0.0F, 0.0F).m_5752_();
-         consumer.m_252986_(pose, 0.0F, 0.0F, 0.0F).m_85950_(0.0F, 0.0F, 1.0F, 1.0F).m_252939_(normal, 0.0F, 0.0F, 1.0F).m_5752_();
-         consumer.m_252986_(pose, 0.0F, 0.0F, 1.0F).m_85950_(0.0F, 0.0F, 1.0F, 1.0F).m_252939_(normal, 0.0F, 0.0F, 1.0F).m_5752_();
+         VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
+         Matrix4f pose = stack.last().pose();
+         Matrix3f normal = stack.last().normal();
+         consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F).setNormal(normal, 0.0F, 1.0F, 0.0F);
+         consumer.addVertex(pose, 0.0F, 1.0F, 0.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F).setNormal(normal, 0.0F, 1.0F, 0.0F);
+         consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 0.0F, 1.0F).setNormal(normal, 1.0F, 0.0F, 0.0F);
+         consumer.addVertex(pose, 1.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 0.0F, 1.0F).setNormal(normal, 1.0F, 0.0F, 0.0F);
+         consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 0.0F, 1.0F, 1.0F).setNormal(normal, 0.0F, 0.0F, 1.0F);
+         consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 0.0F, 1.0F, 1.0F).setNormal(normal, 0.0F, 0.0F, 1.0F);
       }
 
-      this.poseMatrix = stack.m_280168_().m_85850_().m_252922_();
-      this.render3D(stack.m_280168_(), bufferSource, pMouseX, pMouseY, this.f_96541_.getPartialTick());
-      bufferSource.m_109911_();
+      this.poseMatrix = stack.last().pose();
+      this.render3D(stack, bufferSource, pMouseX, pMouseY, this.minecraft.getPartialTick());
+      bufferSource.endBatch();
 
-      for (Renderable renderable : this.f_169369_) {
+      for (Renderable renderable : this.renderables) {
          if (renderable instanceof Widget3D widget) {
-            widget.renderAs3D(stack.m_280168_(), bufferSource, pMouseX, pMouseY, this.f_96541_.getPartialTick());
+            widget.renderAs3D(stack, bufferSource, pMouseX, pMouseY, this.minecraft.getPartialTick());
          }
       }
 
-      RenderSystem.clear(256, Minecraft.f_91002_);
-      bufferSource.m_109911_();
-      stack.m_280168_().m_85849_();
-      RenderSystem.clear(256, Minecraft.f_91002_);
-      RenderSystem.setProjectionMatrix(prevProjMat, VertexSorting.f_276633_);
-      modelViewStack.m_85849_();
-      RenderSystem.applyModelViewMatrix();
-      super.m_88315_(stack, pMouseX, pMouseY, pPartialTick);
+      RenderSystem.clear(256, Minecraft.ON_OSX);
+      bufferSource.endBatch();
+      stack.popPose();
+      RenderSystem.clear(256, Minecraft.ON_OSX);
+      RenderSystem.setProjectionMatrix(prevProjMat, VertexSorting.ORTHOGRAPHIC_Z);
+      modelViewStack.popPose();
+      // applyModelViewMatrix removed in 1.21
+      super.render(stack, pMouseX, pMouseY, pPartialTick);
    }
 
    protected void render3D(PoseStack stack, MultiBufferSource buffers, int mouseX, int mouseY, float partialTick) {
@@ -214,44 +214,44 @@ public abstract class Screen3D extends Screen {
       float g,
       float b
    ) {
-      stack.m_85836_();
-      stack.m_252880_(pos.x, pos.y, pos.z);
-      stack.m_85841_(1.0F / zoom, 1.0F / zoom, 1.0F / zoom);
-      stack.m_252781_(Axis.f_252392_.m_252977_(camRotY));
-      stack.m_252781_(Axis.f_252529_.m_252977_(camRotX));
-      stack.m_85841_(1.0F, -1.0F, 1.0F);
-      stack.m_85837_(0.0, 0.0, 10.0);
-      Matrix4f pose = stack.m_85850_().m_252922_();
-      Matrix3f normal = stack.m_85850_().m_252943_();
-      VertexConsumer consumer = buffer.m_6299_(RenderType.m_110452_(tex));
-      consumer.m_252986_(pose, size, -size, size)
-         .m_85950_(r, g, b, 1.0F)
-         .m_7421_(0.0F, 1.0F)
-         .m_86008_(OverlayTexture.f_118083_)
-         .m_85969_(15728880)
-         .m_252939_(normal, 0.0F, 1.0F, 0.0F)
-         .m_5752_();
-      consumer.m_252986_(pose, -size, -size, size)
-         .m_85950_(r, g, b, 1.0F)
-         .m_7421_(1.0F, 1.0F)
-         .m_86008_(OverlayTexture.f_118083_)
-         .m_85969_(15728880)
-         .m_252939_(normal, 0.0F, 1.0F, 0.0F)
-         .m_5752_();
-      consumer.m_252986_(pose, -size, size, size)
-         .m_85950_(r, g, b, 1.0F)
-         .m_7421_(1.0F, 0.0F)
-         .m_86008_(OverlayTexture.f_118083_)
-         .m_85969_(15728880)
-         .m_252939_(normal, 0.0F, 1.0F, 0.0F)
-         .m_5752_();
-      consumer.m_252986_(pose, size, size, size)
-         .m_85950_(r, g, b, 1.0F)
-         .m_7421_(0.0F, 0.0F)
-         .m_86008_(OverlayTexture.f_118083_)
-         .m_85969_(15728880)
-         .m_252939_(normal, 0.0F, 1.0F, 0.0F)
-         .m_5752_();
-      stack.m_85849_();
+      stack.pushPose();
+      stack.translate(pos.x, pos.y, pos.z);
+      stack.scale(1.0F / zoom, 1.0F / zoom, 1.0F / zoom);
+      stack.mulPose(Axis.YN.rotationDegrees(camRotY));
+      stack.mulPose(Axis.XP.rotationDegrees(camRotX));
+      stack.scale(1.0F, -1.0F, 1.0F);
+      stack.translate(0.0, 0.0, 10.0);
+      Matrix4f pose = stack.last().pose();
+      Matrix3f normal = stack.last().normal();
+      VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutout(tex));
+      consumer.addVertex(pose, size, -size, size)
+         .setColor(r, g, b, 1.0F)
+         .setUv(0.0F, 1.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(15728880)
+         .setNormal(normal, 0.0F, 1.0F, 0.0F)
+         ;
+      consumer.addVertex(pose, -size, -size, size)
+         .setColor(r, g, b, 1.0F)
+         .setUv(1.0F, 1.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(15728880)
+         .setNormal(normal, 0.0F, 1.0F, 0.0F)
+         ;
+      consumer.addVertex(pose, -size, size, size)
+         .setColor(r, g, b, 1.0F)
+         .setUv(1.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(15728880)
+         .setNormal(normal, 0.0F, 1.0F, 0.0F)
+         ;
+      consumer.addVertex(pose, size, size, size)
+         .setColor(r, g, b, 1.0F)
+         .setUv(0.0F, 0.0F)
+         .setOverlay(OverlayTexture.NO_OVERLAY)
+         .setLight(15728880)
+         .setNormal(normal, 0.0F, 1.0F, 0.0F)
+         ;
+      stack.popPose();
    }
 }

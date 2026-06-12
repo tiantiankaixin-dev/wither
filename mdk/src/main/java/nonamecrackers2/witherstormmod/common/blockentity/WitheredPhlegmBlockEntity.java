@@ -94,7 +94,7 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
    }
 
    public static void serverTick(Level level, BlockPos pos, BlockState state, WitheredPhlegmBlockEntity entity) {
-      if (!(Boolean)state.getValue(WitheredPhlegmBlock.POWERED) && !entity.getItems().stream().allMatch(Predicate.not(ItemStack::isEmpty))) {
+      if (!(Boolean)state.get(WitheredPhlegmBlock.POWERED) && !entity.getItems().stream().allMatch(Predicate.not(ItemStack::isEmpty))) {
          AABB box = new AABB(pos, pos.offset(1, 1, 1));
 
          for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, box.inflate(8.0))) {
@@ -111,7 +111,7 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       }
    }
 
-   public void load(CompoundTag tag) {
+   public void loadAdditional(CompoundTag tag) {
       super.load(tag);
       this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
       if (!this.tryLoadLootTable(tag)) {

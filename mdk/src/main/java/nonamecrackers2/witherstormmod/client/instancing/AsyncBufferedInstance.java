@@ -1,9 +1,11 @@
 package nonamecrackers2.witherstormmod.client.instancing;
 
+
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -35,7 +37,7 @@ public class AsyncBufferedInstance extends BufferedInstance {
             }
 
             this.buffer = new VertexBuffer(Usage.STATIC);
-            RenderedBuffer rendered = builder.end();
+            MeshData rendered = builder.buildOrThrow();
             this.buffer.bind();
             this.buffer.upload(rendered);
             VertexBuffer.unbind();

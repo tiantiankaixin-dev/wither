@@ -8,8 +8,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
@@ -66,7 +64,7 @@ public class BowelsEffectsManager {
                extraShakeStrength = 4.0F;
             }
 
-            PlayerCameraShaker shaker = (PlayerCameraShaker)player.getCapability(WitherStormModClientCapabilities.CAMERA_SHAKER).orElse(null);
+            PlayerCameraShaker shaker = (PlayerCameraShaker)player.getData(WitherStormModClientCapabilities.CAMERA_SHAKER);
             if (shaker != null) {
                shaker.shake(60.0F, 2.0F + extraShakeStrength);
             }
@@ -79,13 +77,11 @@ public class BowelsEffectsManager {
 
    public static class Events {
       @SubscribeEvent
-      public static void tickAmbience(ClientTickEvent event) {
+      public static void tickAmbience(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
          Minecraft mc = Minecraft.getInstance();
-         if (event.phase == Phase.END) {
-            ClientLevel world = mc.level;
-            if (world != null && !mc.isPaused()) {
-               world.getCapability(WitherStormModClientCapabilities.BOWELS_EFFECTS_MANAGER).ifPresent(manager -> manager.tick());
-            }
+         ClientLevel world = mc.level;
+         if (world != null && !mc.isPaused()) {
+            world.getData(WitherStormModClientCapabilities.BOWELS_EFFECTS_MANAGER).tick();
          }
       }
 

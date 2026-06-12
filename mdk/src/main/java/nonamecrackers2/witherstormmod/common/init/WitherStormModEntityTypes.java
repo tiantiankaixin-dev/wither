@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent.Operation;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent.Operation;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -50,11 +50,11 @@ import nonamecrackers2.witherstormmod.common.entity.WitherStormSegmentEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitherStormModEntityTypes {
-   public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(NeoBuiltInRegistries.ENTITY_TYPE, "witherstormmod");
-   public static final DeferredHolder<EntityType<WitherStormEntity>> WITHER_STORM = register(
+   public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, "witherstormmod");
+   public static final DeferredHolder<EntityType<?>, EntityType<WitherStormEntity>> WITHER_STORM = register(
       "wither_storm", Builder.of(WitherStormEntity::new, MobCategory.MONSTER).sized(0.9F, 3.5F).setTrackingRange(512).clientTrackingRange(512).fireImmune()
    );
-   public static final DeferredHolder<EntityType<BlockClusterEntity>> BLOCK_CLUSTER = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<BlockClusterEntity>> BLOCK_CLUSTER = register(
       "block_cluster",
       Builder.of(BlockClusterEntity::new, MobCategory.MISC)
          .sized(1.0F, 1.0F)
@@ -64,98 +64,98 @@ public class WitherStormModEntityTypes {
          .updateInterval(10)
          .setCustomClientFactory(ClientBlockClusterFactory::make)
    );
-   public static final DeferredHolder<EntityType<WitherStormSegmentEntity>> WITHER_STORM_SEGMENT = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<WitherStormSegmentEntity>> WITHER_STORM_SEGMENT = register(
       "wither_storm_segment",
       Builder.<WitherStormSegmentEntity>of(WitherStormSegmentEntity::new, MobCategory.MONSTER).sized(30.0F, 25.0F).setTrackingRange(512).clientTrackingRange(512).fireImmune()
    );
-   public static final DeferredHolder<EntityType<FlamingWitherSkullEntity>> FLAMING_WITHER_SKULL = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<FlamingWitherSkullEntity>> FLAMING_WITHER_SKULL = register(
       "flaming_wither_skull", Builder.<FlamingWitherSkullEntity>of(FlamingWitherSkullEntity::new, MobCategory.MISC).sized(0.8F, 0.8F).clientTrackingRange(4).updateInterval(10)
    );
-   public static final DeferredHolder<EntityType<BlueFlamingWitherSkullEntity>> BLUE_FLAMING_WITHER_SKULL = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<BlueFlamingWitherSkullEntity>> BLUE_FLAMING_WITHER_SKULL = register(
       "blue_flaming_wither_skull", Builder.<BlueFlamingWitherSkullEntity>of(BlueFlamingWitherSkullEntity::new, MobCategory.MISC).sized(0.8F, 0.8F).clientTrackingRange(4).updateInterval(10)
    );
-   public static final DeferredHolder<EntityType<SickenedZombie>> SICKENED_ZOMBIE = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedZombie>> SICKENED_ZOMBIE = register(
       "sickened_zombie", Builder.of(SickenedZombie::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedSkeleton>> SICKENED_SKELETON = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedSkeleton>> SICKENED_SKELETON = register(
       "sickened_skeleton", Builder.of(SickenedSkeleton::new, MobCategory.MONSTER).sized(0.6F, 1.99F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedSpider>> SICKENED_SPIDER = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedSpider>> SICKENED_SPIDER = register(
       "sickened_spider", Builder.of(SickenedSpider::new, MobCategory.MONSTER).sized(1.6F, 1.1F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedCreeper>> SICKENED_CREEPER = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedCreeper>> SICKENED_CREEPER = register(
       "sickened_creeper", Builder.of(SickenedCreeper::new, MobCategory.MONSTER).sized(0.6F, 1.7F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SuperTNTEntity>> SUPER_TNT = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SuperTNTEntity>> SUPER_TNT = register(
       "super_tnt", Builder.<SuperTNTEntity>of(SuperTNTEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F).clientTrackingRange(10).updateInterval(10)
    );
-   public static final DeferredHolder<EntityType<FormidibombEntity>> FORMIDIBOMB = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<FormidibombEntity>> FORMIDIBOMB = register(
       "formidibomb", Builder.<FormidibombEntity>of(FormidibombEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<CommandBlockEntity>> COMMAND_BLOCK = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<CommandBlockEntity>> COMMAND_BLOCK = register(
       "command_block", Builder.<CommandBlockEntity>of(CommandBlockEntity::new, MobCategory.MISC).fireImmune().sized(1.0F, 1.0F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<WitheredSymbiontEntity>> WITHERED_SYMBIONT = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<WitheredSymbiontEntity>> WITHERED_SYMBIONT = register(
       "withered_symbiont", Builder.of(WitheredSymbiontEntity::new, MobCategory.MONSTER).fireImmune().sized(1.2F, 3.8F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<WitherStormHeadEntity>> WITHER_STORM_HEAD = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<WitherStormHeadEntity>> WITHER_STORM_HEAD = register(
       "wither_storm_head", Builder.of(WitherStormHeadEntity::new, MobCategory.MONSTER).fireImmune().sized(5.0F, 5.0F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<TentacleEntity>> TENTACLE = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<TentacleEntity>> TENTACLE = register(
       "tentacle", Builder.of(TentacleEntity::new, MobCategory.MONSTER).fireImmune().sized(7.5F, 9.5F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedVillager>> SICKENED_VILLAGER = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedVillager>> SICKENED_VILLAGER = register(
       "sickened_villager", Builder.of(SickenedVillager::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedPhantom>> SICKENED_PHANTOM = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedPhantom>> SICKENED_PHANTOM = register(
       "sickened_phantom", Builder.of(SickenedPhantom::new, MobCategory.MONSTER).sized(0.9F, 0.5F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedChicken>> SICKENED_CHICKEN = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedChicken>> SICKENED_CHICKEN = register(
       "sickened_chicken", Builder.of(SickenedChicken::new, MobCategory.MONSTER).sized(0.4F, 0.7F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedParrot>> SICKENED_PARROT = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedParrot>> SICKENED_PARROT = register(
       "sickened_parrot", Builder.of(SickenedParrot::new, MobCategory.MONSTER).sized(0.5F, 0.9F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedWolf>> SICKENED_WOLF = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedWolf>> SICKENED_WOLF = register(
       "sickened_wolf", Builder.of(SickenedWolf::new, MobCategory.MONSTER).sized(0.6F, 0.85F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedCat>> SICKENED_CAT = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedCat>> SICKENED_CAT = register(
       "sickened_cat", Builder.of(SickenedCat::new, MobCategory.MONSTER).sized(0.6F, 0.7F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedCow>> SICKENED_COW = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedCow>> SICKENED_COW = register(
       "sickened_cow", Builder.of(SickenedCow::new, MobCategory.MONSTER).sized(0.9F, 1.4F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedPig>> SICKENED_PIG = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedPig>> SICKENED_PIG = register(
       "sickened_pig", Builder.of(SickenedPig::new, MobCategory.MONSTER).sized(0.9F, 0.9F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedMushroomCow>> SICKENED_MUSHROOM_COW = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedMushroomCow>> SICKENED_MUSHROOM_COW = register(
       "sickened_mushroom_cow", Builder.of(SickenedMushroomCow::new, MobCategory.MONSTER).sized(0.9F, 1.4F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<SickenedBee>> SICKENED_BEE = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedBee>> SICKENED_BEE = register(
       "sickened_bee", Builder.of(SickenedBee::new, MobCategory.MONSTER).sized(0.7F, 0.6F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedPillager>> SICKENED_PILLAGER = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedPillager>> SICKENED_PILLAGER = register(
       "sickened_pillager", Builder.of(SickenedPillager::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedVindicator>> SICKENED_VINDICATOR = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedVindicator>> SICKENED_VINDICATOR = register(
       "sickened_vindicator", Builder.of(SickenedVindicator::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<SickenedIronGolem>> SICKENED_IRON_GOLEM = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedIronGolem>> SICKENED_IRON_GOLEM = register(
       "sickened_iron_golem",
       Builder.of(SickenedIronGolem::new, MobCategory.MONSTER).sized(1.4F, 2.7F).clientTrackingRange(10).fireImmune().immuneTo(new Block[]{Blocks.POWDER_SNOW})
    );
-   public static final DeferredHolder<EntityType<SickenedSnowGolem>> SICKENED_SNOW_GOLEM = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<SickenedSnowGolem>> SICKENED_SNOW_GOLEM = register(
       "sickened_snow_golem",
       Builder.of(SickenedSnowGolem::new, MobCategory.MONSTER).immuneTo(new Block[]{Blocks.POWDER_SNOW}).sized(0.7F, 1.9F).clientTrackingRange(8)
    );
-   public static final DeferredHolder<EntityType<TaintedSlime>> TAINTED_SLIME = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<TaintedSlime>> TAINTED_SLIME = register(
       "tainted_slime", Builder.of(TaintedSlime::new, MobCategory.MONSTER).noSummon().sized(2.04F, 2.04F).clientTrackingRange(10)
    );
-   public static final DeferredHolder<EntityType<TentacleSpike>> TENTACLE_SPIKE = register(
+   public static final DeferredHolder<EntityType<?>, EntityType<TentacleSpike>> TENTACLE_SPIKE = register(
       "tentacle_spike", Builder.<TentacleSpike>of(TentacleSpike::new, MobCategory.MISC).sized(0.5F, 1.4F).clientTrackingRange(6).updateInterval(2)
    );
 
-   private static <T extends Entity> DeferredHolder<EntityType<T>> register(String id, Builder<T> builder) {
+   private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String id, Builder<T> builder) {
       return ENTITIES.register(id, () -> builder.build(ResourceLocation.fromNamespaceAndPath("witherstormmod", id).toString()));
    }
 
@@ -187,7 +187,7 @@ public class WitherStormModEntityTypes {
       event.put(TAINTED_SLIME.get(), TaintedSlime.createAttributes().build());
    }
 
-   public static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
+   public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
       event.register(SICKENED_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
       event.register(SICKENED_SKELETON.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
       event.register(SICKENED_SPIDER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);

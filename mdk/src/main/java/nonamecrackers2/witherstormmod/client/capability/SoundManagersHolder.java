@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.client.audio.ISoundManager;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
@@ -24,16 +22,13 @@ public class SoundManagersHolder {
 
    public static class Events {
       @SubscribeEvent
-      public static void onClientTick(ClientTickEvent event) {
+      public static void onClientTick(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
          Minecraft mc = Minecraft.getInstance();
-         if (event.phase == Phase.START) {
-            ClientLevel world = mc.level;
-            if (world != null && !mc.isPaused()) {
-               world.getCapability(WitherStormModClientCapabilities.SOUND_MANAGERS).ifPresent(holder -> {
-                  for (ISoundManager manager : holder.getManagers()) {
-                     manager.tick();
-                  }
-               });
+         ClientLevel world = mc.level;
+         if (world != null && !mc.isPaused()) {
+            SoundManagersHolder holder = world.getData(WitherStormModClientCapabilities.SOUND_MANAGERS);
+            for (ISoundManager manager : holder.getManagers()) {
+               manager.tick();
             }
          }
       }

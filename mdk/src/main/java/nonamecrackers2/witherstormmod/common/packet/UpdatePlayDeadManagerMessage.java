@@ -1,9 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.PlayDeadManager;
@@ -80,8 +78,8 @@ public class UpdatePlayDeadManagerMessage extends Packet {
       buffer.writeInt(this.revivalPlayerProtection);
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processUpdatePlayDeadManagerMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processUpdatePlayDeadManagerMessage(this));
    }
 
    public String toString() {

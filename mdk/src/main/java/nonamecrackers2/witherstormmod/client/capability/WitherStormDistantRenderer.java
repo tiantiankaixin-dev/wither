@@ -33,8 +33,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: server.timings removed.TimeTracker
@@ -82,7 +80,7 @@ public class WitherStormDistantRenderer {
    public void tickEntity(WitherStormEntity entity) {
       entity.setOldPosAndRot();
       entity.tickCount++;
-      this.minecraft.level.getProfiler().push(() -> NeoBuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
+      this.minecraft.level.getProfiler().push(() -> BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
       if (entity.canUpdate() && entity.level().getEntity(entity.getId()) == null) {
          entity.tick();
       }
@@ -268,14 +266,14 @@ public class WitherStormDistantRenderer {
             storms.add(storm);
          }
       });
-      level.getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER).ifPresent(renderer -> {
+      { var renderer = level.getData(WitherStormModClientCapabilities.DISTANT_RENDERER.get());
          List<Integer> ids = storms.stream().collect(Collectors.mapping(Entity::getId, Collectors.toList()));
          renderer.getKnown().forEach(storm -> {
             if (!ids.contains(storm.getId())) {
                storms.add(storm);
             }
          });
-      });
+      }
       return storms;
    }
 
@@ -292,16 +290,13 @@ public class WitherStormDistantRenderer {
       }
 
       @SubscribeEvent
-      public static void clientTickDistantRenderer(ClientTickEvent event) {
+      public static void clientTickDistantRenderer(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
          Minecraft mc = Minecraft.getInstance();
-         if (event.phase == Phase.START) {
-            ClientLevel world = mc.level;
-            if (world != null) {
-               world.getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER).ifPresent(distantRenderer -> {
-                  if ((!mc.isPaused() || !mc.hasSingleplayerServer()) && (Boolean)WitherStormModConfig.CLIENT.distantRenderer.get()) {
-                     distantRenderer.tick();
-                  }
-               });
+         ClientLevel world = mc.level;
+         if (world != null) {
+            WitherStormDistantRenderer distantRenderer = world.getData(WitherStormModClientCapabilities.DISTANT_RENDERER);
+            if ((!mc.isPaused() || !mc.hasSingleplayerServer()) && (Boolean)WitherStormModConfig.CLIENT.distantRenderer.get()) {
+               distantRenderer.tick();
             }
          }
       }
@@ -310,43 +305,39 @@ public class WitherStormDistantRenderer {
          if ((Boolean)WitherStormModConfig.CLIENT.distantRenderer.get()) {
             Minecraft mc = Minecraft.getInstance();
             ClientLevel world = mc.level;
-            world.getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER)
-               .ifPresent(
-                  distantRenderer -> {
-                     Matrix4f originalMatrix = RenderSystem.getProjectionMatrix();
-                     GameRenderer renderer = mc.gameRenderer;
-                     Camera renderInfo = renderer.getMainCamera();
-                     Matrix4f projection = null;
-                     if (!CompatHelper.isVrActive()) {
-                        double fov = ((IMixinGameRenderer)renderer).callGetFov(renderInfo, partialTicks, true);
-                        projection = new Matrix4f()
-                           .perspective(
-                              (float)(fov * (float) (Math.PI / 180.0)),
-                              (float)mc.getWindow().getWidth() / (float)mc.getWindow().getHeight(),
-                              0.05F,
-                              renderer.getRenderDistance() * 180.0F
-                           );
-                        Matrix4f defaultProjection = renderer.getProjectionMatrix(fov);
-                        Matrix4f invertedDefaultProjection = new Matrix4f(defaultProjection);
-                        invertedDefaultProjection.invert();
-                        Matrix4f distortionMatrix = new Matrix4f(invertedDefaultProjection);
-                        distortionMatrix.mul(originalMatrix);
-                        projection.mul(distortionMatrix);
-                     } else {
-                        projection = new Matrix4f(originalMatrix);
-                        WitherStormDistantRenderer.setClipPlanes(projection, 0.05F, renderer.getRenderDistance() * 180.0F);
-                     }
+            WitherStormDistantRenderer distantRenderer = world.getData(WitherStormModClientCapabilities.DISTANT_RENDERER);
+            Matrix4f originalMatrix = RenderSystem.getProjectionMatrix();
+            GameRenderer renderer = mc.gameRenderer;
+            Camera renderInfo = renderer.getMainCamera();
+            Matrix4f projection = null;
+            if (!CompatHelper.isVrActive()) {
+               double fov = ((IMixinGameRenderer)renderer).callGetFov(renderInfo, partialTicks, true);
+               projection = new Matrix4f()
+                  .perspective(
+                     (float)(fov * (float) (Math.PI / 180.0)),
+                     (float)mc.getWindow().getWidth() / (float)mc.getWindow().getHeight(),
+                     0.05F,
+                     renderer.getRenderDistance() * 180.0F
+                  );
+               Matrix4f defaultProjection = renderer.getProjectionMatrix(fov);
+               Matrix4f invertedDefaultProjection = new Matrix4f(defaultProjection);
+               invertedDefaultProjection.invert();
+               Matrix4f distortionMatrix = new Matrix4f(invertedDefaultProjection);
+               distortionMatrix.mul(originalMatrix);
+               projection.mul(distortionMatrix);
+            } else {
+               projection = new Matrix4f(originalMatrix);
+               WitherStormDistantRenderer.setClipPlanes(projection, 0.05F, renderer.getRenderDistance() * 180.0F);
+            }
 
-                     renderer.resetProjectionMatrix(projection);
-                     Vec3 pos = renderInfo.getPosition();
-                     BufferSource buffer = mc.renderBuffers().bufferSource();
-                     Frustum clippinghelper = new Frustum(stack.last().pose(), projection);
-                     clippinghelper.prepare(pos.x(), pos.y(), pos.z());
-                     distantRenderer.renderTick(stack, buffer, partialTicks, clippinghelper);
-                     buffer.endBatch();
-                     renderer.resetProjectionMatrix(originalMatrix);
-                  }
-               );
+            renderer.resetProjectionMatrix(projection);
+            Vec3 pos = renderInfo.getPosition();
+            BufferSource buffer = mc.renderBuffers().bufferSource();
+            Frustum clippinghelper = new Frustum(stack.last().pose(), projection);
+            clippinghelper.prepare(pos.x(), pos.y(), pos.z());
+            distantRenderer.renderTick(stack, buffer, partialTicks, clippinghelper);
+            buffer.endBatch();
+            renderer.resetProjectionMatrix(originalMatrix);
          }
       }
    }

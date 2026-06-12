@@ -25,7 +25,7 @@ import net.neoforged.neoforge.common.ModConfigSpec.ValueSpec;
 
 public class ConfigArgument implements ArgumentType<String> {
    private static final DynamicCommandExceptionType INVALID_VALUE = new DynamicCommandExceptionType(
-      o -> Component.m_237110_("argument.crackerslib.config.invalidValue", new Object[]{o})
+      o -> Component.translatable("argument.crackerslib.config.invalidValue", new Object[]{o})
    );
    private final List<String> availableOptions;
 
@@ -50,7 +50,7 @@ public class ConfigArgument implements ArgumentType<String> {
    }
 
    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-      return SharedSuggestionProvider.m_82970_(this.getAvailableOptions(), builder);
+      return SharedSuggestionProvider.suggest(this.getAvailableOptions(), builder);
    }
 
    public static <T> ConfigValue<T> get(CommandContext<CommandSourceStack> context, String argName, ModConfigSpec spec) {
@@ -63,9 +63,9 @@ public class ConfigArgument implements ArgumentType<String> {
          allValues.entrySet()
             .stream()
             .filter(
-               e -> e.getValue().getDefault() instanceof Enum<?> enub
+               e -> e.get().getDefault() instanceof Enum<?> enub
                   ? enub.getDeclaringClass().isAssignableFrom(arg)
-                  : e.getValue().getDefault().getClass().isAssignableFrom(arg)
+                  : e.get().getDefault().getClass().isAssignableFrom(arg)
             )
             .map(Entry::getKey)
             .toList()
@@ -78,11 +78,11 @@ public class ConfigArgument implements ArgumentType<String> {
 
    public static class Serializer implements ArgumentTypeInfo<ConfigArgument, ConfigArgument.Serializer.Template> {
       public void serializeToNetwork(ConfigArgument.Serializer.Template template, FriendlyByteBuf buffer) {
-         buffer.m_236828_(template.availableOptions, FriendlyByteBuf::m_130070_);
+         buffer.writeCollection(template.availableOptions, FriendlyByteBuf::writeUtf);
       }
 
       public ConfigArgument.Serializer.Template deserializeFromNetwork(FriendlyByteBuf buffer) {
-         return new ConfigArgument.Serializer.Template(buffer.m_236845_(FriendlyByteBuf::m_130277_));
+         return new ConfigArgument.Serializer.Template(buffer.readList(FriendlyByteBuf::readUtf));
       }
 
       public void serializeToJson(ConfigArgument.Serializer.Template template, JsonObject object) {
@@ -110,7 +110,7 @@ public class ConfigArgument implements ArgumentType<String> {
             return new ConfigArgument(this.availableOptions);
          }
 
-         public ArgumentTypeInfo<ConfigArgument, ?> m_213709_() {
+         public ArgumentTypeInfo<ConfigArgument, ?> type() {
             return Serializer.this;
          }
       }

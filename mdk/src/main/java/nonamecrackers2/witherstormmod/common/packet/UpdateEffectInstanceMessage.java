@@ -1,11 +1,10 @@
 package nonamecrackers2.witherstormmod.common.packet;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
@@ -19,7 +18,7 @@ public class UpdateEffectInstanceMessage extends Packet {
    public UpdateEffectInstanceMessage(int entityId, MobEffectInstance effect, boolean showDuration) {
       super(true);
       this.entityId = entityId;
-      this.effectId = (byte)(MobEffect.getId(effect.getEffect()) & 0xFF);
+      this.effectId = (byte)(BuiltInRegistries.MOB_EFFECT.getId(effect.getEffect()) & 0xFF);
       this.amplifier = (byte)(effect.getAmplifier() & 0xFF);
       if (effect.getDuration() > 32767) {
          this.duration = 32767;
@@ -68,8 +67,8 @@ public class UpdateEffectInstanceMessage extends Packet {
       this.duration = buffer.readVarInt();
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processUpdateEffectInstanceMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processUpdateEffectInstanceMessage(this));
    }
 
    public String toString() {

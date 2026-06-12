@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,7 +33,6 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.AbstractGolem;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.IronGolem.Crackiness;
 import net.minecraft.world.entity.monster.Enemy;
@@ -142,9 +143,9 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -234,7 +235,7 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       if (!this.sickenedCanBeHurt(source, amount)) {
          return false;
       } else {
-         Crackiness crackiness = this.getCrackiness();
+         IronGolem.Crackiness crackiness = this.getCrackiness();
          boolean flag = super.hurt(source, amount);
          if (flag && this.getCrackiness() != crackiness) {
             this.playSound(SoundEvents.IRON_GOLEM_DAMAGE);
@@ -244,8 +245,8 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       }
    }
 
-   public Crackiness getCrackiness() {
-      return Crackiness.byFraction(this.getHealth() / this.getMaxHealth());
+   public int /* Crackiness removed */ getCrackiness() {
+      return IronGolem.Crackiness.NONE(this.getHealth() / this.getMaxHealth());
    }
 
    public void handleEntityEvent(byte event) {

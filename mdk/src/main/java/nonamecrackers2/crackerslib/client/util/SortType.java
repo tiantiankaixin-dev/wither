@@ -15,7 +15,7 @@ public enum SortType {
    private final Comparator<ConfigListItem> sorter;
 
    private SortType(String translationKey, Comparator<ConfigListItem> sorter) {
-      this.name = Component.m_237115_(translationKey);
+      this.name = Component.translatable(translationKey);
       this.sorter = sorter;
    }
 

@@ -405,18 +405,18 @@ public class WitherStormModBlockStatesProvider extends BlockStateProvider {
    }
 
    private void pumpkin(Block block, ResourceLocation side, ResourceLocation front, ResourceLocation top) {
-      ModelFile file = this.models().orientable(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), side, front, top);
+      ModelFile file = this.models().orientable(BuiltInRegistries.BLOCK.getKey(block).getPath(), side, front, top);
       this.horizontalBlock(block, file);
       this.simpleBlockItem(block, file);
    }
 
    private void torch(Block block, ResourceLocation torch) {
-      ModelFile file = ((BlockModelBuilder)this.models().torch(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
+      ModelFile file = ((BlockModelBuilder)this.models().torch(BuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
       this.simpleBlock(block, file);
    }
 
    private void wallTorch(Block block, ResourceLocation torch) {
-      ModelFile file = ((BlockModelBuilder)this.models().torchWall(NeoBuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
+      ModelFile file = ((BlockModelBuilder)this.models().torchWall(BuiltInRegistries.BLOCK.getKey(block).getPath(), torch)).renderType("cutout");
       this.horizontalBlock(block, file, 90);
    }
 }

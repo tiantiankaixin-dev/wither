@@ -87,7 +87,7 @@ public class WitherStormTornEvolvedDevourerModel<T extends WitherStormEntity> ex
       VertexConsumer builder = buffer.getBuffer(RenderType.lightning());
       Pose entry = stack.last();
       Matrix4f matrix4f = entry.pose();
-      Matrix3f matrix3f = entry.setNormal();
+      Matrix3f matrix3f = entry;
       float aR = 0.5F;
       float aG = 0.3F;
       float aB = 0.8F;

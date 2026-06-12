@@ -25,22 +25,22 @@ public record ConfigPreset(Map<String, Object> values, Component name, @Nullable
    }
 
    public Component getTooltip(boolean hasShiftDown) {
-      MutableComponent tooltip = Component.m_237113_(this.name().getString());
+      MutableComponent tooltip = Component.literal(this.name().getString());
       if (!hasShiftDown) {
-         tooltip.m_130946_("\n");
-         tooltip.m_7220_(Component.m_237115_("gui.crackerslib.button.preset.holdShift").m_130940_(ChatFormatting.DARK_GRAY));
+         tooltip.append("\n");
+         tooltip.append(Component.translatable("gui.crackerslib.button.preset.holdShift").withStyle(ChatFormatting.DARK_GRAY));
       } else {
          if (this.description() != null) {
             String[] components = this.description().getString().split("\n");
 
             for (int i = 0; i < components.length; i++) {
-               tooltip.m_130946_("\n");
-               tooltip.m_7220_(Component.m_237113_(components[i].trim()).m_130940_(ChatFormatting.GRAY));
+               tooltip.append("\n");
+               tooltip.append(Component.literal(components[i].trim()).withStyle(ChatFormatting.GRAY));
             }
          }
 
-         tooltip.m_130946_("\n");
-         tooltip.m_7220_(Component.m_237115_("config.crackerslib.preset.note").m_130940_(ChatFormatting.GRAY));
+         tooltip.append("\n");
+         tooltip.append(Component.translatable("config.crackerslib.preset.note").withStyle(ChatFormatting.GRAY));
       }
 
       return tooltip;
@@ -53,8 +53,8 @@ public record ConfigPreset(Map<String, Object> values, Component name, @Nullable
    public static ConfigPreset defaultPreset() {
       return new ConfigPreset(
          ImmutableMap.of(),
-         Component.m_237115_("config.crackerslib.preset.default.title"),
-         Component.m_237115_("config.crackerslib.preset.default.description")
+         Component.translatable("config.crackerslib.preset.default.title"),
+         Component.translatable("config.crackerslib.preset.default.description")
       );
    }
 

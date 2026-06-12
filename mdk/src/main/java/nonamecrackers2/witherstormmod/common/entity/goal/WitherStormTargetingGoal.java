@@ -118,7 +118,7 @@ public class WitherStormTargetingGoal extends Goal {
    protected void findApplicableTarget() {
       double range = this.storm.getPhase() > 3
          ? this.storm.getAttributeValue(Attributes.FOLLOW_RANGE)
-         : this.storm.getAttributeValue((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get());
+         : this.storm.getAttributeValue(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get());
       List<LivingEntity> nearbyEntities = WorldUtil.getPerformantEntitiesOfClass(
          (ServerLevel)this.storm.level(), LivingEntity.class, this.getTargetSearchArea(range)
       );
@@ -145,7 +145,7 @@ public class WitherStormTargetingGoal extends Goal {
 
       this.target = t;
       if (this.target != null) {
-         this.target.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(WitherSicknessTracker::countContact);
+         this.target.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()).countContact();
       }
    }
 }

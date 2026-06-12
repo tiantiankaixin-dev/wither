@@ -4,7 +4,7 @@
  * Could not load the following classes:
  *  com.google.gson.JsonElement
  *  com.google.gson.JsonObject
- *  net.minecraft.data.recipes.FinishedRecipe
+ *  net.minecraft.data.recipes.RecipeOutput
  *  net.minecraft.resources.ResourceLocation
  *  net.minecraft.world.item.Item
  *  net.minecraft.world.item.crafting.Ingredient
@@ -22,7 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -48,8 +48,8 @@ extends SuperBeaconRecipeBuilder {
         return this.result;
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-        consumer.accept((FinishedRecipe)new Result(id, this.condition, this.result, this.count, this.group == null ? "" : this.group, this.ingredients));
+    public void save(RecipeOutput consumer, ResourceLocation id) {
+        consumer.accept((RecipeOutput)new Result(id, this.condition, this.result, this.count, this.group == null ? "" : this.group, this.ingredients));
     }
 
     public static class Result
@@ -66,7 +66,7 @@ extends SuperBeaconRecipeBuilder {
         public void serializeRecipeData(JsonObject object) {
             super.serializeRecipeData(object);
             JsonObject result = new JsonObject();
-            result.addProperty("item", NeoBuiltInRegistries.ITEM.getKey(this.result).toString());
+            result.addProperty("item", BuiltInRegistries.ITEM.getKey(this.result).toString());
             if (this.count > 1) {
                 result.addProperty("count", (Number)this.count);
             }

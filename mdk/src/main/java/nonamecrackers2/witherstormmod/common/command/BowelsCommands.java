@@ -67,15 +67,15 @@ public class BowelsCommands {
       if (entity instanceof WitherStormEntity storm) {
          phase = storm.getPhase();
          ServerLevel bowels = WitherStormMod.bowels(world);
-         bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).ifPresent(manager -> {
-            WitherStormBowelsManager.BowelsInstance instance = manager.get(storm.getUUID());
+         { var manager = bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get());
+            WitherStormBowelsManager.BowelsInstance instance = manager.get(storm.id());
             if (instance != null && !instance.isCompleted()) {
                instance.setCompleted(true);
                source.sendSuccess(() -> Component.translatable("commands.witherstormmod.newBowels.success", new Object[]{storm.getDisplayName()}), true);
             } else {
                source.sendFailure(Component.translatable("commands.witherstormmod.newBowels.failure", new Object[]{storm.getDisplayName()}));
             }
-         });
+         }
       } else {
          source.sendFailure(Component.translatable("commands.witherstormmod.entity.arg.invalid"));
       }

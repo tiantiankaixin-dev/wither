@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
@@ -46,14 +45,13 @@ public class BlueFlamingWitherSkullEntity extends FlamingWitherSkullEntity {
 
    @Override
    protected void explodeAndDiscard() {
-      boolean flag = EventHooks.getMobGriefingEvent(this.level(), this.getOwner());
+      boolean flag = EventHooks.canEntityGrief(this.level(), this.getOwner());
       this.playSound(
          WitherStormModSoundEvents.FLAMING_SKULL_IMPACT.get(), 6.0F, (this.random.nextFloat() - this.random.nextFloat()) * -0.2F + 0.8F
       );
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR
-               .with(TargetPoint.p(this.position().x, this.position().y, this.position().z, 60.0, this.level().dimension())),
+            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), this.position().x, this.position().y, this.position().z, 60.0),
             new ShakeScreenMessage(20.0F, 6.0F)
          );
       this.level()

@@ -4,22 +4,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 
 public class ScreenBlinderEvents {
    @SubscribeEvent
-   public static void onClientTick(ClientTickEvent event) {
-      if (event.phase == Phase.START) {
-         Minecraft mc = Minecraft.getInstance();
-         ClientLevel world = mc.level;
-         if (world != null && !mc.isPaused()) {
-            for (Entity entity : world.entitiesForRendering()) {
-               if (entity instanceof LocalPlayer player) {
-                  player.getCapability(WitherStormModClientCapabilities.SCREEN_BLINDER).ifPresent(blinder -> blinder.tick());
-               }
+   public static void onClientTick(ClientTickEvent.Pre event) {
+      Minecraft mc = Minecraft.getInstance();
+      ClientLevel world = mc.level;
+      if (world != null && !mc.isPaused()) {
+         for (Entity entity : world.entitiesForRendering()) {
+            if (entity instanceof LocalPlayer player) {
+               player.getData(WitherStormModClientCapabilities.SCREEN_BLINDER).tick();
             }
          }
       }

@@ -48,6 +48,7 @@ import nonamecrackers2.witherstormmod.common.entity.bossfight.BossfightPhase;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModDamageTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -115,7 +116,7 @@ public class BowelsBossFightStages {
       .build();
    public static final BossfightPhase<CommandBlockEntity> IDLE = BossfightPhase.<CommandBlockEntity>blank();
    public static final BossfightPhase<CommandBlockEntity> HIT = new BossfightPhase<>((CommandBlockEntity entity) -> {
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ShakeScreenMessage(240.0F, 12.0F));
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ShakeScreenMessage(240.0F, 12.0F));
       entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.LOUD_TREMBLE.get(), SoundSource.AMBIENT, 1.0F, 1.0F);
       entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.BOWELS_LOUD_HURT.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
 
@@ -132,7 +133,7 @@ public class BowelsBossFightStages {
    }, 60);
    public static final BossfightPhase<CommandBlockEntity> MOVE_PODIUM = new BossfightPhase<>((CommandBlockEntity entity) -> {
       entity.createPodiumCluster();
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ShakeScreenMessage(120.0F, 12.0F));
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ShakeScreenMessage(120.0F, 12.0F));
       entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.LOUD_TREMBLE.get(), SoundSource.AMBIENT, 1.0F, 1.0F);
    }, 100).setTickAction((Integer time, CommandBlockEntity entity) -> {
       entity.findPodiumCluster();
@@ -177,7 +178,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 2.0, Operation.ADDITION));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 2.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster && entity.getRandom().nextDouble() >= 0.5) {
                   EquipmentHelper.applyEquipment(monster, difficulty, false);
                }
@@ -187,7 +188,7 @@ public class BowelsBossFightStages {
       .setFinishAction((CommandBlockEntity entity) -> entity.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_POWER_DOWN.get(), 5.0F, 1.0F));
    public static final BossfightPhase<CommandBlockEntity> MOB_WAVE_2 = new BossfightPhase<>(
          (CommandBlockEntity entity) -> {
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ShakeScreenMessage(120.0F, 8.0F));
+            WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ShakeScreenMessage(120.0F, 8.0F));
             entity.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), 5.0F, 1.0F);
             ((ServerLevel)entity.level())
                .sendParticles(
@@ -216,7 +217,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 4.0, Operation.ADDITION));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 4.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster) {
                   EquipmentHelper.applyEquipment(monster, difficulty, false);
                }
@@ -234,7 +235,7 @@ public class BowelsBossFightStages {
                symbiont.setNonBossMode(true);
                symbiont.setRushMode(true);
                symbiont.getAttribute(Attributes.MAX_HEALTH)
-                  .addPermanentModifier(new AttributeModifier("Withered symbiont final boss battle low health", -0.5, Operation.MULTIPLY_BASE));
+                  .addPermanentModifier(new AttributeModifier("Withered symbiont final boss battle low health", -0.5, Operation.ADD_MULTIPLIED_BASE));
                symbiont.setPersistenceRequired();
                symbiont.setHealth(symbiont.getMaxHealth());
                world.sendParticles(
@@ -265,7 +266,7 @@ public class BowelsBossFightStages {
       );
    public static final BossfightPhase<CommandBlockEntity> MOB_WAVE_3 = new BossfightPhase<>(
          (CommandBlockEntity entity) -> {
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ShakeScreenMessage(120.0F, 16.0F));
+            WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ShakeScreenMessage(120.0F, 16.0F));
             entity.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), 6.0F, 1.0F);
             ((ServerLevel)entity.level())
                .sendParticles(
@@ -299,7 +300,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 8.0, Operation.ADDITION));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 8.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster) {
                   EquipmentHelper.applyEquipment(monster, difficulty, true);
                }
@@ -351,8 +352,8 @@ public class BowelsBossFightStages {
       }
    });
    public static final BossfightPhase<CommandBlockEntity> DEATH = new BossfightPhase<>((CommandBlockEntity entity) -> {
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ShakeScreenMessage(240.0F, 14.0F));
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new BlindScreenMessage(240, 120, 80));
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new ShakeScreenMessage(240.0F, 14.0F));
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(entity), new BlindScreenMessage(240, 120, 80));
          entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.LOUD_TREMBLE.get(), SoundSource.AMBIENT, 5.0F, 1.0F);
          entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.BOWELS_LOUD_HURT.get(), SoundSource.HOSTILE, 5.0F, 1.0F);
          entity.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_DESTRUCT.get(), 64.0F, 1.0F);
@@ -394,7 +395,7 @@ public class BowelsBossFightStages {
                      player.setRespawnPosition(null, null, 0.0F, false, false);
                   }
 
-                  player.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(WitherSicknessTracker::cure);
+                  player.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()).cure();
                   List<TamableAnimal> playersPets = player.level()
                      .getEntitiesOfClass(TamableAnimal.class, entity.getBoundingBox().inflate(150.0))
                      .stream()
@@ -407,7 +408,7 @@ public class BowelsBossFightStages {
                         player.connection
                            .send(
                               new ClientboundSoundPacket(
-                                 (Holder)NeoBuiltInRegistries.SOUND_EVENT.getHolder(WitherStormModSoundEvents.WITHER_STORM_DEATH.get()).get(),
+                                 (Holder)BuiltInRegistries.SOUND_EVENT.getHolder(WitherStormModSoundEvents.WITHER_STORM_DEATH.get()).get(),
                                  SoundSource.HOSTILE,
                                  player.getX(),
                                  player.getY(),

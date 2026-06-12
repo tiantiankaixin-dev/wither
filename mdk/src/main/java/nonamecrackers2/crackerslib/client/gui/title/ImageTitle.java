@@ -11,14 +11,14 @@ public record ImageTitle(ResourceLocation location, int imageWidth, int imageHei
    }
 
    public static ImageTitle ofMod(String modid, int imageWidth, int imageHeight, float scale) {
-      int width = Mth.m_14143_(imageWidth * scale);
-      int height = Mth.m_14143_(imageHeight * scale);
+      int width = Mth.floor(imageWidth * scale);
+      int height = Mth.floor(imageHeight * scale);
       return ofMod(modid, width, height, width, height);
    }
 
    @Override
    public void blit(GuiGraphics stack, int x, int y, float partialTicks) {
-      stack.m_280411_(this.location, x, y, this.width, this.height, 0.0F, 0.0F, this.width, this.height, this.imageWidth, this.imageHeight);
+      stack.blit(this.location, x, y, this.width, this.height, 0.0F, 0.0F, this.width, this.height, this.imageWidth, this.imageHeight);
    }
 
    @Override

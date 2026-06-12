@@ -23,7 +23,7 @@ public class StrippableLogBlock extends RotatedPillarBlock {
    public BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility toolAction, boolean simulate) {
       BlockState transformed = super.getToolModifiedState(state, context, toolAction, simulate);
       return transformed == null && ItemAbilities.AXE_STRIP == toolAction
-         ? (BlockState)this.supplier.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, (Axis)state.getValue(RotatedPillarBlock.AXIS))
+         ? (BlockState)this.supplier.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, (Axis)state.get(RotatedPillarBlock.AXIS))
          : transformed;
    }
 }

@@ -10,7 +10,7 @@ import nonamecrackers2.crackerslib.common.command.argument.ConfigArgument;
 
 public class CrackersLibCommandArguments {
    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> TYPES = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPES, "crackerslib");
-   public static final DeferredHolder<ConfigArgument.Serializer> CONFIG_ARGUMENT = TYPES.register(
+   public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ConfigArgument.Serializer> CONFIG_ARGUMENT = TYPES.register(
       "config", () -> (ConfigArgument.Serializer)ArgumentTypeInfos.registerByClass(ConfigArgument.class, new ConfigArgument.Serializer())
    );
 

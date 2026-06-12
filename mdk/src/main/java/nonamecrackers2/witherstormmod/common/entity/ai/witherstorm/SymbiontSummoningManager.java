@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -125,7 +127,7 @@ public class SymbiontSummoningManager {
       }
 
       ServerLevel bowels = WitherStormMod.bowels((ServerLevel)this.entity.level());
-      WitherStormBowelsManager manager = (WitherStormBowelsManager)bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).orElse(null);
+      WitherStormBowelsManager manager = (WitherStormBowelsManager)bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get());
       if (manager != null) {
          WitherStormBowelsManager.BowelsInstance instance = this.entity.getBowelsInstance();
          if (instance != null) {
@@ -167,7 +169,7 @@ public class SymbiontSummoningManager {
                }
             }
 
-            PlayerWitherStormData data = (PlayerWitherStormData)player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).orElse(null);
+            PlayerWitherStormData data = (PlayerWitherStormData)player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get());
             if (data != null) {
                if (data.hasKilledSymbiontRecently()) {
                   return false;
@@ -269,7 +271,7 @@ public class SymbiontSummoningManager {
                );
                this.timeTillCanSummonSymbiont = Mth.clamp((Integer)WitherStormModConfig.SERVER.witherStormSummoningDelay.get(), 1, 20) * 1200
                   + this.entity.getRandom().nextInt(12000);
-               player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.markSummonedSymbiont(this.entity));
+                              player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).markSummonedSymbiont(this.entity);
                this.entity.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_SUMMON.get(), 15.0F, 1.0F);
                entity.playSound(WitherStormModSoundEvents.WITHERED_SYMBIONT_SPAWN.get(), 12.0F, 1.0F);
                break;

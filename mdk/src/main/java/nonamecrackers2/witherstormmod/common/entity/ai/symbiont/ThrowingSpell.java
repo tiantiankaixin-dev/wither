@@ -21,7 +21,7 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
@@ -51,9 +51,9 @@ public class ThrowingSpell extends SymbiontSpell {
             projectile.setXRot(projectile.getXRot() - -20.0F);
             MobEffectInstance potion = getPotion(randomPotion);
             ItemStack stack = new ItemStack(Items.SPLASH_POTION);
-            PotionUtils.setPotion(stack, Potions.WATER);
+            PotionContents.setPotion(stack, Potions.WATER);
             if (potion != null) {
-               PotionUtils.setCustomEffects(stack, Lists.newArrayList(new MobEffectInstance[]{potion}));
+               PotionContents.setCustomEffects(stack, Lists.newArrayList(new MobEffectInstance[]{potion}));
             }
 
             thrownPotion.setItem(stack);

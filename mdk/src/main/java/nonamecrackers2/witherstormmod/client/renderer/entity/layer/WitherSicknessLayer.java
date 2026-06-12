@@ -39,7 +39,7 @@ public class WitherSicknessLayer<T extends LivingEntity, M extends EntityModel<T
       float p_225628_10_
    ) {
       ResourceLocation location = WITHER_SICKNESS_LAYER_64;
-      entity.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER)
+      entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get())
          .ifPresent(
             tracker -> {
                if (!tracker.isActuallyImmune() && (tracker.isInfected() || tracker.isBeingCured()) && !entity.isInvisible()) {

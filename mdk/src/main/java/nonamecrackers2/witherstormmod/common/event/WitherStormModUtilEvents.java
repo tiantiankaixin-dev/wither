@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.event;
 
+
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -15,14 +17,12 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: ItemAttributeModifierEvent removed, use DataComponents.ATTRIBUTE_MODIFIERS
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.LevelTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent.ImpactResult;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
@@ -33,6 +33,7 @@ import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.item.EyeOfTheStormItem;
@@ -50,7 +51,7 @@ public class WitherStormModUtilEvents {
       } else if (!event.getProjectile().level().isClientSide()
          && event.getProjectile() instanceof ThrownPotion projectile
          && event.getRayTraceResult() instanceof BlockHitResult hit) {
-         Potion potion = PotionUtils.getPotion(projectile.getItem());
+         Potion potion = PotionContents.getPotion(projectile.getItem());
          BoundingBox box = new BoundingBox(hit.getBlockPos()).inflatedBy(1);
          WorldTainting.getInstance().convertBlocks(box, projectile.level(), potion);
       }
@@ -66,7 +67,7 @@ public class WitherStormModUtilEvents {
             if (ratio > 0.0F) {
                event.addModifier(
                   Attributes.ATTACK_DAMAGE,
-                  new AttributeModifier(EyeOfTheStormItem.DAMAGE_MODIFIER_ID, "Health damage modifier", (double)(-ratio * 5.0F), Operation.ADDITION)
+                  new AttributeModifier(EyeOfTheStormItem.DAMAGE_MODIFIER_ID, "Health damage modifier", (double)(-ratio * 5.0F), Operation.ADD_VALUE)
                );
             }
          }
@@ -75,9 +76,7 @@ public class WitherStormModUtilEvents {
 
    @SubscribeEvent
    public static void onLevelTick(LevelTickEvent event) {
-      if (event.phase == Phase.END) {
-         event.level.getCapability(WitherStormModCapabilities.WITHER_STORM_AUTO_SPAWNER).ifPresent(WitherStormAutoSpawner::tick);
-      }
+      event.getLevel().getData(WitherStormModCapabilities.WITHER_STORM_AUTO_SPAWNER.get()).tick();
    }
 
    @SubscribeEvent
@@ -107,7 +106,7 @@ public class WitherStormModUtilEvents {
                player.level().explode(player, hit.getX(), hit.getY(), hit.getZ(), 4.0F * power, ExplosionInteraction.NONE);
 
                for (ServerPlayer nearby : player.level().getEntitiesOfClass(ServerPlayer.class, player.getBoundingBox().inflate(32.0))) {
-                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> nearby), new ShakeScreenMessage(40.0F, 2.5F));
+                  WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer(nearby), new ShakeScreenMessage(40.0F, 2.5F));
                }
             }
          }

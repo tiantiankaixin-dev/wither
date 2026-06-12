@@ -1,7 +1,7 @@
 package nonamecrackers2.witherstormmod.mixin;
 
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.ChunkGenerator;

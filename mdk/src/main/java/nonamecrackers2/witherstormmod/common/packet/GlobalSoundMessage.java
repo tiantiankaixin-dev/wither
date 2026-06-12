@@ -3,10 +3,8 @@ package nonamecrackers2.witherstormmod.common.packet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
@@ -39,24 +37,24 @@ public class GlobalSoundMessage extends Packet {
    }
 
    public void encode(FriendlyByteBuf buffer) {
-      buffer.writeUtf(NeoBuiltInRegistries.SOUND_EVENT.getKey(this.event).toString());
+      buffer.writeUtf(BuiltInRegistries.SOUND_EVENT.getKey(this.event).toString());
       buffer.writeFloat(this.pitch);
       buffer.writeFloat(this.volume);
    }
 
    public void decode(FriendlyByteBuf buffer) {
-      this.event = NeoBuiltInRegistries.SOUND_EVENT.getValue(new ResourceLocation(buffer.readUtf()));
+      this.event = BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(buffer.readUtf()));
       this.pitch = buffer.readFloat();
       this.volume = buffer.readFloat();
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processGlobalSoundMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processGlobalSoundMessage(this));
    }
 
    public String toString() {
       return "GlobalSoundMessage[sound_event="
-         + NeoBuiltInRegistries.SOUND_EVENT.getKey(this.event).toString()
+         + BuiltInRegistries.SOUND_EVENT.getKey(this.event).toString()
          + ", pitch="
          + this.pitch
          + ", volume="

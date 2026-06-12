@@ -60,10 +60,10 @@ public class MobConversions extends SimpleJsonResourceReloadListener {
       ResourceLocation id = ResourceLocation.tryParse(rawId);
       if (id == null) {
          throw new JsonSyntaxException("Not a valid id: '" + rawId + "'");
-      } else if (!NeoBuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
+      } else if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
          throw new JsonSyntaxException("Unknown entity with id '" + rawId + "'");
       } else {
-         return (EntityType<?>)NeoBuiltInRegistries.ENTITY_TYPE.getValue(id);
+         return (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(id);
       }
    }
 

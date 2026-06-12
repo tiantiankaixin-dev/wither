@@ -1,7 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
@@ -37,7 +37,7 @@ public class OnHeadAttackedMessage extends Packet {
       return this.headIndex;
    }
 
-   public Runnable getProcessor(Context context) {
+   public Runnable getProcessor(IPayloadContext context) {
       return client(() -> WitherStormModMessageHandlerClient.processOnHeadAttackedMessage(this));
    }
 }

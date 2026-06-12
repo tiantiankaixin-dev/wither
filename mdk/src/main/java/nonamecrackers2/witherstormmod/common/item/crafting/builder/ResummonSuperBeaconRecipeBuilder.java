@@ -3,7 +3,7 @@
  * 
  * Could not load the following classes:
  *  com.google.gson.JsonObject
- *  net.minecraft.data.recipes.FinishedRecipe
+ *  net.minecraft.data.recipes.RecipeOutput
  *  net.minecraft.nbt.CompoundTag
  *  net.minecraft.resources.ResourceLocation
  *  net.minecraft.world.entity.EntityType
@@ -21,7 +21,7 @@ package nonamecrackers2.witherstormmod.common.item.crafting.builder;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -48,15 +48,15 @@ extends SuperBeaconRecipeBuilder {
         return null;
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-        consumer.accept((FinishedRecipe)new Result(id, this.condition, this.entity, this.nbt, this.group == null ? "" : this.group, this.ingredients));
+    public void save(RecipeOutput consumer, ResourceLocation id) {
+        consumer.accept((RecipeOutput)new Result(id, this.condition, this.entity, this.nbt, this.group == null ? "" : this.group, this.ingredients));
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         this.save(consumer, ResummonSuperBeaconRecipeBuilder.defaultRecipeId(this.entity));
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, String string) {
+    public void save(RecipeOutput consumer, String string) {
         ResourceLocation newId;
         ResourceLocation id = ResummonSuperBeaconRecipeBuilder.defaultRecipeId(this.entity);
         if (id.equals((newId = new ResourceLocation(id.getNamespace(), string)))) {
@@ -66,7 +66,7 @@ extends SuperBeaconRecipeBuilder {
     }
 
     private static ResourceLocation defaultRecipeId(EntityType<?> type) {
-        ResourceLocation id = NeoBuiltInRegistries.ENTITY_TYPE.getKey(type);
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         return new ResourceLocation(id.getNamespace(), "summon_" + id.getPath());
     }
 
@@ -83,7 +83,7 @@ extends SuperBeaconRecipeBuilder {
 
         public void serializeRecipeData(JsonObject object) {
             super.serializeRecipeData(object);
-            object.addProperty("entity", NeoBuiltInRegistries.ENTITY_TYPE.getKey(this.entity).toString());
+            object.addProperty("entity", BuiltInRegistries.ENTITY_TYPE.getKey(this.entity).toString());
             if (!this.nbt.isEmpty()) {
                 object.addProperty("nbt", this.nbt.toString());
             }

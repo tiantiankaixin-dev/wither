@@ -33,8 +33,8 @@ public class ConfigCategory implements ConfigListItem {
       this.modid = modid;
       this.path = path;
       this.list = list;
-      this.name = Component.m_237115_("gui." + this.modid + ".config.category." + ConfigListItem.extractNameFromPath(path) + ".title")
-         .m_130948_(Style.f_131099_.m_131136_(true).m_131140_(ChatFormatting.YELLOW));
+      this.name = Component.translatable("gui." + this.modid + ".config.category." + ConfigListItem.extractNameFromPath(path) + ".title")
+         .withStyle(Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW));
    }
 
    public void setSorting(SortType sorting) {
@@ -51,29 +51,29 @@ public class ConfigCategory implements ConfigListItem {
    public void init(List<AbstractWidget> widgets, int x, int y, int width, int height) {
       Component buttonText;
       if (this.isExpanded) {
-         buttonText = Component.m_237113_("-").m_130940_(ChatFormatting.RED);
+         buttonText = Component.literal("-").withStyle(ChatFormatting.RED);
       } else {
-         buttonText = Component.m_237113_("+").m_130940_(ChatFormatting.GREEN);
+         buttonText = Component.literal("+").withStyle(ChatFormatting.GREEN);
       }
 
-      this.expand = Button.m_253074_(buttonText, b -> {
+      this.expand = Button.builder(buttonText, b -> {
          this.isExpanded = !this.isExpanded;
          this.list.rebuildList();
-      }).m_252987_(x + 6, y, 20, 20).m_253136_();
+      }).bounds(x + 6, y, 20, 20).build();
       widgets.add(this.expand);
       if (!this.isExpanded) {
          this.children.forEach(child -> child.init(Lists.newArrayList(), x + 20, y, width, height));
       }
 
       this.x = x;
-      this.displayName = ConfigListItem.shortenText(this.name, width - this.expand.m_5711_() - x - 5);
+      this.displayName = ConfigListItem.shortenText(this.name, width - this.expand.getWidth() - x - 5);
    }
 
    @Override
    public void render(GuiGraphics stack, int x, int y, int width, int height, int mouseX, int mouseY, float partialTicks) {
-      this.expand.m_253211_(y + height / 2 - this.expand.m_93694_() / 2);
-      this.expand.m_88315_(stack, mouseX, mouseY, partialTicks);
-      stack.m_280430_(this.mc.f_91062_, this.displayName, x + 5 + (this.expand.m_252754_() - x) + this.expand.m_5711_(), y + height / 2 - 9 / 2, -1);
+      this.expand.setY(y + height / 2 - this.expand.getHeight() / 2);
+      this.expand.render(stack, mouseX, mouseY, partialTicks);
+      stack.drawString(this.mc.font, this.displayName, x + 5 + (this.expand.getX() - x) + this.expand.getWidth(), y + height / 2 - 9 / 2, -1);
    }
 
    @Override

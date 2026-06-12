@@ -1,7 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 
 public class SuperBeaconSetEffectMessage extends Packet {
@@ -28,7 +28,7 @@ public class SuperBeaconSetEffectMessage extends Packet {
       buffer.writeVarInt(this.effect);
    }
 
-   public Runnable getProcessor(Context context) {
+   public Runnable getProcessor(IPayloadContext context) {
       return () -> WitherStormModMessageHandlerServer.processSuperBeaconSetEffectMessage(this, context.getSender());
    }
 }

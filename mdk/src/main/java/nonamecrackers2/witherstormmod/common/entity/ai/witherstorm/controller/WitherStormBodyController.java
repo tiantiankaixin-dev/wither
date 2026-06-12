@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.controller;
 
+import net.neoforged.fml.loading.FMLEnvironment;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
@@ -111,7 +113,7 @@ public class WitherStormBodyController extends BodyRotationControl {
 
          WitherStormBodyController.UpdateBodyRotMessage message = new WitherStormBodyController.UpdateBodyRotMessage(this.storm);
          ResourceKey<Level> dimension = this.storm.level().dimension();
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toDimension((ServerLevel)this.storm.level()), message);
       }
    }
 
@@ -173,7 +175,7 @@ public class WitherStormBodyController extends BodyRotationControl {
       }
 
       public Runnable getProcessor(Context context) {
-         return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> processMessage(this));
+         return () -> { if (FMLEnvironment.dist == Dist.CLIENT) processMessage(this); };
       }
 
       public String toString() {
@@ -188,12 +190,12 @@ public class WitherStormBodyController extends BodyRotationControl {
             entity.lerpBodyRotationTo(message.xBodyRot, message.yBodyRot, 3);
          }
 
-         world.getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER).ifPresent(distantRenderer -> {
+         { var distantRenderer = world.getData(WitherStormModClientCapabilities.DISTANT_RENDERER.get());
             WitherStormEntity distantEntity = distantRenderer.get(message.entityId);
             if (distantEntity != null) {
                distantEntity.lerpBodyRotationTo(message.xBodyRot, message.yBodyRot, 3);
             }
-         });
+         }
       }
    }
 }

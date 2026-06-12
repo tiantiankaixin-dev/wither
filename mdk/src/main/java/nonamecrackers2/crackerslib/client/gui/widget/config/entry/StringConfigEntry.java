@@ -12,17 +12,17 @@ public class StringConfigEntry extends ConfigEntry<String, EditBox> {
    }
 
    protected EditBox buildWidget(int x, int y, int width, int height) {
-      EditBox box = new EditBox(this.mc.f_91062_, x + 6, y + height / 2 - 10, 60, 20, CommonComponents.f_237098_);
-      box.m_94144_((String)this.value.get());
-      box.m_94151_(value -> this.getValueUpdatedResponder().run());
+      EditBox box = new EditBox(this.mc.font, x + 6, y + height / 2 - 10, 60, 20, CommonComponents.EMPTY);
+      box.setFocused((String)this.value.get());
+      box.setResponder(value -> this.getValueUpdatedResponder().run());
       return box;
    }
 
    protected String getCurrentValue() {
-      return this.widget.m_94155_();
+      return this.widget.get();
    }
 
    protected void setCurrentValue(String value) {
-      this.widget.m_94144_(value);
+      this.widget.setFocused(value);
    }
 }

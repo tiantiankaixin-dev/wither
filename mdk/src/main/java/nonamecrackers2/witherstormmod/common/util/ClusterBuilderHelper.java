@@ -188,7 +188,7 @@ public class ClusterBuilderHelper {
       cluster.populate(states);
 
       for (Entry<BlockPos, BlockState> entryx : states.entrySet()) {
-         BlockState state = entryx.getValue();
+         BlockState state = entryx.get();
          if (state.is(WitherStormModBlocks.WITHERED_PHLEGM_BLOCK.get())) {
             BlockPos pos = entryx.getKey().offset(cluster.getStartPos());
             CompoundTag tileData = new CompoundTag();

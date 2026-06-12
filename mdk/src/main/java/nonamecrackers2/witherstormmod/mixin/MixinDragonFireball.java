@@ -40,9 +40,9 @@ public class MixinDragonFireball extends AbstractHurtingProjectile implements Dr
       throw new UnsupportedOperationException();
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CREATED_FROM_SYMBIONT, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CREATED_FROM_SYMBIONT, false);
    }
 
    @Inject(

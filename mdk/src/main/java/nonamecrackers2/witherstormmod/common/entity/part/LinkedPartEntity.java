@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.part;
 
+
+import net.minecraft.network.syncher.SynchedEntityData;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -69,7 +71,7 @@ public class LinkedPartEntity<T extends Entity, P extends LinkedPartEntity<T, P>
       this.tick();
    }
 
-   protected void defineSynchedData() {
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
    }
 
    protected void readAdditionalSaveData(CompoundTag compound) {

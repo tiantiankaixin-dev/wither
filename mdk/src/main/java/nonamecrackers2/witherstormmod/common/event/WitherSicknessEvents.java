@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.event;
 
+
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import com.google.common.collect.Lists;
 import java.util.List;
 import net.minecraft.server.level.ServerLevel;
@@ -11,9 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.LevelTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: /* LazyOptional_REMOVED */ removed, new Capability API returns T or null
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent.Remove;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.AllowDespawn;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.Clone;
@@ -30,13 +30,14 @@ import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEffects;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.UpdateWitherSicknessTrackerMessage;
 
 public class WitherSicknessEvents {
    @SubscribeEvent
    public static void onWorldTick(LevelTickEvent event) {
-      if (event.level instanceof ServerLevel world && event.phase == Phase.START) {
+      if (event.getLevel() instanceof ServerLevel world) {
          List<WitherStormEntity> storms = Lists.newArrayList();
 
          for (Entity entity : world.getAllEntities()) {
@@ -50,7 +51,7 @@ public class WitherSicknessEvents {
 
          for (Entity entityx : world.getAllEntities()) {
             if (entityx instanceof LivingEntity living) {
-               living.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> {
+               { var tracker = living.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
                   if (!tracker.isActuallyImmune()) {
                      boolean nearby = false;
 
@@ -69,7 +70,7 @@ public class WitherSicknessEvents {
                   }
 
                   tracker.tick();
-               });
+               }
             }
          }
       }
@@ -81,13 +82,13 @@ public class WitherSicknessEvents {
          Player original = event.getOriginal();
          Player player = event.getEntity();
          original.reviveCaps();
-         LazyOptional<WitherSicknessTracker> optional = original.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER);
+         original.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
          if (optional.isPresent()) {
             WitherSicknessTracker oldTracker = (WitherSicknessTracker)optional.resolve().get();
-            player.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> {
+            { var tracker = player.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
                tracker.copyFrom(oldTracker);
                if ((Boolean)WitherStormModConfig.SERVER.keepSicknessAfterRespawn.get()) {
-                  MobEffectInstance effect = original.getEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+                  MobEffectInstance effect = original.getEffect(WitherStormModEffects.WITHER_SICKNESS.get());
                   if (effect != null) {
                      player.addEffect(effect);
                   }
@@ -97,7 +98,7 @@ public class WitherSicknessEvents {
                   tracker.setContacts(0);
                   tracker.setContactDecreaseTicks(0);
                }
-            });
+            }
          }
 
          original.invalidateCaps();
@@ -107,11 +108,11 @@ public class WitherSicknessEvents {
    @SubscribeEvent
    public static void onCheckDespawn(AllowDespawn event) {
       LivingEntity entity = event.getEntity();
-      entity.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> {
+      { var tracker = entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
          if (!tracker.isActuallyImmune() && (tracker.isInfected() || tracker.isBeingCured())) {
             event.setResult(Result.DENY);
          }
-      });
+      }
       if (entity.getType().equals(EntityType.PHANTOM) && (Boolean)WitherStormModConfig.COMMON.phantomsOrbitWitherStorm.get()) {
          List<Phantom> phantoms = entity.level().getEntitiesOfClass(Phantom.class, entity.getBoundingBox().inflate(100.0));
          List<WitherStormEntity> storms = entity.level().getEntitiesOfClass(WitherStormEntity.class, entity.getBoundingBox().inflate(100.0));
@@ -124,25 +125,25 @@ public class WitherSicknessEvents {
    @SubscribeEvent
    public static void onPlayerJoin(PlayerLoggedInEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerChangedDimensions(PlayerLoggedInEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerRespawn(PlayerRespawnEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerStartTracking(StartTracking event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getTarget());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent

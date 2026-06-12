@@ -1,75 +1,75 @@
 package nonamecrackers2.witherstormmod.client.gui.overlay;
 
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import nonamecrackers2.witherstormmod.client.capability.PlayerTractorBeamEffects;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 
 public class OverlayRenderers {
    private static final ResourceLocation TRACTOR_BEAM_OUTLINE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/tractor_beam_outline.png");
 
-   public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+   public static void registerOverlays(RegisterGuiLayersEvent event) {
       event.registerAboveAll(
-         "tractor_beam",
-         (gui, stack, partialTicks, width, height) -> {
+         ResourceLocation.fromNamespaceAndPath("witherstormmod", "tractor_beam"),
+         (graphics, partialTick) -> {
             Minecraft mc = Minecraft.getInstance();
-            gui.setupOverlayRenderState(true, false);
-            mc.player
-               .getCapability(WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS)
-               .ifPresent(
-                  effects -> {
-                     if (effects.getTicksInTractorBeam() > 0
-                        && (Boolean)WitherStormModConfig.CLIENT.renderTractorBeamOverlay.get()
-                        && (Boolean)WitherStormModConfig.CLIENT.renderTractorBeams.get()) {
-                        renderTextureOverlay(stack, TRACTOR_BEAM_OUTLINE, effects.getPercent(), width, height);
-                     }
-                  }
-               );
+            if (mc.player == null) return;
+            PlayerTractorBeamEffects effects = mc.player.getData(WitherStormModClientCapabilities.TRACTOR_BEAM_EFFECTS);
+            if (effects.getTicksInTractorBeam() > 0
+               && (Boolean)WitherStormModConfig.CLIENT.renderTractorBeamOverlay.get()
+               && (Boolean)WitherStormModConfig.CLIENT.renderTractorBeams.get()) {
+               int width = mc.getWindow().getGuiScaledWidth();
+               int height = mc.getWindow().getGuiScaledHeight();
+               renderTextureOverlay(graphics, TRACTOR_BEAM_OUTLINE, effects.getPercent(), width, height);
+            }
          }
       );
-      event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "blinding", (gui, stack, partialTicks, width, height) -> {
-         Minecraft mc = Minecraft.getInstance();
-         gui.setupOverlayRenderState(true, false);
-         mc.player.getCapability(WitherStormModClientCapabilities.SCREEN_BLINDER).ifPresent(effects -> {
-            float fade = effects.getFade(partialTicks);
+      event.registerBelow(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath("witherstormmod", "blinding"),
+         (graphics, partialTick) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null) return;
+            var effects = mc.player.getData(WitherStormModClientCapabilities.SCREEN_BLINDER);
+            float fade = effects.getFade(partialTick);
             if (fade > 0.0F && (Boolean)WitherStormModConfig.CLIENT.blindingEffects.get()) {
+               int width = mc.getWindow().getGuiScaledWidth();
+               int height = mc.getWindow().getGuiScaledHeight();
                renderSolidOverlay(1.0F, 1.0F, 1.0F, fade, width, height);
             }
-         });
-      });
+         }
+      );
       event.registerAboveAll(
-         "bosstheme_watermark",
-         (gui, stack, partialTicks, width, height) -> {
+         ResourceLocation.fromNamespaceAndPath("witherstormmod", "bosstheme_watermark"),
+         (graphics, partialTick) -> {
             Minecraft mc = Minecraft.getInstance();
-            gui.setupOverlayRenderState(true, false);
-            mc.level
-               .getCapability(WitherStormModClientCapabilities.BOSS_THEME_MANAGER)
-               .ifPresent(
-                  manager -> {
-                     int time = manager.getWatermarkTime();
-                     Component watermark = manager.getWatermark();
-                     if (watermark != null && time > 0) {
-                        float fade = 40.0F;
-                        int alpha = Mth.floor(
-                           Math.min(1.0F, (fade - ((float)time - ((float)manager.getWatermarkStartTime() - fade))) / fade)
-                              * Math.min(1.0F, (float)time / fade)
-                              * 255.0F
-                        );
-                        stack.drawString(gui.getFont(), watermark, 10, height - 9 - 8, 16777215 + (alpha << 24));
-                     }
-                  }
+            if (mc.level == null) return;
+            var manager = mc.level.getData(WitherStormModClientCapabilities.BOSS_THEME_MANAGER);
+            int time = manager.getWatermarkTime();
+            Component watermark = manager.getWatermark();
+            if (watermark != null && time > 0) {
+               int width = mc.getWindow().getGuiScaledWidth();
+               int height = mc.getWindow().getGuiScaledHeight();
+               float fadeDuration = 40.0F;
+               int alpha = Mth.floor(
+                  Math.min(1.0F, (fadeDuration - ((float)time - ((float)manager.getWatermarkStartTime() - fadeDuration))) / fadeDuration)
+                     * Math.min(1.0F, (float)time / fadeDuration)
+                     * 255.0F
                );
+               graphics.drawString(mc.font, watermark, 10, height - 9 - 8, 16777215 + (alpha << 24));
+            }
          }
       );
    }
@@ -86,7 +86,7 @@ public class OverlayRenderers {
 
    private static void renderSolidOverlay(float r, float g, float b, float alpha, int width, int height) {
       Tesselator tesselator = Tesselator.getInstance();
-      BufferBuilder builder = tesselator.getBuilder();
+      BufferBuilder builder = tesselator;
       RenderSystem.disableDepthTest();
       RenderSystem.depthMask(false);
       RenderSystem.defaultBlendFunc();
@@ -96,7 +96,7 @@ public class OverlayRenderers {
       builder.addVertex((double)width, (double)height, 0.0).setColor(r, g, b, alpha);
       builder.addVertex((double)width, 0.0, 0.0).setColor(r, g, b, alpha);
       builder.addVertex(0.0, 0.0, 0.0).setColor(r, g, b, alpha);
-      tesselator.end();
+      BufferUploader.drawWithShader(buffer.buildOrThrow());
       RenderSystem.depthMask(true);
       RenderSystem.enableDepthTest();
    }

@@ -18,9 +18,9 @@ public class BooleanConfigEntry extends ConfigEntry<Boolean, CyclableButton<Bool
          x + 6, y, 60, Lists.newArrayList(new Boolean[]{Boolean.FALSE, Boolean.TRUE}), (Boolean)this.value.get(), value -> {
             Component message;
             if (value) {
-               message = Component.m_237113_("ON").m_130940_(ChatFormatting.GREEN);
+               message = Component.literal("ON").withStyle(ChatFormatting.GREEN);
             } else {
-               message = Component.m_237113_("OFF").m_130940_(ChatFormatting.RED);
+               message = Component.literal("OFF").withStyle(ChatFormatting.RED);
             }
 
             return message;
@@ -31,7 +31,7 @@ public class BooleanConfigEntry extends ConfigEntry<Boolean, CyclableButton<Bool
    }
 
    protected Boolean getCurrentValue() {
-      return this.widget.getValue();
+      return this.widget.get();
    }
 
    protected void setCurrentValue(Boolean value) {

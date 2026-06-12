@@ -45,8 +45,8 @@ public abstract class MobConversionProvider implements DataProvider {
       this.addConversions();
       return CompletableFuture.allOf(this.conversions.values().stream().map(conversion -> {
          JsonObject object = new JsonObject();
-         ResourceLocation from = NeoBuiltInRegistries.ENTITY_TYPE.getKey(conversion.from());
-         ResourceLocation to = NeoBuiltInRegistries.ENTITY_TYPE.getKey(conversion.to());
+         ResourceLocation from = BuiltInRegistries.ENTITY_TYPE.getKey(conversion.from());
+         ResourceLocation to = BuiltInRegistries.ENTITY_TYPE.getKey(conversion.to());
          object.addProperty("from", from.toString());
          object.addProperty("to", to.toString());
          object.addProperty("convert_from_sickness", conversion.canBeConvertedFromWitherSickness());

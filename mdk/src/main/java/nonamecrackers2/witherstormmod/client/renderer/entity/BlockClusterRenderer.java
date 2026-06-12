@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.client.renderer.entity;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Map;
@@ -73,7 +75,7 @@ public class BlockClusterRenderer extends EntityRenderer<BlockClusterEntity> {
                entity::isRemoved,
                (s, c, p, o, unusedR, unusedG, unusedB, a) -> {
                   for (Entry<BlockPos, BlockState> blockEntry : entry.getValue().entrySet()) {
-                     BlockState statex = blockEntry.getValue();
+                     BlockState statex = blockEntry.get();
                      BlockPos relativePosx = blockEntry.getKey();
                      s.pushPose();
                      s.translate(
@@ -121,7 +123,7 @@ public class BlockClusterRenderer extends EntityRenderer<BlockClusterEntity> {
                CompoundTag data = entity.getTileDataFromOffsetPos(relativePos);
                if (data != null) {
                   String id = data.getString("id");
-                  BlockEntity tile = ((BlockEntityType)NeoBuiltInRegistries.BLOCK_ENTITY_TYPE.getValue(new ResourceLocation(id))).create(pos, state);
+                  BlockEntity tile = ((BlockEntityType)BuiltInRegistries.BLOCK_ENTITY_TYPE.get(new ResourceLocation(id))).create(pos, state);
                   BlockEntityRenderer<BlockEntity> tileRenderer = minecraft.getBlockEntityRenderDispatcher().getRenderer(tile);
                   tile.setLevel(world);
                   tile.load(data);

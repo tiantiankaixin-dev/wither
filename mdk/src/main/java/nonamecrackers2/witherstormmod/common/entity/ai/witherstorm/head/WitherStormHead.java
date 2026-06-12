@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.head;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -22,6 +24,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormSegmentEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCriteriaTriggers;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.NotifyHeadInjuryMessage;
@@ -622,9 +625,9 @@ public abstract class WitherStormHead {
          this.headHits = 0;
          NotifyHeadInjuryMessage message = new NotifyHeadInjuryMessage(this.storm, this.headIndex);
          ResourceKey<Level> dimension = this.storm.level().dimension();
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toDimension((ServerLevel)this.storm.level()), message);
          if (entity instanceof ServerPlayer player && this.storm.alreadyATarget(entity, true)) {
-            entity.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA)
+            entity.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get())
                .ifPresent(data -> data.makeInvulnerable((Integer)WitherStormModConfig.SERVER.headEscapeTime.get() * 20 + player.getRandom().nextInt(80)));
             WitherStormModCriteriaTriggers.ESCAPE_STORM.trigger(player, this.storm);
          }
@@ -634,7 +637,7 @@ public abstract class WitherStormHead {
    public boolean checkAndCountAttack() {
       if ((Boolean)WitherStormModConfig.SERVER.canAttackHeads.get()) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.TRACKING_ENTITY.with(() -> this.storm), new OnHeadAttackedMessage(this.storm.getId(), this.headIndex));
+            .send(SimpleChannel.toTracking(this.storm), new OnHeadAttackedMessage(this.storm.getId(), this.headIndex));
          this.headHits++;
          if (this.headHits >= this.requiredHits) {
             return true;

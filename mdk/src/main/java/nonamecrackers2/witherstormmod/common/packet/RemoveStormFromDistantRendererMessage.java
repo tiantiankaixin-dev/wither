@@ -1,11 +1,10 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.google.common.collect.Lists;
 import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
@@ -37,8 +36,8 @@ public class RemoveStormFromDistantRendererMessage extends DistantRendererMessag
       this.id = buffer.readVarInt();
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processRemoveStormFromDistantRendererMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processRemoveStormFromDistantRendererMessage(this));
    }
 
    public String toString() {

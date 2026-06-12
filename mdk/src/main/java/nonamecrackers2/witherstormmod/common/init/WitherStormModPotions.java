@@ -8,14 +8,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class WitherStormModPotions {
-   public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(NeoBuiltInRegistries.POTION, "witherstormmod");
-   public static final DeferredHolder<Potion> WITHER = POTIONS.register(
+   public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, "witherstormmod");
+   public static final DeferredHolder<Potion, Potion> WITHER = POTIONS.register(
       "wither", () -> new Potion(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 900)})
    );
-   public static final DeferredHolder<Potion> LONG_WITHER = POTIONS.register(
+   public static final DeferredHolder<Potion, Potion> LONG_WITHER = POTIONS.register(
       "long_wither", () -> new Potion(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 1800)})
    );
-   public static final DeferredHolder<Potion> STRONG_WITHER = POTIONS.register(
+   public static final DeferredHolder<Potion, Potion> STRONG_WITHER = POTIONS.register(
       "strong_wither", () -> new Potion(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 432, 1)})
    );
 }

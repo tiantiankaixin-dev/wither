@@ -14,15 +14,15 @@ public class ExampleEvents {
       event.exclude(ExampleConfig.CLIENT.exampleListInteger);
       event.registerPreset(
          Type.SERVER,
-         ConfigPreset.builder(Component.m_237113_("Another Example"))
-            .setDescription(Component.m_237113_("Just another epic example preset"))
+         ConfigPreset.builder(Component.literal("Another Example"))
+            .setDescription(Component.literal("Just another epic example preset"))
             .setPreset(ExampleConfig.CLIENT.exampleEnum, ExampleConfig.ExampleEnum.GOING)
             .build()
       );
       event.registerPreset(
          Type.SERVER,
-         ConfigPreset.builder(Component.m_237113_("Example"))
-            .setDescription(Component.m_237113_("Just an example preset"))
+         ConfigPreset.builder(Component.literal("Example"))
+            .setDescription(Component.literal("Just an example preset"))
             .setPreset(ExampleConfig.CLIENT.exampleBoolean, false)
             .setPreset(ExampleConfig.CLIENT.exampleDouble, 0.5)
             .setPreset(ExampleConfig.CLIENT.exampleInteger, 90)

@@ -139,7 +139,7 @@ public class SuperBeaconRenderer extends AbstractSuperBeaconRenderer<SuperBeacon
       stack.mulPose(Axis.YP.rotationDegrees(angle));
       stack.translate((double)xOffset, 0.0, 0.0);
       Matrix4f pose = stack.last().pose();
-      Matrix3f normal = stack.last().setNormal();
+      Matrix3f normal = stack.last();
       consumer.addVertex(pose, 0.0F, 0.0F, zOffset).setColor(r, g, b, 255).setNormal(0.0F, 0.0F, 1.0F);
       consumer.addVertex(pose, 0.0F, 0.0F, zOffset + distance).setColor(r, g, b, 255).setNormal(0.0F, 0.0F, 1.0F);
       stack.popPose();

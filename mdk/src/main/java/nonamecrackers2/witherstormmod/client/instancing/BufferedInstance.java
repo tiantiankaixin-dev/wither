@@ -1,11 +1,13 @@
 package nonamecrackers2.witherstormmod.client.instancing;
 
+
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
@@ -63,10 +65,10 @@ public class BufferedInstance {
 
       this.buffer = new VertexBuffer(Usage.STATIC);
       RenderType type = this.getRenderType();
-      BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+      BufferBuilder buffer = Tesselator.getInstance();
       buffer.begin(type.mode(), type.format());
       this.bufferInto(stack, buffer, 15728880, OverlayTexture.NO_OVERLAY, -1);
-      RenderedBuffer rendered = buffer.end();
+      MeshData rendered = buffer.buildOrThrow();
       this.buffer.bind();
       this.buffer.upload(rendered);
       VertexBuffer.unbind();

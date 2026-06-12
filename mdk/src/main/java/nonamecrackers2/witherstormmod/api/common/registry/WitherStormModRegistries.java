@@ -3,7 +3,7 @@ package nonamecrackers2.witherstormmod.api.common.registry;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.Registry;
+import net.minecraft.core.Registry;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import nonamecrackers2.witherstormmod.WitherStormMod;

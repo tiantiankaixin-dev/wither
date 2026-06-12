@@ -67,7 +67,7 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
       Pose entry = stack.last();
       if (health < 5 && health > 0) {
          RenderType type = (RenderType)ModelBakery.DESTROY_TYPES.get(health * 2);
-         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry.pose(), entry.setNormal(), 1.0F);
+         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry.pose(), entry, 1.0F);
          blockRenderer.getModelRenderer()
             .renderModel(
                entry,

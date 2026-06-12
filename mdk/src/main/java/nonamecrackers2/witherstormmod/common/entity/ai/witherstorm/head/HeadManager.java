@@ -148,7 +148,7 @@ public class HeadManager {
 
    public void setOtherHeadsDisabled(boolean value) {
       this.storm.getEntityData().set(OTHER_HEADS_DISABLED, value);
-      this.storm.getSegmentsManager().ifPresent(manager -> {
+      { var manager = this.storm.getSegmentsManager().get();
          WitherStormSegmentEntity[] segments = manager.getSegments();
 
          for (int i = 0; i < segments.length; i++) {
@@ -156,7 +156,7 @@ public class HeadManager {
                segments[i].setOtherHeadsDisabled(value);
             }
          }
-      });
+      }
    }
 
    public void setHeadInjuryTime(int time) {

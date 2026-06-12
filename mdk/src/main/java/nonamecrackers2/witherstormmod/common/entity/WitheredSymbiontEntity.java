@@ -120,6 +120,10 @@
  */
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
+import net.neoforged.fml.loading.FMLEnvironment;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -212,7 +216,6 @@ import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.registries.Registry;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
@@ -230,6 +233,7 @@ import nonamecrackers2.witherstormmod.common.entity.goal.symbiont.UseSpellGoal;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -294,13 +298,13 @@ implements BossThemeEntity {
         return 1.0f;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BOSSFIGHT_STAGE, BossfightStage.ATTACKING);
-        this.entityData.define(SPELL_TYPE, ((SpellType)WitherStormModSymbiontSpellTypes.EMPTY.get()));
-        this.entityData.define(NON_BOSS_MODE, false);
-        this.entityData.define(RUSH_MODE, false);
-        this.entityData.define(SHOULD_NOT_GO_OVER_HALF, true);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BOSSFIGHT_STAGE, BossfightStage.ATTACKING);
+        builder.define(SPELL_TYPE, ((SpellType)WitherStormModSymbiontSpellTypes.EMPTY.get()));
+        builder.define(NON_BOSS_MODE, false);
+        builder.define(RUSH_MODE, false);
+        builder.define(SHOULD_NOT_GO_OVER_HALF, true);
     }
 
     protected void registerGoals() {
@@ -379,7 +383,7 @@ implements BossThemeEntity {
             this.setStage(BossfightStage.values()[ordinal]);
         }
         this.setStageTicks(compound.getInt("StageTicks"));
-        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((Registry)WitherStormModRegistries.SPELL_TYPES.get()).getValue(loc)) != null) {
+        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((Registry)WitherStormModRegistries.SPELL_TYPES.get()).get(loc)) != null) {
             this.setSpell(type);
         }
         this.spellCastingTime = compound.getInt("SpellCastingTicks");
@@ -721,7 +725,7 @@ implements BossThemeEntity {
         if (!this.level().isClientSide() && this.spellInstance != null) {
             this.spellInstance.start(this.getTarget());
             this.spellCastingTime = this.getSpell().spellTime();
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new SetSpellTimeMessage(this.getId(), this.spellCastingTime));
+            WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(this), new SetSpellTimeMessage(this.getId(), this.spellCastingTime));
         }
     }
 
@@ -860,7 +864,7 @@ implements BossThemeEntity {
                     List<Player> players = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(20.0), EntitySelector.NO_SPECTATORS);
                     if (players.size() > 1 && !this.fightContributors.isEmpty()) {
                         for (UUID id : this.fightContributors) {
-                            players.stream().filter(p -> p.getUUID().equals(id)).findFirst().ifPresent(player -> {
+                            { var player = players.stream().filter(p -> p.id().equals(id)).findFirst();
                                 for (ItemStack stack : this.dropItems) {
                                     if (stack.isEmpty()) continue;
                                     ItemStack copy = stack.copy();
@@ -870,7 +874,7 @@ implements BossThemeEntity {
                                     entity.moveTo(player.position());
                                     entity.setTarget(id);
                                 }
-                            });
+                            }
                         }
                     } else {
                         this.dropDrops();
@@ -899,15 +903,15 @@ implements BossThemeEntity {
         LivingEntity livingEntity = this.getKillCredit();
         if (livingEntity instanceof Player) {
             Player player = (Player)livingEntity;
-            player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> {
+            { var data = player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get());
                 WitherStormEntity owner = this.getOwner();
                 if (owner != null) {
                     data.markKilledSymbiont(owner);
                 }
-            });
+            }
         }
         for (Player player : this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(20.0))) {
-            player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.makeInvulnerable(Mth.clamp((int)((Integer)WitherStormModConfig.SERVER.playerInvulnerableTime.get()), (int)1, (int)10) * 1200 + player.getRandom().nextInt(1200)));
+                        player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).makeInvulnerable(Mth.clamp((int)((Integer)WitherStormModConfig.SERVER.playerInvulnerableTime.get()), (int)1, (int)10) * 1200 + player.getRandom().nextInt(1200));
         }
     }
 
@@ -1013,7 +1017,7 @@ implements BossThemeEntity {
         double healthAddition;
         List nearbyPlayers = level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(150.0), e -> e.isAlive() && !e.isSpectator());
         if (nearbyPlayers.size() > 1 && (healthAddition = (double)nearbyPlayers.size() * (Double)WitherStormModConfig.SERVER.healthScalePerPlayer.get()) > 0.0) {
-            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("Health scaling", healthAddition, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("Health scaling", healthAddition, AttributeModifier.Operation.ADD_VALUE));
             this.setHealth(this.getMaxHealth());
         }
         return super.finalizeSpawn(level, difficulty, spawnType, groupData, tag);
@@ -1190,16 +1194,17 @@ implements BossThemeEntity {
         }
 
         public Runnable getProcessor(NetworkEvent.Context context) {
-            return () -> DistExecutor.unsafeRunWhenOn((Dist)Dist.CLIENT, () -> () -> {
-                Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                optional.ifPresent(world -> {
-                    Entity entity = world.getEntity(this.id);
-                    if (entity instanceof WitheredSymbiontEntity) {
-                        WitheredSymbiontEntity symbiont = (WitheredSymbiontEntity)entity;
-                        symbiont.spellCastingTime = this.time;
+            return () -> {
+                if (FMLEnvironment.dist == Dist.CLIENT) {
+                    Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
+                    { var world = optional;
+                        Entity entity = world.getEntity(this.id);
+                        if (entity instanceof WitheredSymbiontEntity symbiont) {
+                            symbiont.spellCastingTime = this.time;
+                        }
                     }
-                });
-            });
+                }
+            };
         }
     }
 }

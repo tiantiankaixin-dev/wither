@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.fml.loading.FMLEnvironment;
+
 import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -59,6 +61,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import nonamecrackers2.witherstormmod.common.entity.part.TentaclePartEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.util.ConditionalLookController;
@@ -157,22 +160,22 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       this.targetSelector.addGoal(1, new TentacleEntity.TargetGoal(this, Animal.class, true, true));
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DORMANT, false);
-      this.entityData.define(ANIMATION_OFFSET, 0);
-      this.entityData.define(XOFFSET, 20.0F);
-      this.entityData.define(YOFFSET, 0.0F);
-      this.entityData.define(OFFSETSTEPS, 0);
-      this.entityData.define(SHOULDWRAPY, true);
-      this.entityData.define(XOFFSETANIM, 0.0F);
-      this.entityData.define(YOFFSETANIM, 0.0F);
-      this.entityData.define(XCURL, 1.3F);
-      this.entityData.define(YCURL, 1.0F);
-      this.entityData.define(CURLSTEPS, 0);
-      this.entityData.define(XCURLANIM, 0.0F);
-      this.entityData.define(YCURLANIM, 0.0F);
-      this.entityData.define(LASTXCURLANIM, 0.0F);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(DORMANT, false);
+      builder.define(ANIMATION_OFFSET, 0);
+      builder.define(XOFFSET, 20.0F);
+      builder.define(YOFFSET, 0.0F);
+      builder.define(OFFSETSTEPS, 0);
+      builder.define(SHOULDWRAPY, true);
+      builder.define(XOFFSETANIM, 0.0F);
+      builder.define(YOFFSETANIM, 0.0F);
+      builder.define(XCURL, 1.3F);
+      builder.define(YCURL, 1.0F);
+      builder.define(CURLSTEPS, 0);
+      builder.define(XCURLANIM, 0.0F);
+      builder.define(YCURLANIM, 0.0F);
+      builder.define(LASTXCURLANIM, 0.0F);
    }
 
    public void readAdditionalSaveData(CompoundTag compound) {
@@ -322,7 +325,7 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       this.tentacle.setYRot(this.getYRot());
       if (!this.level().isClientSide && this.tickCount % 120 == 0) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
+            .send(SimpleChannel.toTracking(this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
       }
 
       if (!this.isDeadOrDying()) {
@@ -425,7 +428,7 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       return false;
    }
    protected float getStandingEyeHeight(Pose pose, EntityDimensions size) {
-      return size.height / 2.0F;
+      return size.height() / 2.0F;
    }
 
    public void startSleeping(BlockPos pos) {
@@ -468,7 +471,7 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
 
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
       WitherStormModPacketHandlers.MAIN
-         .send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
+         .send(SimpleChannel.toTracking(this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
       return super.getAddEntityPacket();
    }
 
@@ -936,14 +939,16 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       }
 
       public Runnable getProcessor(Context context) {
-         return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                  Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                  optional.ifPresent(world -> {
-                     if (world.getEntity(this.id) instanceof TentacleEntity tentacle) {
-                        tentacle.tentacleAnim = this.anim;
-                     }
-                  });
-               });
+         return () -> {
+            if (FMLEnvironment.dist == Dist.CLIENT) {
+               Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
+               { var world = optional;
+                  if (world.getEntity(this.id) instanceof TentacleEntity tentacle) {
+                     tentacle.tentacleAnim = this.anim;
+                  }
+               }
+            }
+         };
       }
    }
 }

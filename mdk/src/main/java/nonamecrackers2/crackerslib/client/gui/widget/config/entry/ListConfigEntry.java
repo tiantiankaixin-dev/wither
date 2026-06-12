@@ -26,24 +26,24 @@ public class ListConfigEntry extends ConfigEntry<List<?>, EditBox> {
    }
 
    protected EditBox buildWidget(int x, int y, int width, int height) {
-      EditBox box = new EditBox(this.mc.f_91062_, x + 6, y + height / 2 - 10, 200, 20, CommonComponents.f_237098_);
+      EditBox box = new EditBox(this.mc.font, x + 6, y + height / 2 - 10, 200, 20, CommonComponents.EMPTY);
       if (((List)this.value.getDefault()).size() > 0) {
-         box.m_257771_(Component.m_237113_(String.valueOf(((List)this.value.getDefault()).get(0))).m_130940_(ChatFormatting.DARK_GRAY));
+         box.setHint(Component.literal(String.valueOf(((List)this.value.getDefault()).get(0))).withStyle(ChatFormatting.DARK_GRAY));
       }
 
-      box.m_94199_(500);
-      box.m_94144_(this.compileListToString((List<?>)this.value.get()));
-      box.m_94151_(value -> {
+      box.setMaxLength(500);
+      box.setFocused(this.compileListToString((List<?>)this.value.get()));
+      box.setResponder(value -> {
          try {
             this.getValueUpdatedResponder().run();
             List<?> val = this.compileValuesFromString(value);
             if (this.valueSpec.test(val)) {
-               this.widget.m_94202_(-1);
+               this.widget.setEditable(-1);
             } else {
-               this.widget.m_94202_(ChatFormatting.RED.m_126665_());
+               this.widget.setEditable(ChatFormatting.RED.getColor());
             }
          } catch (NumberFormatException var3x) {
-            this.widget.m_94202_(ChatFormatting.RED.m_126665_());
+            this.widget.setEditable(ChatFormatting.RED.getColor());
          }
       });
       return box;
@@ -65,14 +65,14 @@ public class ListConfigEntry extends ConfigEntry<List<?>, EditBox> {
 
    protected List<?> getCurrentValue() {
       try {
-         return this.compileValuesFromString(this.widget.m_94155_());
+         return this.compileValuesFromString(this.widget.get());
       } catch (NumberFormatException var2) {
          return (List<?>)this.value.get();
       }
    }
 
    protected void setCurrentValue(List<?> value) {
-      this.widget.m_94144_(this.compileListToString(value));
+      this.widget.setFocused(this.compileListToString(value));
    }
 
    @FunctionalInterface

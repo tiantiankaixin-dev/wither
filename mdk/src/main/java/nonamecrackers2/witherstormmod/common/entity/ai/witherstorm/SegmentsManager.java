@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
@@ -71,7 +71,7 @@ public class SegmentsManager {
    public void readdSegments() {
       for (int i = 0; i < this.segments.length; i++) {
          WitherStormSegmentEntity segment = this.segments[i];
-         if (segment != null && !segment.isAddedToWorld()) {
+         if (segment != null && !segment.level() != null) {
             if (segment.getRemovalReason() != null) {
                Vec3 desiredPos = new Vec3(
                   this.owner.getDesiredSegmentX(segment.isMirrored() ? 1 : 2),
@@ -111,9 +111,9 @@ public class SegmentsManager {
    }
 
    public void addSegment(int index) {
-      if (this.owner.isAddedToWorld() && this.owner.isAlive()) {
+      if (this.owner.level() != null && this.owner.isAlive()) {
          WitherStormSegmentEntity segment = this.segments[index];
-         if (segment != null && !segment.isAddedToWorld() && (segment.getRemovalReason() != null && !segment.getRemovalReason().shouldDestroy() || segment.getRemovalReason() == null)) {
+         if (segment != null && !segment.level() != null && (segment.getRemovalReason() != null && !segment.getRemovalReason().shouldDestroy() || segment.getRemovalReason() == null)) {
             Vec3 desiredPos = new Vec3(
                this.owner.getDesiredSegmentX(segment.isMirrored() ? 1 : 2),
                this.owner.getDesiredSegmentY(segment.isMirrored() ? 1 : 2),
@@ -177,7 +177,7 @@ public class SegmentsManager {
                int index = segment.isMirrored() ? 1 : 0;
                WitherStormSegmentEntity existing = this.segments[index];
                if (existing != null) {
-                  if (!segment.getUUID().equals(existing.getUUID())) {
+                  if (!segment.id().equals(existing.id())) {
                      if (segment.getTimeWithParent() > existing.getTimeWithParent()) {
                         existing.discard();
                         this.setSegment(segment, index);

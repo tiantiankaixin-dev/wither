@@ -8,8 +8,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.PacketTarget;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel.PacketTarget;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.CreateDebrisMessage;
 import nonamecrackers2.witherstormmod.common.packet.CreateLoopingSoundMessage;
@@ -44,14 +45,14 @@ public class WitherStormSyncHelper {
    public static void onPlayerStartTracking(StartTracking event) {
       Entity target = event.getTarget();
       if (event.getEntity() instanceof ServerPlayer player && target instanceof WitherStormEntity storm) {
-         PacketTarget packetTarget = PacketDistributor.PLAYER.with(() -> player);
+         PacketTarget packetTarget = SimpleChannel.toPlayer(player);
          storm.getPlayDeadManager().sendChanges(packetTarget, false);
          WitherStormModPacketHandlers.MAIN.send(packetTarget, new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
       }
    }
 
    private static void sendWitherStormsToPlayer(ServerPlayer player) {
-      WorldUtil.getAllStorms(player.serverLevel()).forEach(storm -> sendWitherStormToClient(PacketDistributor.PLAYER.with(() -> player), storm));
+      WorldUtil.getAllStorms(player.serverLevel()).forEach(storm -> sendWitherStormToClient(SimpleChannel.toPlayer(player), storm));
    }
 
    public static void sendWitherStormToClient(PacketTarget target, WitherStormEntity storm) {
@@ -67,7 +68,7 @@ public class WitherStormSyncHelper {
    }
 
    public static void sendWitherStormToClient(WitherStormEntity storm) {
-      sendWitherStormToClient(PacketDistributor.DIMENSION.with(storm.level()::dimension), storm);
+      sendWitherStormToClient(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)storm.level()), storm);
    }
 
    public static void removeWitherStorm(PacketTarget target, WitherStormEntity storm) {
@@ -79,6 +80,6 @@ public class WitherStormSyncHelper {
    }
 
    public static void removeWitherStorm(WitherStormEntity storm) {
-      removeWitherStorm(PacketDistributor.DIMENSION.with(storm.level()::dimension), storm);
+      removeWitherStorm(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)storm.level()), storm);
    }
 }

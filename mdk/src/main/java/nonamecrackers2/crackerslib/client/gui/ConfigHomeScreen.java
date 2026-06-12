@@ -58,7 +58,7 @@ public class ConfigHomeScreen extends Screen {
       List<Supplier<AbstractButton>> extraButtons,
       int totalColumns
    ) {
-      super(Component.m_237115_("gui." + modid + ".screen.config.home.title"));
+      super(Component.translatable("gui." + modid + ".screen.config.home.title"));
       this.title = title;
       this.modid = modid;
       this.specs = specs;
@@ -69,69 +69,69 @@ public class ConfigHomeScreen extends Screen {
       this.totalColumns = totalColumns;
    }
 
-   protected void m_7856_() {
-      GridLayout layout = new GridLayout().m_267750_(6);
-      RowHelper rowHelper = layout.m_264606_(1);
+   protected void init() {
+      GridLayout layout = new GridLayout().rowSpacing(6);
+      RowHelper rowHelper = layout.createRowHelper(1);
       if (this.specs.containsKey(Type.CLIENT)) {
-         rowHelper.m_264139_(
-            Button.m_253074_(Component.m_237115_("gui.crackerslib.screen.clientOptions.title"), button -> this.openConfigMenu(Type.CLIENT))
-               .m_253046_(200, 20)
-               .m_257505_(Tooltip.m_257550_(Component.m_237115_("gui.crackerslib.screen.clientOptions.info")))
-               .m_253136_()
+         rowHelper.addChild(
+            Button.builder(Component.translatable("gui.crackerslib.screen.clientOptions.title"), button -> this.openConfigMenu(Type.CLIENT))
+               .size(200, 20)
+               .tooltip(Tooltip.create(Component.translatable("gui.crackerslib.screen.clientOptions.info")))
+               .build()
          );
       }
 
       if (this.specs.containsKey(Type.COMMON)) {
-         this.commonButton = (Button)rowHelper.m_264139_(
-            Button.m_253074_(Component.m_237115_("gui.crackerslib.screen.commonOptions.title"), button -> this.openConfigMenu(Type.COMMON))
-               .m_253046_(200, 20)
-               .m_257505_(Tooltip.m_257550_(Component.m_237115_("gui.crackerslib.screen.commonOptions.info")))
-               .m_253136_()
+         this.commonButton = (Button)rowHelper.addChild(
+            Button.builder(Component.translatable("gui.crackerslib.screen.commonOptions.title"), button -> this.openConfigMenu(Type.COMMON))
+               .size(200, 20)
+               .tooltip(Tooltip.create(Component.translatable("gui.crackerslib.screen.commonOptions.info")))
+               .build()
          );
       }
 
       if (this.specs.containsKey(Type.SERVER)) {
-         this.worldButton = (Button)rowHelper.m_264139_(
-            Button.m_253074_(Component.m_237115_("gui.crackerslib.screen.serverOptions.title"), button -> this.openConfigMenu(Type.SERVER))
-               .m_253046_(200, 20)
-               .m_253136_()
+         this.worldButton = (Button)rowHelper.addChild(
+            Button.builder(Component.translatable("gui.crackerslib.screen.serverOptions.title"), button -> this.openConfigMenu(Type.SERVER))
+               .size(200, 20)
+               .build()
          );
       }
 
       this.initExtraButtons(rowHelper);
-      this.exit = Button.m_253074_(Component.m_237115_("gui.crackerslib.button.exit.title"), button -> this.m_7379_())
-         .m_252794_((this.f_96543_ - 200) / 2, this.f_96544_ - 6 - 20)
-         .m_253046_(200, 20)
-         .m_253136_();
-      int exitButtonSpaceTaken = this.exit.m_93694_() + 20;
-      int availableScreenHeight = this.f_96544_ - exitButtonSpaceTaken;
-      layout.m_264036_();
-      int layoutHeight = layout.m_93694_();
+      this.exit = Button.builder(Component.translatable("gui.crackerslib.button.exit.title"), button -> this.onClose())
+         .pos((this.width - 200) / 2, this.height - 6 - 20)
+         .size(200, 20)
+         .build();
+      int exitButtonSpaceTaken = this.exit.getHeight() + 20;
+      int availableScreenHeight = this.height - exitButtonSpaceTaken;
+      layout.arrangeElements();
+      int layoutHeight = layout.getHeight();
       int totalHeightTaken = layoutHeight + this.title.getHeight();
       int heightRemaining = availableScreenHeight - totalHeightTaken;
       this.elementSpacing = heightRemaining / 4;
       int top = this.elementSpacing * 2 + this.title.getHeight();
-      FrameLayout.m_264159_(layout, 0, top, this.f_96543_, availableScreenHeight - top - this.elementSpacing);
-      layout.m_264134_(x$0 -> {
-         AbstractWidget var10000 = (AbstractWidget)this.m_142416_(x$0);
+      FrameLayout.alignInRectangle(layout, 0, top, this.width, availableScreenHeight - top - this.elementSpacing);
+      layout.visitWidgets(x$0 -> {
+         AbstractWidget var10000 = (AbstractWidget)this.addRenderableWidget(x$0);
       });
       if (this.commonButton != null) {
-         this.commonButton.f_93623_ = this.isWorldLoaded && this.hasSinglePlayerServer || !this.isWorldLoaded;
+         this.commonButton.active = this.isWorldLoaded && this.hasSinglePlayerServer || !this.isWorldLoaded;
       }
 
       if (this.worldButton != null) {
-         this.worldButton.f_93623_ = this.isWorldLoaded && this.hasSinglePlayerServer;
+         this.worldButton.active = this.isWorldLoaded && this.hasSinglePlayerServer;
       }
 
-      this.m_142416_(this.exit);
+      this.addRenderableWidget(this.exit);
    }
 
    protected void initExtraButtons(RowHelper main) {
       if (!this.extraButtons.isEmpty()) {
          int totalButtons = this.extraButtons.size();
          int totalColumns = Math.min(totalButtons, this.totalColumns);
-         GridLayout extraButtons = (GridLayout)main.m_264139_(new GridLayout().m_267750_(6).m_267749_(4));
-         RowHelper extraButtonsRowHelper = extraButtons.m_264606_(totalColumns);
+         GridLayout extraButtons = (GridLayout)main.addChild(new GridLayout().rowSpacing(6).columnSpacing(4));
+         RowHelper extraButtonsRowHelper = extraButtons.createRowHelper(totalColumns);
          int currentRow = 0;
 
          for (int i = 0; i < totalButtons; i += totalColumns) {
@@ -147,35 +147,35 @@ public class ConfigHomeScreen extends Screen {
             for (int j = 0; j < totalButtonsInRow; j++) {
                int index = i + j;
                AbstractButton button = this.extraButtons.get(index).get();
-               button.m_93674_(widthPerButton);
-               extraButtonsRowHelper.m_264108_(button, occupiedColumns);
+               button.setY(widthPerButton);
+               extraButtonsRowHelper.addChild(button, occupiedColumns);
             }
          }
       }
    }
 
-   public void m_88315_(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
-      MutableComponent worldDesc = Component.m_237115_("gui.crackerslib.screen.serverOptions.notInWorld.info");
+   public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
+      MutableComponent worldDesc = Component.translatable("gui.crackerslib.screen.serverOptions.notInWorld.info");
       if (this.isWorldLoaded) {
-         worldDesc = Component.m_237115_("gui.crackerslib.screen.serverOptions.inWorld.info");
+         worldDesc = Component.translatable("gui.crackerslib.screen.serverOptions.inWorld.info");
       }
 
       if (this.worldButton != null) {
-         this.worldButton.m_257544_(Tooltip.m_257550_(worldDesc));
+         this.worldButton.setTooltip(Tooltip.create(worldDesc));
       }
 
-      this.m_280273_(stack);
-      int titleX = this.f_96543_ / 2 - this.title.getWidth() / 2;
+      this.render(stack);
+      int titleX = this.width / 2 - this.title.getWidth() / 2;
       int titleY = this.elementSpacing;
       this.title.blit(stack, titleX, titleY, partialTicks);
-      super.m_88315_(stack, mouseX, mouseY, partialTicks);
+      super.render(stack, mouseX, mouseY, partialTicks);
    }
 
-   public void m_7379_() {
+   public void onClose() {
       if (this.previous == null) {
-         super.m_7379_();
+         super.onClose();
       } else {
-         this.f_96541_.m_91152_(this.previous);
+         this.minecraft.setScreen(this.previous);
       }
    }
 
@@ -184,7 +184,7 @@ public class ConfigHomeScreen extends Screen {
       if (spec != null) {
          OnConfigScreenOpened event = new OnConfigScreenOpened(this.modid, type);
          if (!NeoForge.EVENT_BUS.post(event)) {
-            this.f_96541_.m_91152_(ConfigScreen.makeScreen(this.modid, spec, type, this, event.getInitialPath() != null ? event.getInitialPath() : ""));
+            this.minecraft.setScreen(ConfigScreen.makeScreen(this.modid, spec, type, this, event.getInitialPath() != null ? event.getInitialPath() : ""));
          }
       }
    }
@@ -213,7 +213,7 @@ public class ConfigHomeScreen extends Screen {
       }
 
       public ConfigHomeScreen.Builder addLinkButton(Component title, String link, @Nullable Tooltip tooltip) {
-         return this.addExtraButton(() -> Button.m_253074_(title, button -> GUIUtils.openLink(link)).m_253046_(200, 20).m_257505_(tooltip).m_253136_());
+         return this.addExtraButton(() -> Button.builder(title, button -> GUIUtils.openLink(link)).size(200, 20).tooltip(tooltip).build());
       }
 
       public ConfigHomeScreen.Builder addLinkButton(Component title, String link) {
@@ -223,25 +223,25 @@ public class ConfigHomeScreen extends Screen {
       public ConfigHomeScreen.Builder standardLinks(@Nullable String discordLink, @Nullable String patreonLink, @Nullable String githubLink) {
          if (discordLink != null) {
             this.addLinkButton(
-               Component.m_237115_("gui.crackerslib.screen.config.discord").m_130948_(Style.f_131099_.m_178520_(-10983950)),
+               Component.translatable("gui.crackerslib.screen.config.discord").withStyle(Style.EMPTY.withColor(-10983950)),
                discordLink,
-               Tooltip.m_257550_(Component.m_237115_("gui.crackerslib.screen.config.discord.info"))
+               Tooltip.create(Component.translatable("gui.crackerslib.screen.config.discord.info"))
             );
          }
 
          if (githubLink != null) {
             this.addLinkButton(
-               Component.m_237115_("gui.crackerslib.screen.config.github").m_130948_(Style.f_131099_.m_178520_(-5526613)),
+               Component.translatable("gui.crackerslib.screen.config.github").withStyle(Style.EMPTY.withColor(-5526613)),
                githubLink,
-               Tooltip.m_257550_(Component.m_237115_("gui.crackerslib.screen.config.github.info"))
+               Tooltip.create(Component.translatable("gui.crackerslib.screen.config.github.info"))
             );
          }
 
          if (patreonLink != null) {
             this.addLinkButton(
-               Component.m_237115_("gui.crackerslib.screen.config.patreon").m_130940_(ChatFormatting.RED),
+               Component.translatable("gui.crackerslib.screen.config.patreon").withStyle(ChatFormatting.RED),
                patreonLink,
-               Tooltip.m_257550_(Component.m_237115_("gui.crackerslib.screen.config.patreon.info"))
+               Tooltip.create(Component.translatable("gui.crackerslib.screen.config.patreon.info"))
             );
          }
 

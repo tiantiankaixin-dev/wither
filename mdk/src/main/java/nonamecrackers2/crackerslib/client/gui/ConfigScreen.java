@@ -48,10 +48,10 @@ import org.apache.logging.log4j.Logger;
 
 public class ConfigScreen extends Screen {
    private static final Logger LOGGER = LogManager.getLogger("crackerslib/ConfigScreen");
-   private static final Component CUSTOM_PRESET_TITLE = Component.m_237115_("config.crackerslib.preset.custom.title");
-   private static final Component CUSTOM_PRESET_DESCRIPTION = Component.m_237115_("config.crackerslib.preset.custom.description")
-      .m_130940_(ChatFormatting.GRAY);
-   private static final Component HOLD_SHIFT = Component.m_237115_("gui.crackerslib.button.preset.holdShift").m_130940_(ChatFormatting.DARK_GRAY);
+   private static final Component CUSTOM_PRESET_TITLE = Component.translatable("config.crackerslib.preset.custom.title");
+   private static final Component CUSTOM_PRESET_DESCRIPTION = Component.translatable("config.crackerslib.preset.custom.description")
+      .withStyle(ChatFormatting.GRAY);
+   private static final Component HOLD_SHIFT = Component.translatable("gui.crackerslib.button.preset.holdShift").withStyle(ChatFormatting.DARK_GRAY);
    private static final int TITLE_HEIGHT = 12;
    private static final int BUTTON_WIDTH = 200;
    private static final int BUTTON_HEIGHT = 20;
@@ -74,7 +74,7 @@ public class ConfigScreen extends Screen {
    private EditBox searchBox;
 
    public ConfigScreen(String modid, ModConfigSpec spec, Type type, Consumer<ConfigOptionList> itemGenerator, Screen homeScreen) {
-      super(Component.m_237115_("gui.crackerslib.screen." + type.extension() + "Options.title"));
+      super(Component.translatable("gui.crackerslib.screen." + type.extension() + "Options.title"));
       this.modid = modid;
       this.type = type;
       this.spec = spec;
@@ -123,7 +123,7 @@ public class ConfigScreen extends Screen {
 
             return Map.entry(path, entry.getValue());
          })
-         .filter(entry -> !NeoForge.EVENT_BUS.post(new AddConfigEntryToMenuEvent(modid, type, entry.getKey())))
+         .filter(entry -> NeoForge.EVENT_BUS.post(new AddConfigEntryToMenuEvent(modid, type, entry.getKey()).isCanceled() == false))
          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
    }
 
@@ -193,65 +193,65 @@ public class ConfigScreen extends Screen {
       list.addConfigValue(path, (mc, modid, type, p, s, r) -> new ListConfigEntry(mc, modid, type, p, s, r, parser), category);
    }
 
-   protected void m_7856_() {
+   protected void init() {
       if (this.list == null) {
          this.list = new ConfigOptionList(
-            this.f_96541_, this.modid, this.type, this.spec, this.f_96543_, this.f_96544_, 30, this.f_96544_ - 30, this::onValueChanged
+            this.minecraft, this.modid, this.type, this.spec, this.width, this.height, 30, this.height - 30, this::onValueChanged
          );
          this.itemGenerator.accept(this.list);
       }
 
       this.list.buildList();
-      this.list.m_93437_(this.f_96543_, this.f_96544_, 30, this.f_96544_ - 30);
-      this.m_142416_(this.list);
-      this.exit = Button.m_253074_(Component.m_237115_("gui.crackerslib.button.exitAndSave.title"), button -> this.closeMenu())
-         .m_252794_((this.f_96543_ - 100) / 2, this.f_96544_ - 26)
-         .m_253046_(100, 20)
-         .m_253136_();
+      this.list.updateSize(this.width, this.height, 30, this.height - 30);
+      this.addRenderableWidget(this.list);
+      this.exit = Button.builder(Component.translatable("gui.crackerslib.button.exitAndSave.title"), button -> this.closeMenu())
+         .pos((this.width - 100) / 2, this.height - 26)
+         .size(100, 20)
+         .build();
       this.preset = this.list.getMatchingPreset(this.presets, this.presetExcluded::contains);
-      this.changePreset = Button.m_253074_(
-            Component.m_237115_("gui.crackerslib.button.preset.title").m_130946_(": ").m_7220_(this.getPresetName()), button -> this.changePreset()
+      this.changePreset = Button.builder(
+            Component.translatable("gui.crackerslib.button.preset.title").append(": ").append(this.getPresetName()), button -> this.changePreset()
          )
-         .m_252794_(10, this.f_96544_ - 26)
-         .m_253046_((int)Math.round(133.33333333333334), 20)
-         .m_257505_(Tooltip.m_257550_(this.getPresetTooltip(false)))
-         .m_253136_();
-      this.reset = Button.m_253074_(Component.m_237115_("gui.crackerslib.button.reset.title"), button -> this.resetValues())
-         .m_252794_(this.f_96543_ - 133 - 10, this.f_96544_ - 26)
-         .m_253046_((int)Math.round(133.33333333333334), 20)
-         .m_253136_();
-      this.reset.f_93623_ = false;
-      GridLayout layout = new GridLayout().m_267749_(5);
-      RowHelper rows = layout.m_264606_(2);
-      rows.m_264139_(new SortButton(0, 0, type -> {
+         .pos(10, this.height - 26)
+         .size((int)Math.round(133.33333333333334), 20)
+         .tooltip(Tooltip.create(this.getPresetTooltip(false)))
+         .build();
+      this.reset = Button.builder(Component.translatable("gui.crackerslib.button.reset.title"), button -> this.resetValues())
+         .pos(this.width - 133 - 10, this.height - 26)
+         .size((int)Math.round(133.33333333333334), 20)
+         .build();
+      this.reset.active = false;
+      GridLayout layout = new GridLayout().columnSpacing(5);
+      RowHelper rows = layout.createRowHelper(2);
+      rows.addChild(new SortButton(0, 0, type -> {
          this.list.setSorting(type);
          this.list.rebuildList();
       }));
-      rows.m_264139_(new CollapseButton(0, 0, () -> this.list.collapseAllCategories()));
-      layout.m_264036_();
-      FrameLayout.m_264460_(layout, 5, 0, this.f_96543_ - 5, 30, 0.0F, 0.5F);
-      layout.m_264134_(x$0 -> {
-         AbstractWidget var10000 = (AbstractWidget)this.m_142416_(x$0);
+      rows.addChild(new CollapseButton(0, 0, () -> this.list.collapseAllCategories()));
+      layout.arrangeElements();
+      FrameLayout.alignInRectangle(layout, 5, 0, this.width - 5, 30, 0.0F, 0.5F);
+      layout.visitWidgets(x$0 -> {
+         AbstractWidget var10000 = (AbstractWidget)this.addRenderableWidget(x$0);
       });
-      Component searchText = Component.m_237115_("gui.crackerslib.screen.config.search");
-      this.searchBox = new EditBox(this.f_96547_, this.f_96543_ - this.f_96543_ / 3 - 5, 5, this.f_96543_ / 3, 20, searchText);
-      this.searchBox.m_257771_(searchText);
-      this.searchBox.m_94151_(text -> {
+      Component searchText = Component.translatable("gui.crackerslib.screen.config.search");
+      this.searchBox = new EditBox(this.font, this.width - this.width / 3 - 5, 5, this.width / 3, 20, searchText);
+      this.searchBox.setHint(searchText);
+      this.searchBox.setResponder(text -> {
          this.list.buildList(text, true);
-         this.list.m_93410_(0.0);
+         this.list.setScrollAmount(0.0);
       });
-      this.searchBox.m_94199_(100);
-      this.m_264313_(this.searchBox);
-      this.m_142416_(this.exit);
-      this.m_142416_(this.changePreset);
-      this.m_142416_(this.reset);
-      this.m_142416_(this.searchBox);
+      this.searchBox.setMaxLength(100);
+      this.setInitialFocus(this.searchBox);
+      this.addRenderableWidget(this.exit);
+      this.addRenderableWidget(this.changePreset);
+      this.addRenderableWidget(this.reset);
+      this.addRenderableWidget(this.searchBox);
    }
 
    private void closeMenu() {
       this.list.onClosed();
-      if (this.f_96541_.f_91080_ == this) {
-         this.f_96541_.m_91152_(this.homeScreen);
+      if (this.minecraft.screen == this) {
+         this.minecraft.setScreen(this.homeScreen);
       }
    }
 
@@ -262,8 +262,8 @@ public class ConfigScreen extends Screen {
    private void resetValues() {
       this.list.resetValues();
       this.preset = this.list.getMatchingPreset(this.presets, this.presetExcluded::contains);
-      this.changePreset.m_93666_(Component.m_237115_("gui.crackerslib.button.preset.title").m_130946_(": ").m_7220_(this.getPresetName()));
-      this.reset.f_93623_ = false;
+      this.changePreset.setMessage(Component.translatable("gui.crackerslib.button.preset.title").append(": ").append(this.getPresetName()));
+      this.reset.active = false;
    }
 
    private void changePreset() {
@@ -277,14 +277,14 @@ public class ConfigScreen extends Screen {
          this.list.setFromPreset(this.preset, this.presetExcluded::contains);
       }
 
-      this.changePreset.m_93666_(Component.m_237115_("gui.crackerslib.button.preset.title").m_130946_(": ").m_7220_(this.getPresetName()));
-      this.reset.f_93623_ = !this.list.areValuesReset();
+      this.changePreset.setMessage(Component.translatable("gui.crackerslib.button.preset.title").append(": ").append(this.getPresetName()));
+      this.reset.active = !this.list.areValuesReset();
    }
 
-   public void m_88315_(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
-      super.m_88315_(stack, mouseX, mouseY, partialTicks);
-      stack.m_280137_(this.f_96547_, this.f_96539_.getString(), this.f_96543_ / 2, 12, 16777215);
-      this.changePreset.m_257544_(Tooltip.m_257550_(this.getPresetTooltip(m_96638_())));
+   public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
+      super.render(stack, mouseX, mouseY, partialTicks);
+      stack.drawCenteredString(this.font, this.title.getString(), this.width / 2, 12, 16777215);
+      this.changePreset.setTooltip(Tooltip.create(this.getPresetTooltip(hasShiftDown())));
       ConfigListItem item = this.list.getItemAt(mouseX, mouseY);
       if (this.currentHovered != item) {
          this.currentHovered = item;
@@ -295,15 +295,15 @@ public class ConfigScreen extends Screen {
          }
       }
 
-      if (!this.m_6702_().stream().anyMatch(c -> !c.equals(this.list) && c.m_5953_(mouseX, mouseY)) && this.currentHoveredTooltip != null) {
-         stack.m_280245_(this.f_96547_, this.currentHoveredTooltip.m_257408_(this.f_96541_), mouseX, mouseY);
+      if (!this.children().stream().anyMatch(c -> !c.equals(this.list) && c.isMouseOver(mouseX, mouseY)) && this.currentHoveredTooltip != null) {
+         stack.renderTooltip(this.font, this.currentHoveredTooltip.toCharSequence(this.minecraft), mouseX, mouseY);
       }
    }
 
    private void onValueChanged() {
       this.preset = this.list.getMatchingPreset(this.presets, this.presetExcluded::contains);
-      this.changePreset.m_93666_(Component.m_237115_("gui.crackerslib.button.preset.title").m_130946_(": ").m_7220_(this.getPresetName()));
-      this.reset.f_93623_ = !this.list.areValuesReset();
+      this.changePreset.setMessage(Component.translatable("gui.crackerslib.button.preset.title").append(": ").append(this.getPresetName()));
+      this.reset.active = !this.list.areValuesReset();
    }
 
    private Component getPresetTooltip(boolean shiftDown) {
@@ -315,12 +315,12 @@ public class ConfigScreen extends Screen {
    }
 
    private static Component makeCustomPresetTooltip(boolean shiftDown) {
-      MutableComponent component = CUSTOM_PRESET_TITLE.m_6881_();
-      component.m_130946_("\n");
+      MutableComponent component = CUSTOM_PRESET_TITLE.copy();
+      component.append("\n");
       if (shiftDown) {
-         component.m_7220_(CUSTOM_PRESET_DESCRIPTION);
+         component.append(CUSTOM_PRESET_DESCRIPTION);
       } else {
-         component.m_7220_(HOLD_SHIFT);
+         component.append(HOLD_SHIFT);
       }
 
       return component;

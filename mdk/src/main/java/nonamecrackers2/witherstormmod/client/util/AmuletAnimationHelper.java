@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.client.util;
 
+import net.neoforged.api.distmarker.Dist;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -20,7 +22,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.common.item.AmuletItem;
 import org.joml.Matrix4f;
@@ -195,7 +196,7 @@ public class AmuletAnimationHelper {
       }
    }
 
-   public static void onClientTick(ClientTickEvent event) {
+   public static void onClientTick(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
       Minecraft mc = Minecraft.getInstance();
       if (!mc.isPaused() && mc.player != null) {
          for (InteractionHand hand : InteractionHand.values()) {

@@ -62,7 +62,7 @@ public class ItemCraftSuperBeaconRecipe extends SuperBeaconRecipe {
             } else {
                String rawId = GsonHelper.getAsString(object, "result");
                ResourceLocation itemId = new ResourceLocation(rawId);
-               Item item = (Item)NeoBuiltInRegistries.ITEM.getValue(itemId);
+               Item item = (Item)BuiltInRegistries.ITEM.get(itemId);
                if (item == null) {
                   throw new JsonSyntaxException("Unknown item '" + rawId + "'");
                }

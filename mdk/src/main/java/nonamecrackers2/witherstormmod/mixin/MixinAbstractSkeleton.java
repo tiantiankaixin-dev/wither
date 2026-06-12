@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.mixin;
 
+import net.neoforged.api.distmarker.Dist;
+
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;

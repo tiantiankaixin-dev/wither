@@ -52,7 +52,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperBeaconMenu;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.BlockClusterEntity;
@@ -62,6 +61,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCriteriaTriggers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeTypes;
@@ -220,7 +220,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      this.playSound(WitherStormModSoundEvents.BOWELS_LOUD_HURT.get(), 10.0F, 1.0F);
                      WitherStormModPacketHandlers.MAIN
                         .send(
-                           PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+                           SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
                            new ShakeScreenMessage(80.0F, 4.0F)
                         );
                   }
@@ -307,8 +307,8 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
                   this.level.explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
                   WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level);
-                  storm.getAttribute((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get())
-                     .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADDITION));
+                  storm.getAttribute(WitherStormModAttributes.EVOLUTION_SPEED.get())
+                     .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADD_VALUE));
                   storm.setPhase((Integer)WitherStormModConfig.SERVER.resummonedPhase.get());
                   storm.moveTo(pos);
                   storm.playSoundToEveryone(WitherStormModSoundEvents.WITHER_STORM_EVOLVES.get(), 1.0F, 1.0F);
@@ -338,7 +338,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
          Vec3 posx = Vec3.atCenterOf(this.getBlockPos());
          WitherStormModPacketHandlers.MAIN
             .send(
-               PacketDistributor.NEAR.with(TargetPoint.p(posx.x, posx.y, posx.z, 20.0, this.level.dimension())),
+               SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), posx.x, posx.y, posx.z, 20.0),
                new ShakeScreenMessage(80.0F, 10.0F)
             );
       }
@@ -354,7 +354,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   public void load(CompoundTag tag) {
+   public void loadAdditional(CompoundTag tag) {
       super.load(tag);
       NonNullList<ItemStack> items = NonNullList.create();
       ListTag list = tag.getList("ResummonItems", 10);
@@ -482,14 +482,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    @Override
    public void doPowerUp(ServerPlayer player) {
       super.doPowerUp(player);
-      player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA)
+      player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get())
          .ifPresent(
             data -> {
                if (!data.hasActivatedSuperBeacon() && this.connected.size() >= AbstractSuperBeaconBlockEntity.Color.values().length) {
                   this.poweringUpAnimation = 80;
                   WitherStormModPacketHandlers.MAIN
                      .send(
-                        PacketDistributor.ALL.noArg(), new GlobalSoundMessage(WitherStormModSoundEvents.WITHERED_BEACON_POWER_UP.get(), 1.0F, 1.0F)
+                        SimpleChannel.toAllPlayers(), new GlobalSoundMessage(WitherStormModSoundEvents.WITHERED_BEACON_POWER_UP.get(), 1.0F, 1.0F)
                      );
                   this.level
                      .getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0))
@@ -517,7 +517,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    @Override
    protected void doPoweringUpAnimation() {
       if (!this.level.isClientSide && this.poweringUpAnimation == 40) {
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.ALL.noArg(), new ShakeScreenMessage(120.0F, 12.0F));
+         WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toAllPlayers(), new ShakeScreenMessage(120.0F, 12.0F));
          if (this.level instanceof ServerLevel level) {
             Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
             level.sendParticles(
@@ -534,7 +534,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
          }
 
          this.level.getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0)).forEach(p -> {
-            p.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(d -> d.setActivatedSuperBeacon(true));
+                        p.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setActivatedSuperBeacon(true);
             WitherStormModCriteriaTriggers.ACTIVATE_SUPER_BEACON.trigger(p, this.connected.size());
          });
       }
@@ -580,7 +580,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
       Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
             new ShakeScreenMessage(80.0F, 10.0F)
          );
    }

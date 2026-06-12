@@ -1,9 +1,7 @@
 package nonamecrackers2.witherstormmod.common.event;
 
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.minecraft.world.entity.player.Player;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.PlayerTickEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.Clone;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,11 +10,9 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 
 public class PlayerWitherStormDataEvents {
    @SubscribeEvent
-   public static void onPlayerTick(PlayerTickEvent event) {
-      if (event.phase == Phase.END) {
-         Player player = event.player;
-         player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.tick());
-      }
+   public static void onPlayerTick(PlayerTickEvent.Post event) {
+      Player player = event.getEntity();
+      player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).tick();
    }
 
    @SubscribeEvent
@@ -25,18 +21,14 @@ public class PlayerWitherStormDataEvents {
          Player original = event.getOriginal();
          Player player = event.getEntity();
          original.reviveCaps();
-         LazyOptional<PlayerWitherStormData> optional = original.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA);
-         if (optional.isPresent()) {
-            PlayerWitherStormData oldData = (PlayerWitherStormData)optional.resolve().get();
-            player.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.copyFrom(oldData));
-         }
-
+         PlayerWitherStormData oldData = original.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get());
+         player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).copyFrom(oldData);
          original.invalidateCaps();
       }
    }
 
    @SubscribeEvent
    public static void onPlayerRespawn(PlayerRespawnEvent event) {
-      event.getEntity().getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(manager -> manager.makeInvulnerable(600));
+      event.getEntity().getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).makeInvulnerable(600);
    }
 }

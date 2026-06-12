@@ -18,7 +18,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.phys.Vec3;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: LazyOptional removed, new Capability API returns T or null
+// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: /* LazyOptional_REMOVED */ removed, new Capability API returns T or null
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.client.audio.WitherStormSoundLoop;
@@ -95,7 +95,7 @@ public class WitherStormModMessageHandlerClient {
       getDistantRenderer(world)
          .ifPresent(
             distantRenderer -> {
-               WitherStormEntity entity = (WitherStormEntity)(NeoBuiltInRegistries.ENTITY_TYPE.getValue(message.getType())).create(mc.level);
+               WitherStormEntity entity = (WitherStormEntity)(BuiltInRegistries.ENTITY_TYPE.get(message.getType())).create(mc.level);
                double x = message.getPos().x;
                double y = message.getPos().y;
                double z = message.getPos().z;
@@ -106,7 +106,7 @@ public class WitherStormModMessageHandlerClient {
                entity.yHeadRot = (float)(message.getHeadYRot() * 360) / 256.0F;
                entity.getHeadManager().updateHeadsFromPacked(message.getRots());
                entity.setId(message.getId());
-               entity.setUUID(message.getUUID());
+               entity.setUUID(message.id());
                entity.absMoveTo(x, y, z, yRot, xRot);
                entity.setDeltaMovement(
                   new Vec3(
@@ -136,19 +136,19 @@ public class WitherStormModMessageHandlerClient {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getId());
          if (entity != null) {
             entity.discard();
          }
-      });
+      }
    }
 
    public static void processUpdateStormPositionMessage(UpdateStormPositionMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null && !entity.isControlledByLocalInstance()) {
             if (message.hasPosition()) {
@@ -166,14 +166,14 @@ public class WitherStormModMessageHandlerClient {
 
             entity.setOnGround(message.onGround());
          }
-      });
+      }
    }
 
    public static void processStormTeleportMessage(StormTeleportMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null) {
             double x = message.getX();
@@ -201,70 +201,70 @@ public class WitherStormModMessageHandlerClient {
                entity.setOnGround(message.onGround());
             }
          }
-      });
+      }
    }
 
    public static void processUpdateStormVelocityMessage(UpdateStormVelocityMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null) {
             entity.lerpMotion(message.getX() / 8000.0, message.getY() / 8000.0, message.getZ() / 8000.0);
          }
-      });
+      }
    }
 
    public static void processUpdateStormHeadLookMessage(UpdateStormHeadLookMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null) {
             float yHeadRot = (float)(message.getYRot() * 360) / 256.0F;
             entity.lerpHeadTo(yHeadRot, 3);
          }
-      });
+      }
    }
 
    public static void processStormMetadataMessage(StormMetadataMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null && message.getUnpackedItems() != null) {
             entity.getEntityData().assignValues(message.getUnpackedItems());
          }
-      });
+      }
    }
 
    public static void processStormAttributesMessage(StormAttributesMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       purgeNonApplicable(world, message);
-      getDistantRenderer(world).ifPresent(distantRenderer -> {
+      { var distantRenderer = getDistantRenderer(world);
          WitherStormEntity entity = distantRenderer.get(message.getEntityID());
          if (entity != null) {
             AttributeMap manager = entity.getAttributes();
 
             for (AttributeSnapshot snapshot : message.getAttributes()) {
-               AttributeInstance attribute = manager.getInstance(snapshot.getAttribute());
+               AttributeInstance attribute = manager.getInstance(snapshot.attribute());
                if (attribute == null) {
-                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, BuiltInRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
+                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, BuiltInRegistries.ATTRIBUTE.getKey(snapshot.attribute()));
                } else {
-                  attribute.setBaseValue(snapshot.getBase());
+                  attribute.setBaseValue(snapshot.base());
                   attribute.removeModifiers();
 
-                  for (AttributeModifier modifier : snapshot.getModifiers()) {
+                  for (AttributeModifier modifier : snapshot.modifiers()) {
                      attribute.addTransientModifier(modifier);
                   }
                }
             }
          }
-      });
+      }
    }
 
    public static void processCreateLoopingSoundMessage(CreateLoopingSoundMessage message) {
@@ -324,7 +324,7 @@ public class WitherStormModMessageHandlerClient {
    public static void processRemoveSoundLoopMessage(RemoveSoundLoopMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
-      getLoopingSoundManager(world).ifPresent(loopingManager -> loopingManager.stopSound(message.getId()));
+      getLoopingSoundManager(world).stopSound(message.getId());
    }
 
    public static void processNotifyHeadInjuryMessage(NotifyHeadInjuryMessage message) {
@@ -339,10 +339,10 @@ public class WitherStormModMessageHandlerClient {
    public static void processUpdateEffectInstanceMessage(UpdateEffectInstanceMessage message) {
       Minecraft mc = Minecraft.getInstance();
       if (mc.level.getEntity(message.getEntityID()) instanceof LivingEntity living) {
-         MobEffectInstance effect = living.getEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+         MobEffectInstance effect = living.getEffect(WitherStormModEffects.WITHER_SICKNESS.get());
          if (effect != null) {
             MobEffectInstance newEffect = new MobEffectInstance(
-               (MobEffect)WitherStormModEffects.WITHER_SICKNESS.get(), message.getDuration(), message.getAmplifier()
+               WitherStormModEffects.WITHER_SICKNESS.get(), message.getDuration(), message.getAmplifier()
             );
             effect.update(newEffect);
          }
@@ -354,7 +354,7 @@ public class WitherStormModMessageHandlerClient {
       ClientLevel world = mc.level;
       Entity entity = world.getEntity(message.getId());
       if (entity != null) {
-         entity.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> tracker.copyFromMessage(message));
+                  entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()).copyFromMessage(message);
       }
    }
 
@@ -366,12 +366,12 @@ public class WitherStormModMessageHandlerClient {
          updatePlayDeadManager(storm.getPlayDeadManager(), message);
       }
 
-      getDistantRenderer(world).ifPresent(manager -> {
+      { var manager = getDistantRenderer(world);
          WitherStormEntity stormx = manager.get(message.getEntityID());
          if (stormx != null) {
             updatePlayDeadManager(stormx.getPlayDeadManager(), message);
          }
-      });
+      }
    }
 
    private static void updatePlayDeadManager(PlayDeadManager manager, UpdatePlayDeadManagerMessage message) {
@@ -394,13 +394,13 @@ public class WitherStormModMessageHandlerClient {
          storm.createDebrisRings(message.isDebrisHidden());
       }
 
-      getDistantRenderer(world).ifPresent(manager -> {
+      { var manager = getDistantRenderer(world);
          WitherStormEntity stormx = manager.get(message.getEntityID());
          if (stormx != null) {
             stormx.createDebrisClusters(message.isDebrisHidden());
             stormx.createDebrisRings(message.isDebrisHidden());
          }
-      });
+      }
    }
 
    public static void processEntitySyncableDataMessage(EntitySyncableDataMessage message) {
@@ -433,12 +433,12 @@ public class WitherStormModMessageHandlerClient {
    public static void processRemoveAdditionalLoopingSoundMessage(RemoveAdditionalLoopingSoundMessage message) {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
-      getLoopingSoundManager(world).ifPresent(loopingManager -> loopingManager.stopAdditional(message.getId()));
+      getLoopingSoundManager(world).stopAdditional(message.getId());
    }
 
    public static void processShakeScreenMessage(ShakeScreenMessage message) {
       Minecraft mc = Minecraft.getInstance();
-      mc.player.getCapability(WitherStormModClientCapabilities.CAMERA_SHAKER).ifPresent(shaker -> shaker.shake(message.getDuration(), message.getPower()));
+            mc.player.getData(WitherStormModClientCapabilities.CAMERA_SHAKER.get()).shake(message.getDuration(), message.getPower());
    }
 
    public static void processFormidibombExplosionMessage(FormidibombExplosionMessage message) {
@@ -446,12 +446,12 @@ public class WitherStormModMessageHandlerClient {
       ClientLevel world = mc.level;
       Entity entity = world.getEntity(message.getId());
       FormidibombEntity.explode(world, entity, message.getRadius(), message.getSquish(), message.getX(), message.getY(), message.getZ());
-      mc.player.getCapability(WitherStormModClientCapabilities.CAMERA_SHAKER).ifPresent(shaker -> shaker.shake(100.0F, 7.5F));
+            mc.player.getData(WitherStormModClientCapabilities.CAMERA_SHAKER.get()).shake(100.0F, 7.5F);
       if (Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ())) <= 250.0) {
-         mc.player.getCapability(WitherStormModClientCapabilities.SCREEN_BLINDER).ifPresent(blinder -> blinder.blind(260, 40, 240));
+                  mc.player.getData(WitherStormModClientCapabilities.SCREEN_BLINDER.get()).blind(260, 40, 240);
       }
 
-      getBossThemeManager(world).ifPresent(manager -> manager.forceStop());
+      getBossThemeManager(world).forceStop();
    }
 
    public static void processUpdateDamagingProjectileMessage(UpdateDamagingProjectileMessage message) {
@@ -467,7 +467,7 @@ public class WitherStormModMessageHandlerClient {
    public static void processBlindScreenMessage(BlindScreenMessage message) {
       Minecraft mc = Minecraft.getInstance();
       mc.player
-         .getCapability(WitherStormModClientCapabilities.SCREEN_BLINDER)
+         .getData(WitherStormModClientCapabilities.SCREEN_BLINDER.get())
          .ifPresent(blinder -> blinder.blind(message.getDuration(), message.getFadeInDuration(), message.getFadeOutDuration()));
    }
 
@@ -490,7 +490,7 @@ public class WitherStormModMessageHandlerClient {
 
    public static void processRemoveDistantSuperBeaconMessage(RemoveDistantSuperBeaconMessage message) {
       Minecraft mc = Minecraft.getInstance();
-      getDistantRenderer(mc.level).ifPresent(renderer -> renderer.removeSuperBeacon(message.getPos()));
+      getDistantRenderer(mc.level).removeSuperBeacon(message.getPos());
    }
 
    public static void processOnHeadAttackedMessage(OnHeadAttackedMessage message) {
@@ -500,25 +500,25 @@ public class WitherStormModMessageHandlerClient {
       }
    }
 
-   private static LazyOptional<WitherStormDistantRenderer> getDistantRenderer(ClientLevel world) {
-      return world.getCapability(WitherStormModClientCapabilities.DISTANT_RENDERER);
+   private static WitherStormDistantRenderer getDistantRenderer(ClientLevel world) {
+      return world.getData(WitherStormModClientCapabilities.DISTANT_RENDERER.get());
    }
 
-   private static LazyOptional<WitherStormLoopingSoundManager> getLoopingSoundManager(ClientLevel world) {
-      return world.getCapability(WitherStormModClientCapabilities.LOOPING_MANAGER);
+   private static WitherStormLoopingSoundManager getLoopingSoundManager(ClientLevel world) {
+      return world.getData(WitherStormModClientCapabilities.LOOPING_MANAGER.get());
    }
 
-   private static LazyOptional<BossThemeManager> getBossThemeManager(ClientLevel world) {
-      return world.getCapability(WitherStormModClientCapabilities.BOSS_THEME_MANAGER);
+   private static BossThemeManager getBossThemeManager(ClientLevel world) {
+      return world.getData(WitherStormModClientCapabilities.BOSS_THEME_MANAGER.get());
    }
 
    private static void purgeNonApplicable(ClientLevel level, DistantRendererMessage message) {
-      getDistantRenderer(level).ifPresent(renderer -> {
+      { var renderer = getDistantRenderer(level);
          for (WitherStormEntity known : renderer.getKnown()) {
             if (!message.getApplicable().contains(known.getId())) {
                known.discard();
             }
          }
-      });
+      }
    }
 }

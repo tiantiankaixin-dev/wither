@@ -16,11 +16,11 @@ import nonamecrackers2.witherstormmod.common.world.gen.feature.CommandBlockPodiu
 
 public class WitherStormModFeatures {
    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURES, "witherstormmod");
-   public static final DeferredHolder<CommandBlockPodiumFeature> COMMAND_BLOCK_PODIUM_FEATURE = FEATURES.register(
+   public static final DeferredHolder<CommandBlockPodiumFeature, CommandBlockPodiumFeature> COMMAND_BLOCK_PODIUM_FEATURE = FEATURES.register(
       "command_block_podium",
       () -> new CommandBlockPodiumFeature(NoneFeatureConfiguration.CODEC, ResourceLocation.fromNamespaceAndPath("witherstormmod", "command_block_podium"))
    );
-   public static final DeferredHolder<BowelsPodiumFeature> BOWELS_PODIUM_FEATURE = FEATURES.register(
+   public static final DeferredHolder<BowelsPodiumFeature, BowelsPodiumFeature> BOWELS_PODIUM_FEATURE = FEATURES.register(
       "bowels_podium", () -> new BowelsPodiumFeature(NoneFeatureConfiguration.CODEC, ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels_podium"))
    );
 

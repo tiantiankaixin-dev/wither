@@ -23,12 +23,12 @@ public class SingleBlockTaintRecipe extends TaintRecipe {
 
    @Override
    public String getName() {
-      return NeoBuiltInRegistries.BLOCK.getKey(this.block).getPath();
+      return BuiltInRegistries.BLOCK.getKey(this.block).getPath();
    }
 
    @Override
    public void serializeFrom(JsonObject object) {
-      object.addProperty("block", NeoBuiltInRegistries.BLOCK.getKey(this.block).toString());
+      object.addProperty("block", BuiltInRegistries.BLOCK.getKey(this.block).toString());
    }
 
    public Block getBlock() {

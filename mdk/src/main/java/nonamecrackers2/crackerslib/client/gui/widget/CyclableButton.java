@@ -15,29 +15,29 @@ public class CyclableButton<T> extends Button {
    private int index;
 
    public CyclableButton(int x, int y, int width, List<T> values, T current, Function<T, Component> messageGetter) {
-      super(x, y, width, 20, messageGetter.apply(current), b -> {}, Button.f_252438_);
+      super(x, y, width, 20, messageGetter.apply(current), b -> {}, Button.DEFAULT_NARRATION);
       this.messageGetter = messageGetter;
       this.values = values;
       this.setValue(current);
    }
 
    public CyclableButton(int x, int y, int width, List<T> values, T current) {
-      this(x, y, width, values, current, val -> Component.m_237113_(val.toString()));
+      this(x, y, width, values, current, val -> Component.literal(val.toString()));
    }
 
    public void setResponder(Consumer<T> responder) {
       this.responder = responder;
    }
 
-   public void m_5691_() {
+   public void onPress() {
       this.index++;
       if (this.index >= this.values.size()) {
          this.index = 0;
       }
 
-      this.m_93666_(this.messageGetter.apply(this.getValue()));
+      this.setMessage(this.messageGetter.apply(this.get()));
       if (this.responder != null) {
-         this.responder.accept(this.getValue());
+         this.responder.accept(this.get());
       }
    }
 
@@ -50,7 +50,7 @@ public class CyclableButton<T> extends Button {
       if (this.index == -1) {
          throw new IllegalArgumentException("'" + value + "' is not a valid value!");
       } else {
-         this.m_93666_(this.messageGetter.apply(value));
+         this.setMessage(this.messageGetter.apply(value));
       }
    }
 }

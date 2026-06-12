@@ -12,8 +12,9 @@ import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket.PosRot;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket.Rot;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor.PacketTarget;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel.PacketTarget;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.StormAttributesMessage;
 import nonamecrackers2.witherstormmod.common.packet.StormMetadataMessage;
@@ -43,7 +44,7 @@ public class MixinTrackedEntity {
    )
    public void witherstormmod$copyVanillaAndSendToDistantRenderer_broadcast(Packet<?> packet, CallbackInfo ci) {
       if (this.entity instanceof WitherStormEntity storm) {
-         PacketTarget target = PacketDistributor.DIMENSION.with(storm.level()::dimension);
+         PacketTarget target = SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)storm.level());
          List<Integer> applicable = WorldUtil.getStormIds(storm);
          if (packet instanceof Rot rotPacket) {
             WitherStormModPacketHandlers.MAIN

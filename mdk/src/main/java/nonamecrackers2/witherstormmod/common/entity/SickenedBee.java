@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import net.neoforged.api.distmarker.Dist;
+
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -155,9 +157,9 @@ public class SickenedBee extends Bee implements WitherSickened, Enemy {
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override

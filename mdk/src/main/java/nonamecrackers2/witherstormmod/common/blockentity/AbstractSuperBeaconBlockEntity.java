@@ -1,4 +1,5 @@
 package nonamecrackers2.witherstormmod.common.blockentity;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Random;
@@ -29,6 +30,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.extensions.IForgeBlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.RemoveDistantSuperBeaconMessage;
@@ -100,7 +102,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
             case 0:
                return AbstractSuperBeaconBlockEntity.this.beaconLevel;
             case 1:
-               return MobEffect.getId(AbstractSuperBeaconBlockEntity.this.effect);
+               return BuiltInRegistries.MOB_EFFECT.getId(AbstractSuperBeaconBlockEntity.this.effect);
             case 2:
                return AbstractSuperBeaconBlockEntity.this.showWorkingArea() ? 1 : 0;
             case 3:
@@ -124,7 +126,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
       if (!this.level.isClientSide) {
          WitherStormModPacketHandlers.MAIN
             .send(
-               PacketDistributor.DIMENSION.with(this.level::dimension),
+               SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.level),
                new UpdateDistantSuperBeaconMessage(
                   this.getBlockPos(), this.getBeamColor(), this.isActive(), this.getBeamHeight(), this.getThickness(), this.getOuterThickness()
                )
@@ -218,7 +220,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
       if (!this.level.isClientSide) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.DIMENSION.with(this.level::dimension), new RemoveDistantSuperBeaconMessage(this.getBlockPos()));
+            .send(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.level), new RemoveDistantSuperBeaconMessage(this.getBlockPos()));
       }
    }
 
@@ -236,10 +238,10 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
    public void onLoad() {
       super.onLoad();
-      this.level.getCapability(WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES).ifPresent(cap -> cap.add(this.getBlockPos()));
+            this.level.getData(WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES.get()).add(this.getBlockPos());
    }
 
-   public void load(CompoundTag tag) {
+   public void loadAdditional(CompoundTag tag) {
       super.load(tag);
       this.activationTime = tag.getInt("ActivationTime");
       this.beamHeight = tag.getInt("BeamHeight");
@@ -267,7 +269,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
       tag.putInt("PowerUpTime", this.poweringUpAnimation);
       tag.putFloat("ActivationAnim", this.activateAnim);
-      tag.putInt("Primary", MobEffect.getId(this.effect));
+      tag.putInt("Primary", BuiltInRegistries.MOB_EFFECT.getId(this.effect));
       tag.putBoolean("ShowWorkingArea", this.showWorkingArea);
       tag.putInt("Cooldown", this.effectSetCooldown);
       this.lockKey.addToTag(tag);

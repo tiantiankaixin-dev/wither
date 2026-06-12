@@ -127,11 +127,11 @@ public class FormidibombBlock extends TntBlock implements EntityBlock {
    }
 
    public BlockState rotate(BlockState state, Rotation rotation) {
-      return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+      return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.get(FACING)));
    }
 
    public BlockState mirror(BlockState state, Mirror mirror) {
-      return state.rotate(mirror.getRotation((Direction)state.getValue(FACING)));
+      return state.rotate(mirror.getRotation((Direction)state.get(FACING)));
    }
 
    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {

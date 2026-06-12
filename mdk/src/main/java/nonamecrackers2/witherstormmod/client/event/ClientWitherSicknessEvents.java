@@ -4,22 +4,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 
 public class ClientWitherSicknessEvents {
    @SubscribeEvent
-   public static void onClientTick(ClientTickEvent event) {
-      if (event.phase == Phase.END) {
-         Minecraft mc = Minecraft.getInstance();
-         ClientLevel world = mc.level;
-         if (world != null && !mc.isPaused()) {
-            for (Entity entity : world.entitiesForRendering()) {
-               if (entity instanceof LivingEntity living) {
-                  living.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> tracker.tick());
-               }
+   public static void onClientTick(ClientTickEvent.Post event) {
+      Minecraft mc = Minecraft.getInstance();
+      ClientLevel world = mc.level;
+      if (world != null && !mc.isPaused()) {
+         for (Entity entity : world.entitiesForRendering()) {
+            if (entity instanceof LivingEntity living) {
+               living.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).tick();
             }
          }
       }

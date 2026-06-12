@@ -1,4 +1,5 @@
 package nonamecrackers2.witherstormmod.client.gui.menu;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
@@ -90,13 +91,13 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       this.select = (SuperBeaconScreen.BeaconButton)Button.builder(Component.empty(), button -> {
          MobEffect effect = this.getSelectedEffect();
          if (effect != null) {
-            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(MobEffect.getId(effect)));
+            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(BuiltInRegistries.MOB_EFFECT.getId(effect)));
             this.minecraft.player.closeContainer();
          }
       }).pos(buttonMiddle - 2 - 22, buttonY).size(22, 22).build(builder -> new SuperBeaconScreen.BeaconButton(builder, 88));
       this.unselect = (SuperBeaconScreen.BeaconButton)Button.builder(Component.empty(), button -> {
          if (!this.shouldRenderInfo) {
-            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(MobEffect.getId(null)));
+            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(BuiltInRegistries.MOB_EFFECT.getId(null)));
          }
       }).pos(buttonMiddle + 2, buttonY).size(22, 22).build(builder -> new SuperBeaconScreen.BeaconButton(builder, 110));
       this.info = Button.builder(Component.literal("i"), button -> {

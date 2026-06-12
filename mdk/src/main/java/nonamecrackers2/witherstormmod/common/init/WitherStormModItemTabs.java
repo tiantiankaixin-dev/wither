@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class WitherStormModItemTabs {
    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "witherstormmod");
-   public static final DeferredHolder<CreativeModeTab> CREATIVE_TAB = TABS.register(
+   public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = TABS.register(
       "creative_tab",
       () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack((ItemLike)WitherStormModItems.FORMIDIBOMB.get()))

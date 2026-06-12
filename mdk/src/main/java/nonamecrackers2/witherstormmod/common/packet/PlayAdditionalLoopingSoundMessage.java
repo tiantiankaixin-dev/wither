@@ -2,10 +2,8 @@ package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.api.distmarker.Dist;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
@@ -52,7 +50,7 @@ public class PlayAdditionalLoopingSoundMessage extends Packet {
 
    public void encode(FriendlyByteBuf buffer) {
       buffer.writeVarInt(this.entityId);
-      buffer.writeRegistryId(NeoBuiltInRegistries.SOUND_EVENT, this.event);
+      buffer.writeRegistryId(BuiltInRegistries.SOUND_EVENT, this.event);
       buffer.writeDouble(this.x);
       buffer.writeDouble(this.y);
       buffer.writeDouble(this.z);
@@ -60,14 +58,14 @@ public class PlayAdditionalLoopingSoundMessage extends Packet {
 
    public void decode(FriendlyByteBuf buffer) throws IllegalArgumentException, IndexOutOfBoundsException {
       this.entityId = buffer.readVarInt();
-      this.event = buffer.readRegistryId();
+      this.event = buffer.readId();
       this.x = buffer.readDouble();
       this.y = buffer.readDouble();
       this.z = buffer.readDouble();
    }
 
-   public Runnable getProcessor(Context context) {
-      return () -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WitherStormModMessageHandlerClient.processPlayAdditionalLoopingSoundMessage(this));
+   public Runnable getProcessor(IPayloadContext context) {
+      return () -> client(() -> WitherStormModMessageHandlerClient.processPlayAdditionalLoopingSoundMessage(this));
    }
 
    public String toString() {

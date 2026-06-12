@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.util;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;

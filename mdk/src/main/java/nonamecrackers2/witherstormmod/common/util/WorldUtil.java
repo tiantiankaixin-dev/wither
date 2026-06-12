@@ -1,5 +1,9 @@
 package nonamecrackers2.witherstormmod.common.util;
 
+import net.neoforged.fml.config.ModConfig.Type;
+
+import net.neoforged.api.distmarker.Dist;
+
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -71,7 +75,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -94,6 +98,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitherSickened;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
@@ -227,7 +232,7 @@ public class WorldUtil {
    }
 
    public static boolean canSeeOrIsNotInASmallArea(Entity entity, Entity target) {
-      PlayerWitherStormData data = (PlayerWitherStormData)target.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).orElse(null);
+      PlayerWitherStormData data = (PlayerWitherStormData)target.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get());
       return data != null ? data.isInAnOpenArea() || hasLineOfSight(entity, target) : isInAnOpenArea(target) || hasLineOfSight(entity, target);
    }
 
@@ -388,7 +393,7 @@ public class WorldUtil {
                for (Entry<StructurePlacement, Set<Holder<Structure>>> entry1 : list) {
                   RandomSpreadStructurePlacement randomspreadstructureplacement = (RandomSpreadStructurePlacement)entry1.getKey();
                   Pair<BlockPos, StructureStart> pair1 = getNearestGeneratedRandomPlacementStructure(
-                     entry1.getValue(),
+                     entry1.get(),
                      level,
                      structuremanager,
                      i,
@@ -459,7 +464,7 @@ public class WorldUtil {
       long seed,
       RandomSpreadStructurePlacement placement
    ) {
-      int i = placement.spacing();
+      int i = placement.columnSpacing();
 
       for (int j = -radius; j <= radius; j++) {
          boolean flag = j == -radius || j == radius;
@@ -534,7 +539,7 @@ public class WorldUtil {
       int dripStoneLengthChance = (int)(6.0 * (1.0 - Math.sqrt(rumbleIntensity)));
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.PLAYER.with(() -> player),
+            SimpleChannel.toPlayer(player),
             new ShakeScreenMessage(180.0F, (float)(12.0 * Math.sqrt((Double)WitherStormModConfig.SERVER.caveRumbleIntensity.get())))
          );
       player.playNotifySound(WitherStormModSoundEvents.EARTH_RUMBLE.get(), SoundSource.AMBIENT, 1.0F, 1.0F);
@@ -644,13 +649,13 @@ public class WorldUtil {
                   BlockState state = level.getBlockState(pos);
                   net.minecraft.world.level.block.Block block = state.getBlock();
                   if (block instanceof RedstoneLampBlock) {
-                     if ((Boolean)WitherStormModConfig.SERVER.caveRumblesMessWithRedstone.get() && !(Boolean)state.getValue(RedstoneLampBlock.LIT)) {
+                     if ((Boolean)WitherStormModConfig.SERVER.caveRumblesMessWithRedstone.get() && !(Boolean)state.get(RedstoneLampBlock.LIT)) {
                         level.setBlock(pos, (BlockState)state.setValue(RedstoneLampBlock.LIT, Boolean.TRUE), 2, 0);
                         level.scheduleTick(pos, block, 20 + random.nextInt(10));
                      }
                   } else if (block instanceof TrapDoorBlock) {
-                     boolean isOpen = (Boolean)state.getValue(TrapDoorBlock.OPEN);
-                     boolean isBottom = state.getValue(TrapDoorBlock.HALF) == Half.BOTTOM;
+                     boolean isOpen = (Boolean)state.get(TrapDoorBlock.OPEN);
+                     boolean isBottom = state.get(TrapDoorBlock.HALF) == Half.BOTTOM;
                      if (isOpen && isBottom) {
                         level.setBlockAndUpdate(pos, (BlockState)state.setValue(TrapDoorBlock.OPEN, Boolean.FALSE));
                      }
@@ -760,7 +765,7 @@ public class WorldUtil {
 
    private static boolean hasEnoughSpace(Level level, EntityDimensions dimensions, BlockPos spawnPos) {
       for (BlockPos pos : BlockPos.betweenClosed(
-         spawnPos, spawnPos.offset(BlockPos.containing((double)dimensions.width, (double)dimensions.height, (double)dimensions.width))
+         spawnPos, spawnPos.offset(BlockPos.containing((double)dimensions.width(), (double)dimensions.height(), (double)dimensions.width()))
       )) {
          if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
             return false;

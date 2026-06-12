@@ -44,9 +44,9 @@ public class SuperTNTEntity extends PrimedTnt {
       this.owner = owner;
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(START_FUSE, 0);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(START_FUSE, 0);
    }
 
    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
@@ -101,6 +101,6 @@ public class SuperTNTEntity extends PrimedTnt {
 
    @NotNull
    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+      return /* TODO: NetworkHooks removed in NeoForge 1.21 */;
    }
 }

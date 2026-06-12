@@ -11,8 +11,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ViewportEvent.ComputeFogColor;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.ClientTickEvent
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: TickEvent split into ServerTickEvent/LevelTickEvent/PlayerTickEvent/EntityTickEvent.Phase
 import net.neoforged.bus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.client.capability.WitherStormDistantRenderer;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
@@ -109,7 +107,7 @@ public class WitherStormAmbienceEffects {
    }
 
    public static float modifySkyDarken(Minecraft mc, Vec3 cameraPos, float original, float partialTicks) {
-      WitherStormAmbienceEffects effects = (WitherStormAmbienceEffects)mc.level.getCapability(WitherStormModClientCapabilities.AMBIENT_EFFECTS).orElse(null);
+      WitherStormAmbienceEffects effects = (WitherStormAmbienceEffects)mc.level.getData(WitherStormModClientCapabilities.AMBIENT_EFFECTS);
       return effects != null ? original * Math.min(effects.lerpAlpha(partialTicks) + 0.4F, 1.0F) : original;
    }
 
@@ -126,7 +124,7 @@ public class WitherStormAmbienceEffects {
       double distance,
       float partialTicks
    ) {
-      WitherStormAmbienceEffects effects = (WitherStormAmbienceEffects)mc.level.getCapability(WitherStormModClientCapabilities.AMBIENT_EFFECTS).orElse(null);
+      WitherStormAmbienceEffects effects = (WitherStormAmbienceEffects)mc.level.getData(WitherStormModClientCapabilities.AMBIENT_EFFECTS);
       if (effects != null) {
          float alpha = effects.lerpAlpha(partialTicks);
          Color col = effects.lerpColorsByTransition(dayColorGetter, nightColorGetter, partialTicks);
@@ -145,13 +143,11 @@ public class WitherStormAmbienceEffects {
 
    public static class Events {
       @SubscribeEvent
-      public static void onWorldTick(ClientTickEvent event) {
-         if (event.phase == Phase.START) {
-            Minecraft mc = Minecraft.getInstance();
-            ClientLevel level = mc.level;
-            if (level != null && !mc.isPaused()) {
-               level.getCapability(WitherStormModClientCapabilities.AMBIENT_EFFECTS).ifPresent(WitherStormAmbienceEffects::tick);
-            }
+      public static void onWorldTick(net.neoforged.neoforge.client.event.ClientTickEvent.Pre event) {
+         Minecraft mc = Minecraft.getInstance();
+         ClientLevel level = mc.level;
+         if (level != null && !mc.isPaused()) {
+            level.getData(WitherStormModClientCapabilities.AMBIENT_EFFECTS).tick();
          }
       }
 
@@ -159,20 +155,19 @@ public class WitherStormAmbienceEffects {
       public static void fogColor(ComputeFogColor event) {
          if ((Boolean)WitherStormModConfig.CLIENT.renderSkyAmbienceEffects.get()) {
             Minecraft mc = Minecraft.getInstance();
-            mc.level.getCapability(WitherStormModClientCapabilities.AMBIENT_EFFECTS).ifPresent(effects -> {
-               float alpha = effects.lerpAlpha((float)event.getPartialTick());
-               Color fog = effects.lerpColorsByTransition(SkyColorSet::fogColor, SkyColorSet::nightFogColor, (float)event.getPartialTick());
-               int[] color = new int[]{fog.getRed(), fog.getGreen(), fog.getBlue()};
-               float rDelta = event.getRed() * 255.0F - (float)color[0];
-               float gDelta = event.getGreen() * 255.0F - (float)color[1];
-               float bDelta = event.getBlue() * 255.0F - (float)color[2];
-               color[0] = (int)((float)color[0] + rDelta * alpha);
-               color[1] = (int)((float)color[1] + gDelta * alpha);
-               color[2] = (int)((float)color[2] + bDelta * alpha);
-               event.setRed((float)color[0] / 255.0F);
-               event.setGreen((float)color[1] / 255.0F);
-               event.setBlue((float)color[2] / 255.0F);
-            });
+            WitherStormAmbienceEffects effects = mc.level.getData(WitherStormModClientCapabilities.AMBIENT_EFFECTS);
+            float alpha = effects.lerpAlpha((float)event.getPartialTick());
+            Color fog = effects.lerpColorsByTransition(SkyColorSet::fogColor, SkyColorSet::nightFogColor, (float)event.getPartialTick());
+            int[] color = new int[]{fog.getRed(), fog.getGreen(), fog.getBlue()};
+            float rDelta = event.getRed() * 255.0F - (float)color[0];
+            float gDelta = event.getGreen() * 255.0F - (float)color[1];
+            float bDelta = event.getBlue() * 255.0F - (float)color[2];
+            color[0] = (int)((float)color[0] + rDelta * alpha);
+            color[1] = (int)((float)color[1] + gDelta * alpha);
+            color[2] = (int)((float)color[2] + bDelta * alpha);
+            event.setRed((float)color[0] / 255.0F);
+            event.setGreen((float)color[1] / 255.0F);
+            event.setBlue((float)color[2] / 255.0F);
          }
       }
    }

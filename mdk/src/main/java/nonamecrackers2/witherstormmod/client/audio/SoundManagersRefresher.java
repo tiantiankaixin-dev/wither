@@ -17,7 +17,7 @@ public class SoundManagersRefresher implements ResourceManagerReloadListener {
    public void refresh() {
       if (this.minecraft.level != null) {
          ClientLevel world = this.minecraft.level;
-         world.getCapability(WitherStormModClientCapabilities.SOUND_MANAGERS).ifPresent(holder -> holder.getManagers().forEach(manager -> manager.refresh()));
+                  world.getData(WitherStormModClientCapabilities.SOUND_MANAGERS.get()).getManagers().forEach(manager -> manager.refresh());
       }
    }
 

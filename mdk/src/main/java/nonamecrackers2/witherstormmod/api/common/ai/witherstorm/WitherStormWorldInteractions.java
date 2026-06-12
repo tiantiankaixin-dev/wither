@@ -1,4 +1,5 @@
 package nonamecrackers2.witherstormmod.api.common.ai.witherstorm;
+import net.neoforged.fml.ModList;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -10,7 +11,8 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.fml.ModLoader;
+import net.neoforged.fml.ModList;
+// 
 import nonamecrackers2.witherstormmod.api.common.ai.witherstorm.clustersource.BlockClusterSource;
 import nonamecrackers2.witherstormmod.api.common.ai.witherstorm.pullbehavior.WitherStormPullBehavior;
 
@@ -44,7 +46,7 @@ public class WitherStormWorldInteractions {
          List<RegisterWorldInteractionsEvent> postedEvents = Lists.newArrayList();
          Builder<EntityType<?>, WitherStormPullBehavior<?>> pullBehaviors = ImmutableMap.builder();
          com.google.common.collect.ImmutableList.Builder<BlockClusterSource> sources = ImmutableList.builder();
-         ModLoader.get().runEventGenerator(mod -> {
+         ModList.get().runEventGenerator(mod -> {
             RegisterWorldInteractionsEvent eventx = new RegisterWorldInteractionsEvent();
             postedEvents.add(eventx);
             return eventx;

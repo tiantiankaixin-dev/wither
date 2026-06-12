@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.packet.PlayerMotionMessage;
@@ -38,7 +39,7 @@ public class PullSpell extends SymbiontSpell {
             entity.setDeltaMovement(delta);
             if (entity instanceof ServerPlayer) {
                PlayerMotionMessage message = new PlayerMotionMessage(delta);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), message);
+               WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toPlayer((ServerPlayer)entity), message);
             }
 
             double x = entity.getX() + entity.getRandom().nextGaussian() * entity.getBoundingBox().getXsize() * 0.4;

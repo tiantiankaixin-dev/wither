@@ -1,5 +1,7 @@
 package nonamecrackers2.crackerslib.client.util;
 
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -8,7 +10,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -37,40 +39,40 @@ public class RenderUtil {
    }
 
    public static void renderCenteredWordWrap(GuiGraphics stack, Font font, FormattedText text, int x, int y, int width, int color) {
-      List<FormattedCharSequence> texts = font.m_92923_(text, width);
+      List<FormattedCharSequence> texts = font.split(text, width);
       int totalHeight = texts.size() * (9 + 2);
 
       for (int i = 0; i < texts.size(); i++) {
-         stack.m_280364_(font, texts.get(i), x, y + i * 9 + 2 - totalHeight / 2, color);
+         stack.drawCenteredString(font, texts.get(i), x, y + i * 9 + 2 - totalHeight / 2, color);
       }
    }
 
    public static void renderHorizontallyCenteredWordWrap(GuiGraphics stack, Font font, FormattedText text, int x, int y, int width, int color) {
-      List<FormattedCharSequence> texts = font.m_92923_(text, width);
+      List<FormattedCharSequence> texts = font.split(text, width);
 
       for (int i = 0; i < texts.size(); i++) {
-         stack.m_280364_(font, texts.get(i), x, y + i * 9 + 2, color);
+         stack.drawCenteredString(font, texts.get(i), x, y + i * 9 + 2, color);
       }
    }
 
    public static void line(GuiGraphics stack, Vector2f start, Vector2f end, int blitOffset, float lineWidth, float r, float g, float b, float a) {
       Vector2f normal = start.sub(end, new Vector2f()).normalize();
-      Matrix4f matrix4f = stack.m_280168_().m_85850_().m_252922_();
-      Matrix3f matrix3f = stack.m_280168_().m_85850_().m_252943_();
-      BufferBuilder bufferbuilder = Tesselator.m_85913_().m_85915_();
+      Matrix4f matrix4f = stack.last().pose();
+      Matrix3f matrix3f = stack.last().normal();
+      BufferBuilder bufferbuilder = Tesselator.getInstance();
       RenderSystem.enableBlend();
-      RenderSystem.setShader(GameRenderer::m_172757_);
+      RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
       RenderSystem.lineWidth(lineWidth);
-      bufferbuilder.m_166779_(Mode.LINES, DefaultVertexFormat.f_166851_);
+      bufferbuilder.begin(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
       if (normal.y < -0.008F) {
-         bufferbuilder.m_252986_(matrix4f, start.x, start.y, blitOffset).m_85950_(r, g, b, a).m_252939_(matrix3f, normal.x, normal.y, 0.0F).m_5752_();
-         bufferbuilder.m_252986_(matrix4f, end.x, end.y, blitOffset).m_85950_(r, g, b, a).m_252939_(matrix3f, normal.x, normal.y, 0.0F).m_5752_();
+         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
       } else {
-         bufferbuilder.m_252986_(matrix4f, end.x, end.y, blitOffset).m_85950_(r, g, b, a).m_252939_(matrix3f, normal.x, normal.y, 0.0F).m_5752_();
-         bufferbuilder.m_252986_(matrix4f, start.x, start.y, blitOffset).m_85950_(r, g, b, a).m_252939_(matrix3f, normal.x, normal.y, 0.0F).m_5752_();
+         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
       }
 
-      BufferUploader.m_231202_(bufferbuilder.m_231175_());
+      BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
       RenderSystem.disableBlend();
    }
 
@@ -213,23 +215,23 @@ public class RenderUtil {
          indices.add(startIndex + indices.get(i));
       }
 
-      Matrix4f matrix4f = stack.m_85850_().m_252922_();
-      Matrix3f matrix3f = stack.m_85850_().m_252943_();
+      Matrix4f matrix4f = stack.last().pose();
+      Matrix3f matrix3f = stack.last().normal();
 
       for (int i = 0; i < indices.size(); i++) {
          int index = indices.get(i);
          Vector3f vertex = vertices.get(index);
          Vector3f normal = normals.get(index);
          Vector2f uv = texCoords.get(index);
-         consumer.m_252986_(matrix4f, vertex.x, vertex.y, vertex.z)
-            .m_85950_(1.0F, 1.0F, 1.0F, 1.0F)
-            .m_7421_(uv.x, uv.y)
-            .m_86008_(overlayTexture)
-            .m_85969_(packedLight);
+         consumer.addVertex(matrix4f, vertex.x, vertex.y, vertex.z)
+            .vertex(1.0F, 1.0F, 1.0F, 1.0F)
+            .uv(uv.x, uv.y)
+            .setOverlay(overlayTexture)
+            .setLight(packedLight);
          if (useNormals) {
-            consumer.m_252939_(matrix3f, normal.x, normal.y, normal.z).m_5752_();
+            consumer.setNormal(matrix3f, normal.x, normal.y, normal.z);
          } else {
-            consumer.m_5601_(0.0F, -1.0F, 0.0F).m_5752_();
+            consumer.normal(0.0F, -1.0F, 0.0F);
          }
       }
    }
@@ -266,13 +268,13 @@ public class RenderUtil {
 
       for (int i = 0; i <= stackCount; i++) {
          float stackAngle = (float) (Math.PI / 2) - i * stackStep;
-         float xy = radius * Mth.m_14089_(stackAngle);
-         float z = radius * Mth.m_14031_(stackAngle);
+         float xy = radius * Mth.cos(stackAngle);
+         float z = radius * Mth.sin(stackAngle);
 
          for (int j = 0; j <= sectorCount; j++) {
             float sectorAngle = j * sectorStep;
-            float x = xy * Mth.m_14089_(sectorAngle);
-            float y = xy * Mth.m_14031_(sectorAngle);
+            float x = xy * Mth.cos(sectorAngle);
+            float y = xy * Mth.sin(sectorAngle);
             vertices.add(new Vector3f(x, y, z));
             float nx = x * lengthInv;
             float ny = y * lengthInv;
@@ -306,21 +308,21 @@ public class RenderUtil {
          }
       }
 
-      Matrix4f matrix4f = stack.m_85850_().m_252922_();
-      Matrix3f matrix3f = stack.m_85850_().m_252943_();
+      Matrix4f matrix4f = stack.last().pose();
+      Matrix3f matrix3f = stack.last().normal();
 
       for (int i = 0; i < indices.size(); i++) {
          int index = indices.get(i);
          Vector3f vertex = vertices.get(index);
          Vector3f normal = normals.get(index);
          Vector2f uv = texCoords.get(index);
-         consumer.m_252986_(matrix4f, vertex.x, vertex.y, vertex.z)
-            .m_85950_(1.0F, 1.0F, 1.0F, 1.0F)
-            .m_7421_(uv.x, uv.y)
-            .m_86008_(overlayTexture)
-            .m_85969_(packedLight)
-            .m_252939_(matrix3f, normal.x, normal.y, normal.z)
-            .m_5752_();
+         consumer.addVertex(matrix4f, vertex.x, vertex.y, vertex.z)
+            .vertex(1.0F, 1.0F, 1.0F, 1.0F)
+            .uv(uv.x, uv.y)
+            .setOverlay(overlayTexture)
+            .setLight(packedLight)
+            .setNormal(matrix3f, normal.x, normal.y, normal.z)
+            ;
       }
    }
 
@@ -329,28 +331,28 @@ public class RenderUtil {
    }
 
    public static boolean isMouseInBounds(int mouseX, int mouseY, ScreenRectangle rectangle) {
-      return isMouseInBounds(mouseX, mouseY, rectangle.f_263846_().f_263719_(), rectangle.f_263846_().f_263694_(), rectangle.f_263770_(), rectangle.f_263800_());
+      return isMouseInBounds(mouseX, mouseY, rectangle.position().x(), rectangle.position().y(), rectangle.width(), rectangle.height());
    }
 
    public static void adjustProjectionMatrix(float partialTicks, float near, float far) {
       extendFarPlane = true;
       previousProjMat = RenderSystem.getProjectionMatrix();
-      Minecraft mc = Minecraft.m_91087_();
-      GameRenderer renderer = mc.f_91063_;
+      Minecraft mc = Minecraft.getInstance();
+      GameRenderer renderer = mc.gameRenderer;
       MixinGameRendererAccessor accessor = (MixinGameRendererAccessor)renderer;
-      double fov = accessor.crackerslib$getFov(renderer.m_109153_(), partialTicks, true);
+      double fov = accessor.crackerslib$getFov(renderer.getMainCamera(), partialTicks, true);
       PoseStack stack = new PoseStack();
-      stack.m_85850_().m_252922_().identity();
+      stack.last().pose().identity();
       float zoom = accessor.crackerslib$getZoom();
       if (zoom != 1.0F) {
-         stack.m_252880_(accessor.crackerslib$getZoomX(), -accessor.crackerslib$getZoomY(), 0.0F);
-         stack.m_85841_(zoom, zoom, 1.0F);
+         stack.translate(accessor.crackerslib$getZoomX(), -accessor.crackerslib$getZoomY(), 0.0F);
+         stack.scale(zoom, zoom, 1.0F);
       }
 
-      stack.m_85850_()
-         .m_252922_()
-         .mul(new Matrix4f().setPerspective((float)(fov * (float) (Math.PI / 180.0)), (float)mc.m_91268_().m_85441_() / mc.m_91268_().m_85442_(), near, far));
-      renderer.m_252879_(stack.m_85850_().m_252922_());
+      stack.color()
+         .uv()
+         .mul(new Matrix4f().setPerspective((float)(fov * (float) (Math.PI / 180.0)), (float)mc.getWindow().getWidth() / mc.getWindow().getHeight(), near, far));
+      renderer.resetProjectionMatrix(stack.last().pose());
    }
 
    public static void popAdjustedProjectionMatrix() {
@@ -360,7 +362,7 @@ public class RenderUtil {
          throw new IllegalStateException("Not extending far plane!");
       } else {
          extendFarPlane = false;
-         Minecraft.m_91087_().f_91063_.m_252879_(previousProjMat);
+         Minecraft.getInstance().gameRenderer.resetProjectionMatrix(previousProjMat);
          previousProjMat = null;
       }
    }

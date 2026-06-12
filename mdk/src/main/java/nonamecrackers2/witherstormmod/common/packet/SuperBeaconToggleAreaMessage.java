@@ -1,7 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-// TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 
 public class SuperBeaconToggleAreaMessage extends Packet {
@@ -28,7 +28,7 @@ public class SuperBeaconToggleAreaMessage extends Packet {
       buffer.writeBoolean(this.shouldShow);
    }
 
-   public Runnable getProcessor(Context context) {
+   public Runnable getProcessor(IPayloadContext context) {
       return () -> WitherStormModMessageHandlerServer.processSuperBeaconToggleAreaMessage(this, context.getSender());
    }
 }

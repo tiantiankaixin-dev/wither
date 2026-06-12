@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+
+import net.minecraft.network.syncher.SynchedEntityData;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,7 +40,7 @@ public class TentacleSpike extends Entity implements TraceableEntity {
       this.damageModifier = damageModifier;
    }
 
-   protected void defineSynchedData() {
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
    }
 
    public void setOwner(@Nullable LivingEntity entity) {
