@@ -21,19 +21,19 @@ public class PrimitiveHelper {
    public static Quaternionf quaternionFromTag(CompoundTag tag) {
       Quaternionf quaternion = new Quaternionf().identity();
       if (tag.contains("x", 5)) {
-         quaternion.x = tag.putFloat("x");
+         quaternion.x = tag.getFloat("x");
       }
 
       if (tag.contains("y", 5)) {
-         quaternion.y = tag.putFloat("y");
+         quaternion.y = tag.getFloat("y");
       }
 
       if (tag.contains("z", 5)) {
-         quaternion.z = tag.putFloat("z");
+         quaternion.z = tag.getFloat("z");
       }
 
       if (tag.contains("w", 5)) {
-         quaternion.w = tag.putFloat("w");
+         quaternion.w = tag.getFloat("w");
       }
 
       return quaternion;
@@ -48,7 +48,7 @@ public class PrimitiveHelper {
    }
 
    public static Vector3f vector3fFromTag(CompoundTag tag) {
-      return new Vector3f(tag.putFloat("x"), tag.putFloat("y"), tag.putFloat("z"));
+      return new Vector3f(tag.getFloat("x"), tag.getFloat("y"), tag.getFloat("z"));
    }
 
    public static CompoundTag vec3ToTag(Vec3 vec) {
@@ -84,7 +84,7 @@ public class PrimitiveHelper {
    }
 
    public static Vec2 vec2FromTag(CompoundTag tag) {
-      return new Vec2(tag.putFloat("x"), tag.putFloat("y"));
+      return new Vec2(tag.getFloat("x"), tag.getFloat("y"));
    }
 
    public static void encodeVec3(FriendlyByteBuf buffer, Vec3 vec) {

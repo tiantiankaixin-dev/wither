@@ -739,7 +739,7 @@ public class UltimateTargetManager {
 
    public void read(CompoundTag compound) {
       if (compound.contains("AlternativeUltimateTarget")) {
-         this.setAlternativeUltimateTarget(NbtUtils.readBlockPos(compound.getCompound("AlternativeUltimateTarget")));
+         this.setAlternativeUltimateTarget(NbtUtils.readBlockPos(compound, "AlternativeUltimateTarget"));
       }
 
       if (compound.contains("UltimateTargetChunkPos")) {
@@ -753,12 +753,12 @@ public class UltimateTargetManager {
       }
 
       if (compound.contains("BlockTargetOverride")) {
-         this.setBlockTargetOverride(NbtUtils.readBlockPos(compound.getCompound("BlockTargetOverride")));
+         this.setBlockTargetOverride(NbtUtils.readBlockPos(compound, "BlockTargetOverride"));
       }
 
       CompoundTag ultimateTargetDistractions = compound.getCompound("UltimateTargetDistraction");
       if (ultimateTargetDistractions.contains("DistractedPos")) {
-         this.setDistractedPos(NbtUtils.readBlockPos(ultimateTargetDistractions.getCompound("DistractedPos")));
+         this.setDistractedPos(NbtUtils.readBlockPos(ultimateTargetDistractions, "DistractedPos"));
       }
 
       this.setCanBeDistracted(ultimateTargetDistractions.getBoolean("CanBeDistracted"));
@@ -775,7 +775,7 @@ public class UltimateTargetManager {
 
       this.tiredOfChasingTicks = ultimateTargetDistractions.getInt("TiredOfChasingTicks");
       if (compound.contains("RandomStrollPos")) {
-         this.randomStrollPos = NbtUtils.readBlockPos(compound.getCompound("RandomStrollPos"));
+         this.randomStrollPos = NbtUtils.readBlockPos(compound, "RandomStrollPos");
       }
 
       this.tillRandomStroll = compound.getInt("RandomStrollTimer");

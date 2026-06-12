@@ -206,7 +206,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
       }
 
       if (tag.contains("Connected")) {
-         this.connectedBeacon = NbtUtils.readBlockPos(tag.getCompound("Connected"));
+         this.connectedBeacon = NbtUtils.readBlockPos(tag, "Connected");
       } else {
          this.connectedBeacon = null;
       }

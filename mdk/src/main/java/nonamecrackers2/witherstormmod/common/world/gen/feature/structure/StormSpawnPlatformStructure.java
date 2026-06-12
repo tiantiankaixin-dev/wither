@@ -135,7 +135,7 @@ public class StormSpawnPlatformStructure extends Structure {
             }
          );
          if (nbt.contains("SpawnPos", 10)) {
-            this.spawnPos = NbtUtils.readBlockPos(nbt.getCompound("SpawnPos"));
+            this.spawnPos = NbtUtils.readBlockPos(nbt, "SpawnPos");
          }
       }
 

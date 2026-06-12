@@ -691,7 +691,7 @@ public class WitherStormBowelsManager {
       }
 
       public static WitherStormBowelsManager.BowelsInstance read(CompoundTag compound) {
-         BlockPos pos = NbtUtils.readBlockPos(compound.getCompound("Pos"));
+         BlockPos pos = NbtUtils.readBlockPos(compound, "Pos");
          UUID storm = compound.getUUID("Storm");
          UUID commandBlock = null;
          if (compound.contains("CommandBlock")) {
