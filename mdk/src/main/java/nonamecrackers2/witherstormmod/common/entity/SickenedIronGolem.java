@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
+import nonamecrackers2.witherstormmod.common.util.IronGolemCrackiness;
+
 import net.neoforged.api.distmarker.Dist;
 
 import net.minecraft.core.BlockPos;
@@ -34,7 +36,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.IronGolem.Crackiness;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -235,7 +236,7 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       if (!this.sickenedCanBeHurt(source, amount)) {
          return false;
       } else {
-         IronGolem.Crackiness crackiness = this.getCrackiness();
+         IronGolemCrackiness crackiness = this.getCrackiness();
          boolean flag = super.hurt(source, amount);
          if (flag && this.getCrackiness() != crackiness) {
             this.playSound(SoundEvents.IRON_GOLEM_DAMAGE);
@@ -246,7 +247,7 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
    }
 
    public int /* Crackiness removed */ getCrackiness() {
-      return IronGolem.Crackiness.NONE(this.getHealth() / this.getMaxHealth());
+      return IronGolemCrackiness.NONE(this.getHealth() / this.getMaxHealth());
    }
 
    public void handleEntityEvent(byte event) {

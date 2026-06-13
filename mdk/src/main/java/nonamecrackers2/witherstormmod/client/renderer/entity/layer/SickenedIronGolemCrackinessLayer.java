@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.client.renderer.entity.layer;
 
+import nonamecrackers2.witherstormmod.common.util.IronGolemCrackiness;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Map;
@@ -8,17 +10,16 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.IronGolem.Crackiness;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentity.SickenedIronGolemModel;
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 
 public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
-   private static final Map<IronGolem.Crackiness, ResourceLocation> LAYERS = ImmutableMap.of(
-      IronGolem.Crackiness.NONE,
+   private static final Map<IronGolemCrackiness, ResourceLocation> LAYERS = ImmutableMap.of(
+      IronGolemCrackiness.LOW,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
-      IronGolem.Crackiness.NONE,
+      IronGolemCrackiness.MEDIUM,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
-      IronGolem.Crackiness.NONE,
+      IronGolemCrackiness.HIGH,
       ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
    );
 
@@ -39,8 +40,8 @@ public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGo
       float p_117358_
    ) {
       if (!entity.isInvisible()) {
-         IronGolem.Crackiness irongolem$int /* Crackiness removed */ = entity.getCrackiness();
-         if (irongolem$int /* Crackiness removed */ != IronGolem.Crackiness.NONE) {
+         IronGolemCrackiness irongolem$int /* Crackiness removed */ = entity.getCrackiness();
+         if (irongolem$int /* Crackiness removed */ != IronGolemCrackiness.NONE) {
             ResourceLocation resourcelocation = LAYERS.get(irongolem$int /* Crackiness removed */);
             renderColoredCutoutModel(this.getParentModel(), resourcelocation, stack, buffer, p_117351_, entity, 1.0F, 1.0F, 1.0F);
          }

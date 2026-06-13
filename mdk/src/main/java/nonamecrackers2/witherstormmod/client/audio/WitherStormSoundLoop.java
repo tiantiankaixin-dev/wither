@@ -82,7 +82,7 @@ public class WitherStormSoundLoop extends FadingSoundLoop implements IForceStopp
       this.y = this.pos.y;
       this.z = this.pos.z;
       { var entity = this.entity;
-         if (entity.isDeadOrDying() || !entity.level() != null) {
+         if (entity.isDeadOrDying() || entity.level() == null) {
             this.stopSound();
          }
       }

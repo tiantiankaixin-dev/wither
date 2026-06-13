@@ -51,14 +51,14 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    @Override
    public void tick() {
       super.tick();
-      if (!this.level.isClientSide) {
+      if (!this.level().isClientSide) {
          BlockPos searchStart = this.worldPosition.below();
          int radius = 1;
          List<BlockState> blocks = Lists.newArrayList();
 
          for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-               blocks.add(this.level.getBlockState(searchStart.offset(x, 0, z)));
+               blocks.add(this.level().getBlockState(searchStart.offset(x, 0, z)));
             }
          }
 
@@ -103,7 +103,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
       if (beaconx != null) {
          this.beaconLevel = beaconx.beaconLevel;
          this.showWorkingArea = beaconx.showWorkingArea();
-         if (!this.level.isClientSide && this.color != null && beaconx.getResummonTicks() == this.getResummonThreshold()) {
+         if (!this.level().isClientSide && this.color != null && beaconx.getResummonTicks() == this.getResummonThreshold()) {
             this.playSound(WitherStormModSoundEvents.WITHERED_BEACON_ACTIVATE.get(), 1.0F, 1.0F);
             this.playSound(WitherStormModSoundEvents.TREMBLE.get(), 10.0F, 1.0F);
             Vec3 pos = Vec3.atCenterOf(this.getConnectedBeacon());
@@ -179,7 +179,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
 
    public SuperBeaconBlockEntity getConnectedBeaconEntity() {
       if (this.getConnectedBeacon() != null) {
-         BlockEntity entity = this.level.getBlockEntity(this.getConnectedBeacon());
+         BlockEntity entity = this.level().getBlockEntity(this.getConnectedBeacon());
          if (entity instanceof SuperBeaconBlockEntity) {
             return (SuperBeaconBlockEntity)entity;
          }
