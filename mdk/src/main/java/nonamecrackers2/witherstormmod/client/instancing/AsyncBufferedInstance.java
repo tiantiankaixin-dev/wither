@@ -3,9 +3,9 @@ package nonamecrackers2.witherstormmod.client.instancing;
 
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -57,8 +57,8 @@ public class AsyncBufferedInstance extends BufferedInstance {
    public void buildBuffer(PoseStack stack, ExecutorService pool) {
       this.bufferBuilder = CompletableFuture.<BufferBuilder>supplyAsync(() -> {
          RenderType type = this.getRenderType();
-         BufferBuilder builder = new BufferBuilder(512);
-         builder.begin(type.mode(), type.format());
+         ByteBufferBuilder byteBuffer = new ByteBufferBuilder(512);
+         BufferBuilder builder = new BufferBuilder(byteBuffer, type.mode(), type.format());
          this.bufferInto(stack, builder, 15728880, OverlayTexture.NO_OVERLAY, -1);
          return builder;
       }, pool).handle((b, e) -> {
@@ -66,7 +66,6 @@ public class AsyncBufferedInstance extends BufferedInstance {
             LOGGER.error("Failed to build buffer asynchronously", e);
          }
 
-         b.clear();
          return (BufferBuilder)b;
       });
       this.dirty = false;

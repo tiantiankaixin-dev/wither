@@ -59,11 +59,11 @@ public class RenderUtil {
       Vector2f normal = start.sub(end, new Vector2f()).normalize();
       Matrix4f matrix4f = stack.pose().last().pose();
       Matrix3f matrix3f = stack.pose().last().normal();
-      BufferBuilder bufferbuilder = Tesselator.getInstance();
+      Tesselator tesselator = Tesselator.getInstance();
       RenderSystem.enableBlend();
       RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
       RenderSystem.lineWidth(lineWidth);
-      bufferbuilder.begin(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+      BufferBuilder bufferbuilder = tesselator.begin(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
       if (normal.y < -0.008F) {
          bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
          bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);

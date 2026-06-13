@@ -65,8 +65,7 @@ public class BufferedInstance {
 
       this.buffer = new VertexBuffer(Usage.STATIC);
       RenderType type = this.getRenderType();
-      BufferBuilder buffer = Tesselator.getInstance();
-      buffer.begin(type.mode(), type.format());
+      BufferBuilder buffer = Tesselator.getInstance().begin(type.mode(), type.format());
       this.bufferInto(stack, buffer, 15728880, OverlayTexture.NO_OVERLAY, -1);
       MeshData rendered = buffer.buildOrThrow();
       this.buffer.bind();

@@ -86,17 +86,16 @@ public class OverlayRenderers {
 
    private static void renderSolidOverlay(float r, float g, float b, float alpha, int width, int height) {
       Tesselator tesselator = Tesselator.getInstance();
-      BufferBuilder builder = tesselator;
       RenderSystem.disableDepthTest();
       RenderSystem.depthMask(false);
       RenderSystem.defaultBlendFunc();
       RenderSystem.setShader(GameRenderer::getPositionColorShader);
-      builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+      BufferBuilder builder = tesselator.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
       builder.addVertex(0.0, (double)height, 0.0).setColor(r, g, b, alpha);
       builder.addVertex((double)width, (double)height, 0.0).setColor(r, g, b, alpha);
       builder.addVertex((double)width, 0.0, 0.0).setColor(r, g, b, alpha);
       builder.addVertex(0.0, 0.0, 0.0).setColor(r, g, b, alpha);
-      BufferUploader.drawWithShader(buffer.buildOrThrow());
+      BufferUploader.drawWithShader(builder.buildOrThrow());
       RenderSystem.depthMask(true);
       RenderSystem.enableDepthTest();
    }
