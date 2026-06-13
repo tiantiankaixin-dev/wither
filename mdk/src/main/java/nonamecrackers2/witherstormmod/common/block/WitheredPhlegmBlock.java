@@ -51,7 +51,7 @@ public class WitheredPhlegmBlock extends BaseEntityBlock {
 
    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos1, boolean flag) {
       boolean neighborSignal = level.hasNeighborSignal(pos);
-      if (neighborSignal != (Boolean)state.get(POWERED)) {
+      if (neighborSignal != (Boolean)state.getValue(POWERED)) {
          level.setBlock(pos, (BlockState)state.setValue(POWERED, neighborSignal), 3);
       }
    }
@@ -106,7 +106,7 @@ public class WitheredPhlegmBlock extends BaseEntityBlock {
    }
 
    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource source) {
-      if (!(Boolean)state.get(BlockStateProperties.POWERED)) {
+      if (!(Boolean)state.getValue(BlockStateProperties.POWERED)) {
          doParticles(source, pos, level, 6, 3.0F, 0.1F);
       } else {
          doParticles(source, pos, level, 2, 1.0F, -0.01F);
