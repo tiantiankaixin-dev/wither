@@ -4,14 +4,16 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import nonamecrackers2.witherstormmod.common.item.PhasometerItem;
 
 public class PhasometerRenderHelper {
    public static void renderPhasometerOverlay(ItemStack item, GuiGraphics stack, float partialTicks, int width, int height, String dotDotDot) {
-      CompoundTag tag = item.getOrCreateTag();
+      CompoundTag tag = item.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
       Minecraft mc = Minecraft.getInstance();
       if (tag.contains(PhasometerItem.DataEntry.PHASE.tagName)) {
          List<PhasometerItem.DataEntry> entries = PhasometerItem.getEntries(tag);

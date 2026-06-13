@@ -16,7 +16,11 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.FireworkRocketItem.Shape;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.core.component.DataComponents;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -88,11 +92,7 @@ public class FireworkBundleBlockEntity extends BlockEntity {
 
    private static ItemStack createRandomFireworkItem(RandomSource random) {
       ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
-      ListTag list = new ListTag();
-      CompoundTag tag = new CompoundTag();
-      tag.putBoolean("Flicker", random.nextBoolean());
-      tag.putBoolean("Trail", random.nextBoolean());
-      List<Integer> colors = Lists.newArrayList();
+      IntList colors = new IntArrayList();
       int size = random.nextInt(5) + 1;
 
       for (int i = 0; i < size; i++) {
@@ -100,12 +100,10 @@ public class FireworkBundleBlockEntity extends BlockEntity {
          colors.add(color.getFireworkColor());
       }
 
-      tag.putIntArray("Colors", colors);
-      tag.putByte("Type", (byte)((Shape)Util.getRandom(Shape.values(), random)).getId());
-      list.add(tag);
-      CompoundTag fireworks = stack.getOrCreateTagElement("Fireworks");
-      fireworks.putByte("Flight", (byte)(random.nextInt(1) + 2));
-      fireworks.put("Explosions", list);
+      FireworkExplosion.Shape shape = (FireworkExplosion.Shape)Util.getRandom(FireworkExplosion.Shape.values(), random);
+      FireworkExplosion explosion = new FireworkExplosion(shape, colors, IntList.of(), random.nextBoolean(), random.nextBoolean());
+      Fireworks fireworks = new Fireworks((byte)(random.nextInt(1) + 2), List.of(explosion));
+      stack.set(DataComponents.FIREWORKS, fireworks);
       return stack;
    }
 }

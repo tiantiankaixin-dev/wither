@@ -183,7 +183,7 @@ public class AmuletAnimationHelper {
    }
 
    public static float getPulseIntensity(AbstractClientPlayer player, ClientLevel level, ItemStack stack, String id, int distance) {
-      CompoundTag tag = stack.getOrCreateTag();
+      CompoundTag tag = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
       if (tag.contains(id + "Pos")) {
          BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(id + "Pos").orElse(null));
          float angle = (float)(Mth.atan2((double)pos.getX() - player.getX(), (double)pos.getZ() - player.getZ()) * (180.0 / Math.PI));
@@ -205,7 +205,7 @@ public class AmuletAnimationHelper {
                AmuletAnimationHelper.AnimationHolder holder = ANIMATIONS.get(hand);
                if (holder != null) {
                   holder.tickCount++;
-                  CompoundTag tag = item.getOrCreateTag();
+                  CompoundTag tag = item.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
                   int index = tag.getInt("SelectedIndex");
                   float target = getSwapDegrees(hand, index);
                   if (target != holder.targetO) {

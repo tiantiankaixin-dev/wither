@@ -165,9 +165,10 @@ public class FormidibombBlock extends TntBlock implements EntityBlock {
             if (stack.getItem() instanceof FormidibombItem) {
                BlockEntity tile = (BlockEntity)loot.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
                if (tile instanceof IFormidibomb formidibomb) {
-                  CompoundTag compound = stack.getOrCreateTag();
+                  CompoundTag compound = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
                   compound.putInt("Fuse", formidibomb.getFuseLife());
                   compound.putInt("StartFuse", formidibomb.getStartFuse());
+                  stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(compound));
                }
             }
          }
