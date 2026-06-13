@@ -27,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -541,7 +542,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   public Set<MobEffect> getValidEffects() {
+   public Set<Holder<MobEffect>> getValidEffects() {
       return VALID_EFFECTS;
    }
 

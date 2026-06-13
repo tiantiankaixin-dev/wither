@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.inventory.ContainerData;
@@ -38,14 +39,14 @@ import nonamecrackers2.witherstormmod.common.packet.UpdateDistantSuperBeaconMess
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModBlockTags;
 
 public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity implements MenuProvider {
-   public static final Set<MobEffect> VALID_EFFECTS = ImmutableSet.of(
+   public static final Set<Holder<MobEffect>> VALID_EFFECTS = ImmutableSet.of(
       MobEffects.DAMAGE_BOOST,
       MobEffects.DAMAGE_RESISTANCE,
       MobEffects.DIG_SPEED,
       MobEffects.JUMP,
       MobEffects.MOVEMENT_SPEED,
       MobEffects.NIGHT_VISION,
-      new MobEffect[]{MobEffects.REGENERATION, MobEffects.SATURATION}
+      MobEffects.REGENERATION, MobEffects.SATURATION
    );
    public static final int POWER_UP_ANIM_TIME = 80;
    public static final int POWER_UP_CLIMAX = 40;
@@ -64,7 +65,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
    protected int activationTime;
    protected int beamHeight;
    @Nullable
-   protected MobEffect effect;
+   protected Holder<MobEffect> effect;
    protected boolean isActive;
    protected float activateAnim;
    protected float activateAnimO;
@@ -80,7 +81,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
                AbstractSuperBeaconBlockEntity.this.beaconLevel = value;
                break;
             case 1:
-               MobEffect effect = MobEffect.byId(value);
+               Holder<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(value).orElse(null);
                if (effect == null || AbstractSuperBeaconBlockEntity.this.getValidEffects().contains(effect)) {
                   AbstractSuperBeaconBlockEntity.this.effect = effect;
                }
@@ -102,7 +103,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
             case 0:
                return AbstractSuperBeaconBlockEntity.this.beaconLevel;
             case 1:
-               return BuiltInRegistries.MOB_EFFECT.getId(AbstractSuperBeaconBlockEntity.this.effect);
+               return AbstractSuperBeaconBlockEntity.this.effect == null ? 0 : BuiltInRegistries.MOB_EFFECT.getId(AbstractSuperBeaconBlockEntity.this.effect.value());
             case 2:
                return AbstractSuperBeaconBlockEntity.this.showWorkingArea() ? 1 : 0;
             case 3:
@@ -252,7 +253,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
       this.poweringUpAnimation = tag.getInt("PowerUpTime");
       this.activateAnim = tag.getFloat("ActivationAnim");
-      this.effect = MobEffect.byId(tag.getInt("Primary"));
+      this.effect = BuiltInRegistries.MOB_EFFECT.getHolder(tag.getInt("Primary")).orElse(null);
       this.showWorkingArea = tag.getBoolean("ShowWorkingArea");
       this.effectSetCooldown = tag.getInt("Cooldown");
       this.lockKey = LockCode.fromTag(tag);
@@ -269,7 +270,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
       tag.putInt("PowerUpTime", this.poweringUpAnimation);
       tag.putFloat("ActivationAnim", this.activateAnim);
-      tag.putInt("Primary", BuiltInRegistries.MOB_EFFECT.getId(this.effect));
+      tag.putInt("Primary", this.effect == null ? 0 : BuiltInRegistries.MOB_EFFECT.getId(this.effect.value()));
       tag.putBoolean("ShowWorkingArea", this.showWorkingArea);
       tag.putInt("Cooldown", this.effectSetCooldown);
       this.lockKey.addToTag(tag);
@@ -296,7 +297,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
       return this.poweringUpAnimation <= 40;
    }
 
-   public abstract Set<MobEffect> getValidEffects();
+   public abstract Set<Holder<MobEffect>> getValidEffects();
 
    public void doPowerUp(ServerPlayer player) {
       this.playSound(WitherStormModSoundEvents.WITHERED_BEACON_ACTIVATE.get(), 1.0F, 1.0F);
@@ -359,13 +360,13 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
          7
       );
 
-      private final Set<MobEffect> validEffects;
+      private final Set<Holder<MobEffect>> validEffects;
       private final Predicate<BlockState> block;
       private final int r;
       private final int g;
       private final int b;
 
-      private Color(Set<MobEffect> effects, Predicate<BlockState> block, int r, int g, int b) {
+      private Color(Set<Holder<MobEffect>> effects, Predicate<BlockState> block, int r, int g, int b) {
          this.validEffects = effects;
          this.block = block;
          this.r = r;
@@ -389,7 +390,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
          return this.b;
       }
 
-      public Set<MobEffect> getValidEffects() {
+      public Set<Holder<MobEffect>> getValidEffects() {
          return this.validEffects;
       }
    }
