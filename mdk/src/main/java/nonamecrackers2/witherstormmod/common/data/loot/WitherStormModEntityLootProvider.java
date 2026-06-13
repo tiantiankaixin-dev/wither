@@ -16,19 +16,20 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootContext.EntityTarget;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
-import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SmeltItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 
 public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
-   public WitherStormModEntityLootProvider() {
-      super(FeatureFlags.REGISTRY.allFlags());
+   public WitherStormModEntityLootProvider(HolderLookup.Provider registries) {
+      super(FeatureFlags.REGISTRY.allFlags(), registries);
    }
 
    public void generate() {
@@ -40,14 +41,14 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.FEATHER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
                LootPool.lootPool()
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
       );
@@ -59,7 +60,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.LEATHER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -67,7 +68,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
       );
@@ -79,7 +80,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
       );
@@ -91,7 +92,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -99,7 +100,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.GUNPOWDER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -116,7 +117,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.LEATHER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -124,7 +125,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
       );
@@ -136,7 +137,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.PHANTOM_MEMBRANE)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
                   .when(LootItemKilledByPlayerCondition.killedByPlayer())
             )
@@ -149,7 +150,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.ARROW)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -157,7 +158,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_BONE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
       );
@@ -169,7 +170,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -177,7 +178,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem(Items.STRING)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -185,7 +186,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_SPIDER_EYE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(-1.0F, 1.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
                   .when(LootItemKilledByPlayerCondition.killedByPlayer())
             )
@@ -198,7 +199,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
@@ -207,7 +208,7 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(LootItem.lootTableItem(Items.CARROT))
                   .add(LootItem.lootTableItem(Items.POTATO))
                   .when(LootItemKilledByPlayerCondition.killedByPlayer())
-                  .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.025F, 0.01F))
+                  .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.025F, 0.01F))
             )
       );
       this.add(
@@ -222,13 +223,13 @@ public class WitherStormModEntityLootProvider extends EntityLootSubProvider {
                   .add(
                      LootItem.lootTableItem((ItemLike)WitherStormModItems.WITHERED_FLESH.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                   )
             )
             .withPool(
                LootPool.lootPool()
                   .when(LootItemKilledByPlayerCondition.killedByPlayer())
-                  .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.025F, 0.01F))
+                  .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(this.registries, 0.025F, 0.01F))
                   .add(LootItem.lootTableItem(Items.IRON_INGOT))
                   .add(LootItem.lootTableItem(Items.CARROT))
                   .add(
