@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.extensions.IForgeBlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
@@ -185,7 +184,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
    }
 
    public AABB getRenderBoundingBox() {
-      return IForgeBlockEntity.INFINITE_EXTENT_AABB;
+      return AABB.INFINITE;
    }
 
    public int getBeamHeight() {
