@@ -33,7 +33,7 @@ public class SuperBeaconItemCrafting extends SuperBeaconCategory<ItemCraftSuperB
    }
 
    protected void addResult(IRecipeLayoutBuilder builder, ItemCraftSuperBeaconRecipe recipe, IFocusGroup focuses, int x, int y, RegistryAccess access) {
-      builder.addSlot(RecipeIngredientRole.OUTPUT, x - 8, y - 8).addItemStack(recipe.getResultItem(access));
+      this.addSlot(builder, RecipeIngredientRole.OUTPUT, x - 8, y - 8).addItemStack(recipe.getResultItem(access));
    }
 
    public IDrawable getIcon() {

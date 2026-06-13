@@ -129,7 +129,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
    }
 
    public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
-      this.renderBackground(stack);
+      this.renderBackground(stack, mouseX, mouseY, partialTicks);
       super.render(stack, mouseX, mouseY, partialTicks);
       Holder<MobEffect> effect = this.getSelectedEffect();
       if (this.setEffectCooldown > 0) {
@@ -150,7 +150,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       if (this.shouldRenderInfo) {
          stack.pose().pushPose();
          stack.pose().translate(0.0, 0.0, 1.0);
-         this.renderBackground(stack);
+         this.renderBackground(stack, mouseX, mouseY, partialTicks);
          this.exitInfo.render(stack, mouseX, mouseY, partialTicks);
          int textX = (this.width - this.imageWidth) / 2 - 20;
          int textWidth = this.imageWidth + 40;
@@ -242,9 +242,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
 
    public static class EffectList extends ObjectSelectionList<SuperBeaconScreen.EffectList.Entry> {
       public EffectList(Minecraft mc, int width, int height, int top, int bottom) {
-         super(mc, width, height, top, bottom, 20);
-         this.setRenderBackground(false);
-         this.setRenderTopAndBottom(false);
+         super(mc, width, bottom - top, top, 20);
       }
 
       public void addEffect(Holder<MobEffect> effect) {
@@ -256,7 +254,16 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       }
 
       protected int getScrollbarPosition() {
-         return this.x0 + this.getWidth() - 7;
+         return this.getX() + this.getWidth() - 7;
+      }
+
+      public void setLeftPos(int left) {
+         this.setX(left);
+      }
+
+      public void updateSize(int width, int height, int top, int bottom) {
+         this.setY(top);
+         this.setSize(width, bottom - top);
       }
 
       public void clear() {

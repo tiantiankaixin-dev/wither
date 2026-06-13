@@ -2,6 +2,7 @@ package nonamecrackers2.witherstormmod.common.entity.goal.symbiont;
 
 import java.util.EnumSet;
 import java.util.Objects;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -73,8 +74,8 @@ public class SummonMobsGoal extends Goal {
 
    private static void addAttributes(Mob mob) {
       Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH))
-         .addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), Operation.ADD_VALUE));
+         .addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath("witherstormmod", "symbiont_summon_health"), -((mob.getRandom().nextDouble() + 0.5) * 2.0), Operation.ADD_VALUE));
       Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED))
-         .addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, Operation.ADD_VALUE));
+         .addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath("witherstormmod", "symbiont_summon_speed"), -0.08, Operation.ADD_VALUE));
    }
 }

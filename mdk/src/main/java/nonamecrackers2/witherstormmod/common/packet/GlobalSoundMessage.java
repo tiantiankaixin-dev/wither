@@ -43,7 +43,7 @@ public class GlobalSoundMessage extends Packet {
    }
 
    public void decode(FriendlyByteBuf buffer) {
-      this.event = BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation(buffer.readUtf()));
+      this.event = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse(buffer.readUtf()));
       this.pitch = buffer.readFloat();
       this.volume = buffer.readFloat();
    }

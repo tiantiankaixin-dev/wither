@@ -310,7 +310,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                   this.getLevel().explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
                   WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.getLevel());
                   storm.getAttribute(WitherStormModAttributes.EVOLUTION_SPEED.get())
-                     .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADD_VALUE));
+                     .addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath("witherstormmod", "resummoned_modifier"), -0.5, Operation.ADD_VALUE));
                   storm.setPhase((Integer)WitherStormModConfig.SERVER.resummonedPhase.get());
                   storm.moveTo(pos);
                   storm.playSoundToEveryone(WitherStormModSoundEvents.WITHER_STORM_EVOLVES.get(), 1.0F, 1.0F);

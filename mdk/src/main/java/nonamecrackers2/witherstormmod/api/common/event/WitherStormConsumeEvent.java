@@ -2,11 +2,10 @@ package nonamecrackers2.witherstormmod.api.common.event;
 
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.Entity;
-// TODO_MIG[CANCELABLE]: removed; class must implement ICancellableEvent
+import net.neoforged.bus.api.ICancellableEvent;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
-// TODO_MIG[CANCELABLE]: implement ICancellableEvent on this class instead
-public class WitherStormConsumeEvent extends WitherStormEvent {
+public class WitherStormConsumeEvent extends WitherStormEvent implements ICancellableEvent {
    @Nullable
    private final Entity consumedEntity;
    private int consumedAmount;

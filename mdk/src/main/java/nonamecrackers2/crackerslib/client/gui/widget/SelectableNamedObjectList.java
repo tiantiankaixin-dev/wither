@@ -13,8 +13,7 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
    private Consumer<T> onObjectSelected;
 
    public SelectableNamedObjectList(Minecraft pMinecraft, int pWidth, int pHeight, int pY0, int pY1) {
-      super(pMinecraft, pWidth, pHeight, pY0, pY1, 9 + 5);
-      this.setVisible(false);
+      super(pMinecraft, pWidth, pY1 - pY0, pY0, 9 + 5);
       this.setFocused(false);
    }
 
@@ -23,7 +22,7 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
    }
 
    public void addObject(Component name, T object) {
-      this.removeEntry(new SelectableNamedObjectList.Entry<T>(this, name, object));
+      this.addEntry(new SelectableNamedObjectList.Entry<T>(this, name, object));
    }
 
    public int getRowWidth() {
@@ -32,15 +31,21 @@ public class SelectableNamedObjectList<T> extends ObjectSelectionList<Selectable
 
    @Nullable
    public T getSelectedObject() {
-      return this.getSelected() != null ? ((SelectableNamedObjectList.Entry)this.getSelected()).object : null;
+      SelectableNamedObjectList.Entry<T> selected = this.getSelected();
+      return selected != null ? selected.object : null;
    }
 
    protected int getScrollbarPosition() {
-      return this.getLeft() + this.getWidth() - 5;
+      return this.getX() + this.getWidth() - 5;
    }
 
    protected void renderBackground(GuiGraphics stack) {
-      stack.fill(this.x0, this.y0, this.x1, this.y1, 1426063360);
+      stack.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), 1426063360);
+   }
+
+   public void renderWidget(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
+      this.renderBackground(stack);
+      super.renderWidget(stack, mouseX, mouseY, partialTick);
    }
 
    public void setSelected(SelectableNamedObjectList.Entry<T> pSelected) {

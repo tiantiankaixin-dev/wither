@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Style;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.RestartType;
 import net.neoforged.neoforge.common.ModConfigSpec.ValueSpec;
 import net.neoforged.fml.config.ModConfig.Type;
 import nonamecrackers2.crackerslib.client.gui.widget.config.ConfigListItem;
@@ -44,8 +45,9 @@ public abstract class ConfigEntry<T, W extends AbstractWidget> implements Config
       this.type = type;
       this.path = path;
       this.value = (ConfigValue<T>)spec.getValues().getRaw(path);
-      this.valueSpec = (ValueSpec)spec.getRaw(path);
+      this.valueSpec = (ValueSpec)spec.getSpec().getRaw(path);
       this.spec = spec;
+      this.requiresRestart = this.valueSpec.restartType() != RestartType.NONE;
       this.name = Component.translatable("gui." + modid + ".config." + ConfigListItem.extractNameFromPath(path) + ".title");
       String key = this.valueSpec.getTranslationKey();
       if (key != null && !key.isEmpty()) {
@@ -89,7 +91,7 @@ public abstract class ConfigEntry<T, W extends AbstractWidget> implements Config
    public void setFromPreset(ConfigPreset preset, Predicate<String> excluded) {
       if (!excluded.test(this.path)) {
          if (preset.hasValue(this.path)) {
-            this.setCurrentValue(preset.get(this.path));
+            this.setCurrentValue(preset.getValue(this.path));
          } else {
             this.setCurrentValue((T)this.value.getDefault());
          }
@@ -104,7 +106,7 @@ public abstract class ConfigEntry<T, W extends AbstractWidget> implements Config
    @Override
    public boolean matchesPreset(ConfigPreset preset, Predicate<String> excluded) {
       if (!excluded.test(this.path)) {
-         return preset.hasValue(this.path) ? preset.get(this.path).equals(this.getCurrentValue()) : this.value.getDefault().equals(this.getCurrentValue());
+         return preset.hasValue(this.path) ? preset.getValue(this.path).equals(this.getCurrentValue()) : this.value.getDefault().equals(this.getCurrentValue());
       } else {
          return true;
       }
@@ -170,7 +172,7 @@ public abstract class ConfigEntry<T, W extends AbstractWidget> implements Config
       T object;
       if (preset != null && !preset.isDefault() && preset.hasValue(this.path)) {
          defaultName = "Default (" + preset.name().getString() + "): ";
-         object = preset.get(this.path);
+         object = preset.getValue(this.path);
       } else {
          object = (T)this.value.getDefault();
       }

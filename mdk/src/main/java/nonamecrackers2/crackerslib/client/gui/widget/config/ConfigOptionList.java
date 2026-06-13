@@ -35,13 +35,18 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
    public ConfigOptionList(
       Minecraft mc, String modid, Type type, ModConfigSpec spec, int width, int height, int top, int bottom, Runnable valuesChangedResponder
    ) {
-      super(mc, width, height, top, bottom, 30);
+      super(mc, width, bottom - top, top, ROW_HEIGHT);
       this.modid = modid;
       this.type = type;
       this.spec = spec;
-      this.setVisible(false);
       this.setFocused(true);
       this.valuesChangedResponder = valuesChangedResponder;
+   }
+
+   public void updateSize(int width, int height, int top, int bottom) {
+      this.setX(0);
+      this.setY(top);
+      this.setSize(width, bottom - top);
    }
 
    public String getModid() {
@@ -114,8 +119,10 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
          }
       }
 
+      this.clearEntries();
+
       for (ConfigListItem itemx : items) {
-         this.removeEntry(new ConfigOptionList.Entry(itemx));
+         this.addEntry(new ConfigOptionList.Entry(itemx));
       }
 
       this.lastSearch = text;
@@ -170,7 +177,7 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
    }
 
    protected int getScrollbarPosition() {
-      return this.getLeft() + this.getWidth() - 5;
+      return this.getX() + this.getWidth() - 5;
    }
 
    protected void renderBackground(GuiGraphics stack) {
@@ -183,8 +190,9 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
       }
    }
 
-   public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
-      super.render(stack, mouseX, mouseY, partialTick);
+   public void renderWidget(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
+      this.renderBackground(stack);
+      super.renderWidget(stack, mouseX, mouseY, partialTick);
       if (this.children().isEmpty()) {
          stack.drawCenteredString(this.minecraft.font, NO_CONFIG_OPTIONS, this.width / 2, this.height / 2, -1);
       }
@@ -229,7 +237,7 @@ public class ConfigOptionList extends ContainerObjectSelectionList<ConfigOptionL
             x = category.getX() + 20;
          }
 
-         this.item.init(this.children, x, ConfigOptionList.this.getTop(), ConfigOptionList.this.getRowWidth(), ConfigOptionList.this.itemHeight);
+         this.item.init(this.children, x, ConfigOptionList.this.getY(), ConfigOptionList.this.getRowWidth(), ConfigOptionList.this.itemHeight);
          this.x = x;
       }
 

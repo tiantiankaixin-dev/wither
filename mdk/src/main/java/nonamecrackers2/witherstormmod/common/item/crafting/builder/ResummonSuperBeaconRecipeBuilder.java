@@ -59,7 +59,7 @@ extends SuperBeaconRecipeBuilder {
     public void save(RecipeOutput consumer, String string) {
         ResourceLocation newId;
         ResourceLocation id = ResummonSuperBeaconRecipeBuilder.defaultRecipeId(this.entity);
-        if (id.equals((newId = new ResourceLocation(id.getNamespace(), string)))) {
+        if (id.equals((newId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), string)))) {
             throw new IllegalStateException("Recipe " + string + " should remove its 'save' argument as it is equal to the default one");
         }
         this.save(consumer, newId);
@@ -67,7 +67,7 @@ extends SuperBeaconRecipeBuilder {
 
     private static ResourceLocation defaultRecipeId(EntityType<?> type) {
         ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
-        return new ResourceLocation(id.getNamespace(), "summon_" + id.getPath());
+        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "summon_" + id.getPath());
     }
 
     public static class Result

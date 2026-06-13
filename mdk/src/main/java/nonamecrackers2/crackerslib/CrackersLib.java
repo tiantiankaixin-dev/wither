@@ -1,14 +1,12 @@
 package nonamecrackers2.crackerslib;
-import net.neoforged.fml.ModList;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
-// 
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,7 +30,7 @@ public class CrackersLib {
       modBus.addListener(this::clientSetup);
       modBus.addListener(CrackersLibDataEvents::gatherData);
       ModLoadingContext context = ModLoadingContext.get();
-      context.registerConfig(Type.CLIENT, CrackersLibConfig.CLIENT_SPEC);
+      context.getActiveContainer().registerConfig(Type.CLIENT, CrackersLibConfig.CLIENT_SPEC);
       CrackersLibCommandArguments.register(modBus);
    }
 
@@ -41,7 +39,7 @@ public class CrackersLib {
       forgeBus.addListener(CrackersLibClientEvents::registerConfigScreen);
       forgeBus.register(CrackersLibClientEvents.class);
       event.enqueueWork(() -> {
-         ModList.get().runEventGenerator(mod -> new RegisterConfigScreensEvent(mod.getModId()));
+         ModLoader.runEventGenerator(mod -> new RegisterConfigScreensEvent(mod.getModId()));
          ConfigMenuButtons.gatherButtonFactories();
       });
    }

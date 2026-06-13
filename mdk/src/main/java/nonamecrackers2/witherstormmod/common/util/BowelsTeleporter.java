@@ -11,35 +11,35 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.ITeleporter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 
-public class BowelsTeleporter implements ITeleporter {
+public class BowelsTeleporter {
    private final BlockPos pos;
 
    public BowelsTeleporter(BlockPos pos) {
       this.pos = pos;
    }
 
-   public DimensionTransition getDimensionTransition(Entity entity, ServerLevel destWorld, Function<ServerLevel, DimensionTransition> defaultDimensionTransition) {
-      return new DimensionTransition(Vec3.atBottomCenterOf(this.pos), Vec3.ZERO, entity.getYRot(), entity.getXRot());
+   public DimensionTransition createTransition(Entity entity, ServerLevel destWorld) {
+      return new DimensionTransition(destWorld, Vec3.atBottomCenterOf(this.pos), Vec3.ZERO, entity.getYRot(), entity.getXRot(), BowelsTeleporter::playTeleportSound);
    }
 
-   public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
-      player.connection
-         .send(
-            new ClientboundSoundPacket(
-               (Holder)BuiltInRegistries.SOUND_EVENT.getHolder(WitherStormModSoundEvents.BOWELS_TRANSPORT.get()).get(),
-               SoundSource.AMBIENT,
-               player.getX(),
-               player.getY(),
-               player.getZ(),
-               1.0F,
-               1.0F,
-               player.getRandom().nextLong()
-            )
-         );
-      return false;
+   private static void playTeleportSound(Entity entity) {
+      if (entity instanceof ServerPlayer player) {
+         player.connection
+            .send(
+               new ClientboundSoundPacket(
+                  (Holder)BuiltInRegistries.SOUND_EVENT.wrapAsHolder(WitherStormModSoundEvents.BOWELS_TRANSPORT.get()),
+                  SoundSource.AMBIENT,
+                  player.getX(),
+                  player.getY(),
+                  player.getZ(),
+                  1.0F,
+                  1.0F,
+                  player.getRandom().nextLong()
+               )
+            );
+      }
    }
 }

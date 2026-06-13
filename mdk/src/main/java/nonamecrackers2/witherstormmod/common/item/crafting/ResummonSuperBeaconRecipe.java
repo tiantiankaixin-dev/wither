@@ -73,7 +73,7 @@ public class ResummonSuperBeaconRecipe extends SuperBeaconRecipe {
          }
 
          String rawEntityId = GsonHelper.getAsString(object, "entity");
-         ResourceLocation entityId = new ResourceLocation(rawEntityId);
+         ResourceLocation entityId = ResourceLocation.parse(rawEntityId);
          EntityType<?> type = (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(entityId);
          if (type == null) {
             throw new JsonSyntaxException("Unknown entity of id '" + rawEntityId + "'");

@@ -11,10 +11,10 @@ import org.joml.Vector3f;
 public class PrimitiveHelper {
    public static CompoundTag quaternionToTag(Quaternionf quaternion) {
       CompoundTag tag = new CompoundTag();
-      tag.putShort("x", quaternion.x());
-      tag.putShort("y", quaternion.y());
-      tag.putShort("z", quaternion.z());
-      tag.putShort("w", quaternion.w());
+      tag.putFloat("x", quaternion.x());
+      tag.putFloat("y", quaternion.y());
+      tag.putFloat("z", quaternion.z());
+      tag.putFloat("w", quaternion.w());
       return tag;
    }
 
@@ -41,9 +41,9 @@ public class PrimitiveHelper {
 
    public static CompoundTag vector3fToTag(Vector3f vec) {
       CompoundTag tag = new CompoundTag();
-      tag.putShort("x", vec.x);
-      tag.putShort("y", vec.y);
-      tag.putShort("z", vec.z);
+      tag.putFloat("x", vec.x);
+      tag.putFloat("y", vec.y);
+      tag.putFloat("z", vec.z);
       return tag;
    }
 

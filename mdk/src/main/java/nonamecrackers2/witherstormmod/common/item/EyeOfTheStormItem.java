@@ -1,10 +1,10 @@
 package nonamecrackers2.witherstormmod.common.item;
 
 import java.util.List;
-import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 public class EyeOfTheStormItem extends CommandBlockSwordItem {
-   public static final UUID DAMAGE_MODIFIER_ID = UUID.fromString("823350e7-4c91-4a1f-8c01-8735113f066e");
+   public static final ResourceLocation DAMAGE_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "eye_of_the_storm_health_damage");
    public static final String ENTITY_HEALTH_RATIO = "EntityHealthRatio";
 
    public EyeOfTheStormItem(Tier tier, int damage, float attackSpeed, Properties properties) {

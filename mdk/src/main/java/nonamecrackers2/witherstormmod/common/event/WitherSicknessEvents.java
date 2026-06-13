@@ -15,13 +15,13 @@ import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: /* LazyOptional_REMOVED */ removed, new Capability API returns T or null
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent.Remove;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.AllowDespawn;
+import net.neoforged.neoforge.event.entity.living.MobDespawnEvent;
+import net.neoforged.neoforge.event.entity.living.MobDespawnEvent.Result;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.Clone;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.StartTracking;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.bus.api.Event.Result;
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.accessor.LivingEntityAccessor;
@@ -81,32 +81,26 @@ public class WitherSicknessEvents {
       if (event.isWasDeath()) {
          Player original = event.getOriginal();
          Player player = event.getEntity();
-         original.reviveCaps();
-         original.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
-         if (optional.isPresent()) {
-            WitherSicknessTracker oldTracker = (WitherSicknessTracker)optional.resolve().get();
-            { var tracker = player.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
-               tracker.copyFrom(oldTracker);
-               if ((Boolean)WitherStormModConfig.SERVER.keepSicknessAfterRespawn.get()) {
-                  MobEffectInstance effect = original.getEffect(WitherStormModEffects.WITHER_SICKNESS.get());
-                  if (effect != null) {
-                     player.addEffect(effect);
-                  }
-               } else {
-                  tracker.setInfected(false);
-                  tracker.setProximityTicks(0);
-                  tracker.setContacts(0);
-                  tracker.setContactDecreaseTicks(0);
+         WitherSicknessTracker oldTracker = original.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
+         { var tracker = player.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
+            tracker.copyFrom(oldTracker);
+            if ((Boolean)WitherStormModConfig.SERVER.keepSicknessAfterRespawn.get()) {
+               MobEffectInstance effect = original.getEffect(WitherStormModEffects.WITHER_SICKNESS.getDelegate());
+               if (effect != null) {
+                  player.addEffect(effect);
                }
+            } else {
+               tracker.setInfected(false);
+               tracker.setProximityTicks(0);
+               tracker.setContacts(0);
+               tracker.setContactDecreaseTicks(0);
             }
          }
-
-         original.invalidateCaps();
       }
    }
 
    @SubscribeEvent
-   public static void onCheckDespawn(AllowDespawn event) {
+   public static void onCheckDespawn(MobDespawnEvent event) {
       LivingEntity entity = event.getEntity();
       { var tracker = entity.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get());
          if (!tracker.isActuallyImmune() && (tracker.isInfected() || tracker.isBeingCured())) {
@@ -149,7 +143,7 @@ public class WitherSicknessEvents {
    @SubscribeEvent
    public static void onMobEffectRemove(Remove event) {
       LivingEntity entity = event.getEntity();
-      if (((LivingEntityAccessor)entity).hasDeathProtection() && event.getEffect() == WitherStormModEffects.WITHER_SICKNESS.get()) {
+      if (((LivingEntityAccessor)entity).hasDeathProtection() && event.getEffect().value() == WitherStormModEffects.WITHER_SICKNESS.get()) {
          event.setCanceled(true);
       }
    }

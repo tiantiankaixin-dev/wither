@@ -21,7 +21,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import nonamecrackers2.crackerslib.mixin.MixinGameRendererAccessor;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -57,19 +56,19 @@ public class RenderUtil {
 
    public static void line(GuiGraphics stack, Vector2f start, Vector2f end, int blitOffset, float lineWidth, float r, float g, float b, float a) {
       Vector2f normal = start.sub(end, new Vector2f()).normalize();
-      Matrix4f matrix4f = stack.pose().last().pose();
-      Matrix3f matrix3f = stack.pose().last().normal();
+      PoseStack.Pose pose = stack.pose().last();
+      Matrix4f matrix4f = pose.pose();
       Tesselator tesselator = Tesselator.getInstance();
       RenderSystem.enableBlend();
       RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
       RenderSystem.lineWidth(lineWidth);
       BufferBuilder bufferbuilder = tesselator.begin(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
       if (normal.y < -0.008F) {
-         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
-         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(pose, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(pose, normal.x, normal.y, 0.0F);
       } else {
-         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
-         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(matrix3f, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, end.x, end.y, blitOffset).setColor(r, g, b, a).setNormal(pose, normal.x, normal.y, 0.0F);
+         bufferbuilder.addVertex(matrix4f, start.x, start.y, blitOffset).setColor(r, g, b, a).setNormal(pose, normal.x, normal.y, 0.0F);
       }
 
       BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
@@ -215,8 +214,8 @@ public class RenderUtil {
          indices.add(startIndex + indices.get(i));
       }
 
-      Matrix4f matrix4f = stack.last().pose();
-      Matrix3f matrix3f = stack.last().normal();
+      PoseStack.Pose pose = stack.last();
+      Matrix4f matrix4f = pose.pose();
 
       for (int i = 0; i < indices.size(); i++) {
          int index = indices.get(i);
@@ -224,14 +223,14 @@ public class RenderUtil {
          Vector3f normal = normals.get(index);
          Vector2f uv = texCoords.get(index);
          consumer.addVertex(matrix4f, vertex.x, vertex.y, vertex.z)
-            .vertex(1.0F, 1.0F, 1.0F, 1.0F)
-            .uv(uv.x, uv.y)
+            .setColor(1.0F, 1.0F, 1.0F, 1.0F)
+            .setUv(uv.x, uv.y)
             .setOverlay(overlayTexture)
             .setLight(packedLight);
          if (useNormals) {
-            consumer.setNormal(matrix3f, normal.x, normal.y, normal.z);
+            consumer.setNormal(pose, normal.x, normal.y, normal.z);
          } else {
-            consumer.normal(0.0F, -1.0F, 0.0F);
+            consumer.setNormal(0.0F, -1.0F, 0.0F);
          }
       }
    }
@@ -308,8 +307,8 @@ public class RenderUtil {
          }
       }
 
-      Matrix4f matrix4f = stack.last().pose();
-      Matrix3f matrix3f = stack.last().normal();
+      PoseStack.Pose pose = stack.last();
+      Matrix4f matrix4f = pose.pose();
 
       for (int i = 0; i < indices.size(); i++) {
          int index = indices.get(i);
@@ -317,11 +316,11 @@ public class RenderUtil {
          Vector3f normal = normals.get(index);
          Vector2f uv = texCoords.get(index);
          consumer.addVertex(matrix4f, vertex.x, vertex.y, vertex.z)
-            .vertex(1.0F, 1.0F, 1.0F, 1.0F)
-            .uv(uv.x, uv.y)
+            .setColor(1.0F, 1.0F, 1.0F, 1.0F)
+            .setUv(uv.x, uv.y)
             .setOverlay(overlayTexture)
             .setLight(packedLight)
-            .setNormal(matrix3f, normal.x, normal.y, normal.z)
+            .setNormal(pose, normal.x, normal.y, normal.z)
             ;
       }
    }
@@ -349,8 +348,8 @@ public class RenderUtil {
          stack.scale(zoom, zoom, 1.0F);
       }
 
-      stack.color()
-         .uv()
+      stack.last()
+         .pose()
          .mul(new Matrix4f().setPerspective((float)(fov * (float) (Math.PI / 180.0)), (float)mc.getWindow().getWidth() / mc.getWindow().getHeight(), near, far));
       renderer.resetProjectionMatrix(stack.last().pose());
    }

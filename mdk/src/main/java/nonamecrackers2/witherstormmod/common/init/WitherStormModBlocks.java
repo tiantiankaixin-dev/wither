@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -26,12 +27,12 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.WallHangingSignBlock;
 import net.minecraft.world.level.block.WallSignBlock;
-import net.minecraft.world.level.block.PressurePlateBlock.Sensitivity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -63,31 +64,31 @@ public class WitherStormModBlocks {
       "formidibomb", () -> new FormidibombBlock(Properties.of().strength(0.8F).sound(SoundType.GRASS).lightLevel(state -> 7))
    );
    public static final DeferredHolder<Block, Block> SUPER_BEACON = BLOCKS.register(
-      "super_beacon", () -> new SuperBeaconBlock(Properties.copy(Blocks.GLASS).strength(3.0F).noOcclusion().lightLevel(block -> 12))
+      "super_beacon", () -> new SuperBeaconBlock(Properties.ofFullCopy(Blocks.GLASS).strength(3.0F).noOcclusion().lightLevel(block -> 12))
    );
    public static final DeferredHolder<Block, Block> SUPER_SUPPORT_BEACON = BLOCKS.register(
-      "super_support_beacon", () -> new SuperSupportBeaconBlock(Properties.copy(Blocks.GLASS).strength(2.5F).noOcclusion().lightLevel(block -> 12))
+      "super_support_beacon", () -> new SuperSupportBeaconBlock(Properties.ofFullCopy(Blocks.GLASS).strength(2.5F).noOcclusion().lightLevel(block -> 12))
    );
    public static final DeferredHolder<Block, Block> FIREWORK_BUNDLE = BLOCKS.register(
       "firework_bundle", () -> new FireworkBundleBlock(Properties.of().strength(2.5F).sound(SoundType.GRASS))
    );
    public static final DeferredHolder<Block, Block> TAINTED_ZOMBIE_SITTING = BLOCKS.register(
-      "tainted_zombie_sitting", () -> new TaintedStatue(Properties.copy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_zombie_sitting", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_ZOMBIE_WALL = BLOCKS.register(
-      "tainted_zombie_wall", () -> new TaintedStatue(Properties.copy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_zombie_wall", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_ZOMBIE_LYING = BLOCKS.register(
-      "tainted_zombie_lying", () -> new TaintedStatue(Properties.copy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_zombie_lying", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.SLIME_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_BONE_PILE = BLOCKS.register(
-      "tainted_bone_pile", () -> new TaintedStatue(Properties.copy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_bone_pile", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_SKELETON_WALL = BLOCKS.register(
-      "tainted_skeleton_wall", () -> new TaintedStatue(Properties.copy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_skeleton_wall", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_SKULL_CEILING = BLOCKS.register(
-      "tainted_skull_ceiling", () -> new TaintedStatue(Properties.copy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
+      "tainted_skull_ceiling", () -> new TaintedStatue(Properties.ofFullCopy(Blocks.BONE_BLOCK).noCollission().strength(1.0F, 6.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_FLESH_VEINS = BLOCKS.register(
       "tainted_flesh_veins",
@@ -119,27 +120,18 @@ public class WitherStormModBlocks {
    );
    public static final DeferredHolder<Block, Block> TAINTED_STONE_STAIRS = BLOCKS.register(
       "tainted_stone_stairs",
-      () -> new StairBlock(() -> ((Block)TAINTED_STONE.get()).defaultBlockState(), Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F))
+      () -> new StairBlock(((Block)TAINTED_STONE.get()).defaultBlockState(), Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F))
    );
    public static final DeferredHolder<Block, Block> TAINTED_STONE_SLAB = BLOCKS.register(
       "tainted_stone_slab", () -> new SlabBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F))
    );
    public static final DeferredHolder<Block, Block> TAINTED_STONE_BUTTON = BLOCKS.register(
       "tainted_stone_button",
-      () -> new ButtonBlock(
-            Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.STONE),
-            BlockSetType.STONE,
-            20,
-            false
-         )
+      () -> new ButtonBlock(BlockSetType.STONE, 20, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.STONE))
    );
    public static final DeferredHolder<Block, Block> TAINTED_STONE_PRESSURE_PLATE = BLOCKS.register(
       "tainted_stone_pressure_plate",
-      () -> new PressurePlateBlock(
-            Sensitivity.MOBS,
-            Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.STONE),
-            BlockSetType.STONE
-         )
+      () -> new PressurePlateBlock(BlockSetType.STONE, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.STONE))
    );
    public static final DeferredHolder<Block, Block> TAINTED_COBBLESTONE = BLOCKS.register(
       "tainted_cobblestone", () -> new Block(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(2.0F, 6.0F))
@@ -147,7 +139,7 @@ public class WitherStormModBlocks {
    public static final DeferredHolder<Block, Block> TAINTED_COBBLESTONE_STAIRS = BLOCKS.register(
       "tainted_cobblestone_stairs",
       () -> new StairBlock(
-            () -> ((Block)TAINTED_COBBLESTONE.get()).defaultBlockState(), Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F)
+            ((Block)TAINTED_COBBLESTONE.get()).defaultBlockState(), Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F)
          )
    );
    public static final DeferredHolder<Block, Block> TAINTED_COBBLESTONE_SLAB = BLOCKS.register(
@@ -157,7 +149,7 @@ public class WitherStormModBlocks {
       "tainted_cobblestone_wall", () -> new WallBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 6.0F))
    );
    public static final DeferredHolder<Block, Block> TAINTED_SAND = BLOCKS.register(
-      "tainted_sand", () -> new SandBlock(10708917, Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.5F).sound(SoundType.SAND))
+      "tainted_sand", () -> new ColoredFallingBlock(new ColorRGBA(10708917), Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.5F).sound(SoundType.SAND))
    );
    public static final DeferredHolder<Block, Block> TAINTED_DIRT = BLOCKS.register(
       "tainted_dirt", () -> new Block(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.5F).sound(SoundType.GRAVEL))
@@ -172,7 +164,7 @@ public class WitherStormModBlocks {
    public static final DeferredHolder<Block, Block> TAINTED_SANDSTONE_STAIRS = BLOCKS.register(
       "tainted_sandstone_stairs",
       () -> new StairBlock(
-            () -> ((Block)TAINTED_SANDSTONE.get()).defaultBlockState(),
+            ((Block)TAINTED_SANDSTONE.get()).defaultBlockState(),
             Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.STONE)
          )
    );
@@ -200,7 +192,7 @@ public class WitherStormModBlocks {
    public static final DeferredHolder<Block, Block> TAINTED_SMOOTH_SANDSTONE_STAIRS = BLOCKS.register(
       "tainted_smooth_sandstone_stairs",
       () -> new StairBlock(
-            () -> ((Block)TAINTED_SMOOTH_SANDSTONE.get()).defaultBlockState(),
+            ((Block)TAINTED_SMOOTH_SANDSTONE.get()).defaultBlockState(),
             Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.STONE)
          )
    );
@@ -209,10 +201,10 @@ public class WitherStormModBlocks {
       () -> new WallBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.8F).requiresCorrectToolForDrops().sound(SoundType.STONE))
    );
    public static final DeferredHolder<Block, Block> TAINTED_GLASS = BLOCKS.register(
-      "tainted_glass", () -> new GlassBlock(Properties.copy(Blocks.GLASS).mapColor(MapColor.COLOR_PURPLE).strength(0.6F, 1200.0F).noOcclusion())
+      "tainted_glass", () -> new TransparentBlock(Properties.ofFullCopy(Blocks.GLASS).mapColor(MapColor.COLOR_PURPLE).strength(0.6F, 1200.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_GLASS_PANE = BLOCKS.register(
-      "tainted_glass_pane", () -> new IronBarsBlock(Properties.copy(Blocks.GLASS).mapColor(MapColor.COLOR_PURPLE).strength(0.6F, 1200.0F).noOcclusion())
+      "tainted_glass_pane", () -> new IronBarsBlock(Properties.ofFullCopy(Blocks.GLASS).mapColor(MapColor.COLOR_PURPLE).strength(0.6F, 1200.0F).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_PLANKS = BLOCKS.register(
       "tainted_planks", () -> new Block(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD))
@@ -233,15 +225,16 @@ public class WitherStormModBlocks {
    );
    public static final DeferredHolder<Block, Block> TAINTED_SIGN = BLOCKS.register(
       "tainted_sign",
-      () -> new StandingSignBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().strength(1.0F).sound(SoundType.WOOD), TAINTED)
+      () -> new StandingSignBlock(TAINTED, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().strength(1.0F).sound(SoundType.WOOD))
    );
    public static final DeferredHolder<Block, Block> TAINTED_WALL_SIGN = BLOCKS.register(
       "tainted_wall_sign",
-      () -> new WallSignBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().strength(1.0F).sound(SoundType.WOOD), TAINTED)
+      () -> new WallSignBlock(TAINTED, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().strength(1.0F).sound(SoundType.WOOD))
    );
    public static final DeferredHolder<Block, Block> TAINTED_HANGING_SIGN = BLOCKS.register(
       "tainted_hanging_sign",
       () -> new CeilingHangingSignBlock(
+            TAINTED,
             Properties.of()
                .mapColor(MapColor.COLOR_PURPLE)
                .forceSolidOn()
@@ -249,13 +242,13 @@ public class WitherStormModBlocks {
                .noCollission()
                .strength(1.0F)
                .ignitedByLava()
-               .sound(SoundType.WOOD),
-            TAINTED
+               .sound(SoundType.WOOD)
          )
    );
    public static final DeferredHolder<Block, Block> TAINTED_WALL_HANGING_SIGN = BLOCKS.register(
       "tainted_wall_hanging_sign",
       () -> new WallHangingSignBlock(
+            TAINTED,
             Properties.of()
                .mapColor(MapColor.COLOR_PURPLE)
                .forceSolidOn()
@@ -264,26 +257,25 @@ public class WitherStormModBlocks {
                .noCollission()
                .strength(1.0F)
                .ignitedByLava()
-               .sound(SoundType.WOOD),
-            TAINTED
+               .sound(SoundType.WOOD)
          )
    );
    public static final DeferredHolder<Block, Block> STRIPPED_TAINTED_LOG = BLOCKS.register(
-      "stripped_tainted_log", () -> new RotatedPillarBlock(Properties.copy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F))
+      "stripped_tainted_log", () -> new RotatedPillarBlock(Properties.ofFullCopy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F))
    );
    public static final DeferredHolder<Block, Block> STRIPPED_TAINTED_WOOD = BLOCKS.register(
-      "stripped_tainted_wood", () -> new RotatedPillarBlock(Properties.copy(Blocks.OAK_WOOD).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F))
+      "stripped_tainted_wood", () -> new RotatedPillarBlock(Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F))
    );
    public static final DeferredHolder<Block, Block> TAINTED_LOG = BLOCKS.register(
       "tainted_log",
-      () -> new StrippableLogBlock(Properties.copy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F), STRIPPED_TAINTED_LOG)
+      () -> new StrippableLogBlock(Properties.ofFullCopy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F), STRIPPED_TAINTED_LOG)
    );
    public static final DeferredHolder<Block, Block> TAINTED_WOOD = BLOCKS.register(
       "tainted_wood",
-      () -> new StrippableLogBlock(Properties.copy(Blocks.OAK_WOOD).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F), STRIPPED_TAINTED_WOOD)
+      () -> new StrippableLogBlock(Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F), STRIPPED_TAINTED_WOOD)
    );
    public static final DeferredHolder<Block, Block> TAINTED_LEAVES = BLOCKS.register(
-      "tainted_leaves", () -> new LeavesBlock(Properties.copy(Blocks.OAK_LEAVES).mapColor(MapColor.COLOR_PURPLE)) {
+      "tainted_leaves", () -> new LeavesBlock(Properties.ofFullCopy(Blocks.OAK_LEAVES).mapColor(MapColor.COLOR_PURPLE)) {
             public boolean isFlammable(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
                return true;
             }
@@ -299,30 +291,24 @@ public class WitherStormModBlocks {
    );
    public static final DeferredHolder<Block, Block> TAINTED_DOOR = BLOCKS.register(
       "tainted_door",
-      () -> new DoorBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion(), TAINTED_SET)
+      () -> new DoorBlock(TAINTED_SET, Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_TRAPDOOR = BLOCKS.register(
       "tainted_trapdoor",
-      () -> new TrapDoorBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion(), TAINTED_SET)
+      () -> new TrapDoorBlock(TAINTED_SET, Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion())
    );
    public static final DeferredHolder<Block, Block> TAINTED_BUTTON = BLOCKS.register(
       "tainted_button",
-      () -> new ButtonBlock(
-            Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.WOOD), TAINTED_SET, 30, true
-         )
+      () -> new ButtonBlock(TAINTED_SET, 30, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.WOOD))
    );
    public static final DeferredHolder<Block, Block> TAINTED_PRESSURE_PLATE = BLOCKS.register(
       "tainted_pressure_plate",
-      () -> new PressurePlateBlock(
-            Sensitivity.EVERYTHING,
-            Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.WOOD),
-            TAINTED_SET
-         )
+      () -> new PressurePlateBlock(TAINTED_SET, Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission().noOcclusion().strength(0.5F).sound(SoundType.WOOD))
    );
    public static final DeferredHolder<Block, Block> TAINTED_STAIRS = BLOCKS.register(
       "tainted_stairs",
       () -> new StairBlock(
-            () -> ((Block)TAINTED_PLANKS.get()).defaultBlockState(),
+            ((Block)TAINTED_PLANKS.get()).defaultBlockState(),
             Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD)
          )
    );
@@ -334,7 +320,7 @@ public class WitherStormModBlocks {
    );
    public static final DeferredHolder<Block, Block> TAINTED_FENCE_GATE = BLOCKS.register(
       "tainted_fence_gate",
-      () -> new FenceGateBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD), TAINTED)
+      () -> new FenceGateBlock(TAINTED, Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.0F, 3.0F).sound(SoundType.WOOD))
    );
    public static final DeferredHolder<Block, Block> TAINTED_MUSHROOM = BLOCKS.register(
       "tainted_mushroom",
@@ -372,7 +358,7 @@ public class WitherStormModBlocks {
    public static final DeferredHolder<Block, Block> TAINTED_DUST_BLOCK = BLOCKS.register(
       "tainted_dust_block",
       () -> new RedstoneLampBlock(
-            Properties.copy(Blocks.REDSTONE_LAMP)
+            Properties.ofFullCopy(Blocks.REDSTONE_LAMP)
                .mapColor(MapColor.COLOR_PURPLE)
                .strength(1.2F, 1.2F)
                .noOcclusion()

@@ -2,12 +2,13 @@ package nonamecrackers2.witherstormmod.common.event;
 
 
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -18,13 +19,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: ItemAttributeModifierEvent removed, use DataComponents.ATTRIBUTE_MODIFIERS
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent.ImpactResult;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -46,7 +48,7 @@ public class WitherStormModUtilEvents {
       if (event.getProjectile() instanceof FishingHook) {
          if (event.getRayTraceResult() instanceof EntityHitResult hit
             && (hit.getEntity() instanceof CommandBlockEntity || hit.getEntity() instanceof WitherStormEntity)) {
-            event.setImpactResult(ImpactResult.SKIP_ENTITY);
+            event.setCanceled(true);
          }
       } else if (!event.getProjectile().level().isClientSide()
          && event.getProjectile() instanceof ThrownPotion projectile
@@ -59,17 +61,16 @@ public class WitherStormModUtilEvents {
 
    @SubscribeEvent
    public static void modifyItemAttributes(ItemAttributeModifierEvent event) {
-      if (event.getSlotType() == EquipmentSlot.MAINHAND) {
-         ItemStack stack = event.getItemStack();
-         if (stack.is((Item)WitherStormModItems.EYE_OF_THE_STORM.get()) && stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            float ratio = tag.getFloat("EntityHealthRatio");
-            if (ratio > 0.0F) {
-               event.addModifier(
-                  Attributes.ATTACK_DAMAGE,
-                  new AttributeModifier(EyeOfTheStormItem.DAMAGE_MODIFIER_ID, "Health damage modifier", (double)(-ratio * 5.0F), Operation.ADD_VALUE)
-               );
-            }
+      ItemStack stack = event.getItemStack();
+      if (stack.is((Item)WitherStormModItems.EYE_OF_THE_STORM.get()) && stack.has(DataComponents.CUSTOM_DATA)) {
+         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+         float ratio = tag.getFloat("EntityHealthRatio");
+         if (ratio > 0.0F) {
+            event.addModifier(
+               Attributes.ATTACK_DAMAGE,
+               new AttributeModifier(EyeOfTheStormItem.DAMAGE_MODIFIER_ID, (double)(-ratio * 5.0F), Operation.ADD_VALUE),
+               EquipmentSlotGroup.MAINHAND
+            );
          }
       }
    }

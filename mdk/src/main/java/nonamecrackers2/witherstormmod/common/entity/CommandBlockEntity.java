@@ -179,6 +179,7 @@ import net.neoforged.neoforge.event.EventHooks;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -946,14 +947,14 @@ BossThemeEntity {
     }
 
     private void addHealthAttribute(Mob mob) {
-        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADD_VALUE));
+        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier(WitherStormMod.id("command_block_summon_health"), -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADD_VALUE));
     }
 
     private void addSpeedAttribute(Mob mob) {
         if (mob instanceof SickenedVindicator || mob instanceof SickenedIronGolem) {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, AttributeModifier.Operation.ADD_VALUE));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier(WitherStormMod.id("command_block_summon_speed"), -0.08, AttributeModifier.Operation.ADD_VALUE));
         } else {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.06, AttributeModifier.Operation.ADD_VALUE));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier(WitherStormMod.id("command_block_summon_speed"), -0.06, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 
@@ -1464,11 +1465,10 @@ BossThemeEntity {
             this.anim = buffer.readInt();
         }
 
-        public Runnable getProcessor(NetworkEvent.Context context) {
+        public Runnable getProcessor(IPayloadContext context) {
             return () -> {
                 if (FMLEnvironment.dist == Dist.CLIENT) {
-                    Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                    optional.ifPresent(world -> {
+                    context.level().ifPresent(world -> {
                         Entity entity = world.getEntity(this.id);
                         if (entity instanceof CommandBlockEntity commandBlock) {
                             commandBlock.modeAnim = this.anim;

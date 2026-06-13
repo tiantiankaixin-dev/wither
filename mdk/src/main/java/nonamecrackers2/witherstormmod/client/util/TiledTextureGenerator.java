@@ -1,6 +1,5 @@
 package nonamecrackers2.witherstormmod.client.util;
 
-import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.core.Direction;
@@ -10,7 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class TiledTextureGenerator extends DefaultedVertexConsumer {
+public class TiledTextureGenerator implements VertexConsumer {
    private final VertexConsumer delegate;
    private final PoseStack stack;
    private float x;
@@ -89,7 +88,7 @@ public class TiledTextureGenerator extends DefaultedVertexConsumer {
    }
 
    public void endVertex() {
-      Vector3f vector3f = new Matrix3f(this.stack.last()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
+      Vector3f vector3f = new Matrix3f(this.stack.last().normal()).invert().transform(new Vector3f(this.nx, this.ny, this.nz));
       Direction direction = Direction.getNearest(vector3f.x(), vector3f.y(), vector3f.z());
       Vector4f vector4f = new Matrix4f(this.stack.last().pose()).invert().transform(new Vector4f(this.x, this.y, this.z, 1.0F));
       vector4f.rotateY((float) Math.PI);
@@ -98,14 +97,28 @@ public class TiledTextureGenerator extends DefaultedVertexConsumer {
       float f = ((direction.getAxis() == Axis.X ? -1.0F : 1.0F) * vector4f.x() + 0.5F) * this.texScale + this.getUOffset(direction);
       float f1 = (vector4f.y() + 0.5F) * this.texScale + this.getVOffset(direction);
       this.delegate
-         .addVertex((double)this.x, (double)this.y, (double)this.z)
-         .setColor(this.r, this.g, this.b, this.a)
-         .setUv(f, f1)
-         .setOverlay(this.overlayU, this.overlayV)
-         .setLight(this.lightCoords)
-         .setNormal(this.nx, this.ny, this.nz)
-         ;
+         .vertex((double)this.x, (double)this.y, (double)this.z)
+         .color(this.r, this.g, this.b, this.a)
+         .uv(f, f1)
+         .overlayCoords(this.overlayU, this.overlayV)
+         .uv2(this.lightCoords)
+         .normal(this.nx, this.ny, this.nz);
+      this.delegate.endVertex();
       this.resetState();
+   }
+
+   public void defaultColor(int red, int green, int blue, int alpha) {
+      this.r = red;
+      this.g = green;
+      this.b = blue;
+      this.a = alpha;
+   }
+
+   public void unsetDefaultColor() {
+      this.r = 255;
+      this.g = 255;
+      this.b = 255;
+      this.a = 255;
    }
 
    private float getUOffset(Direction direction) {

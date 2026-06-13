@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 
@@ -29,6 +30,9 @@ public class SuperBeaconSetEffectMessage extends Packet {
    }
 
    public Runnable getProcessor(IPayloadContext context) {
-      return () -> WitherStormModMessageHandlerServer.processSuperBeaconSetEffectMessage(this, context.getSender());
+      return () -> context.player()
+         .filter(ServerPlayer.class::isInstance)
+         .map(ServerPlayer.class::cast)
+         .ifPresent(player -> WitherStormModMessageHandlerServer.processSuperBeaconSetEffectMessage(this, player));
    }
 }

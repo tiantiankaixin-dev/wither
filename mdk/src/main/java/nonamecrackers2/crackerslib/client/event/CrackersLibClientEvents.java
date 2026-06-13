@@ -45,10 +45,9 @@ public class CrackersLibClientEvents {
                               ConfigMenuButtons.Factory buttonFactory = ConfigMenuButtons.getButtonFactory(mod.getModId());
                               if (buttonFactory != null) {
                                  AbstractButton button = (AbstractButton)rowHelper.addChild(
-                                    buttonFactory.makeButton(action -> mc.setScreen(factory.createScreen(mc, screen)))
+                                    buttonFactory.makeButton(action -> mc.setScreen(factory.createScreen(mod, screen)))
                                  );
                                  button.setWidth(20);
-                                 button.rowSpacing(20);
                                  button.setTooltip(Tooltip.create(Component.literal(mod.getModInfo().getDisplayName())));
                               }
                            }

@@ -56,13 +56,12 @@ public class WitherStormModEntityTypes {
    );
    public static final DeferredHolder<EntityType<?>, EntityType<BlockClusterEntity>> BLOCK_CLUSTER = register(
       "block_cluster",
-      Builder.of(BlockClusterEntity::new, MobCategory.MISC)
+      Builder.<BlockClusterEntity>of(ClientBlockClusterFactory::make, MobCategory.MISC)
          .sized(1.0F, 1.0F)
          .setTrackingRange(512)
          .clientTrackingRange(512)
          .fireImmune()
          .updateInterval(10)
-         .setCustomClientFactory(ClientBlockClusterFactory::make)
    );
    public static final DeferredHolder<EntityType<?>, EntityType<WitherStormSegmentEntity>> WITHER_STORM_SEGMENT = register(
       "wither_storm_segment",

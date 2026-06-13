@@ -150,7 +150,7 @@ public class AmuletItem extends Item {
    private void saveDistFor(ServerLevel level, CompoundTag tag, Player player, UUID uuid, String id) {
       Entity tracking = null;
       if (tag.getBoolean("TrackEntityTypes")) {
-         EntityType<?> type = (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(tag.getString(id + "Type")));
+         EntityType<?> type = (EntityType<?>)BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(tag.getString(id + "Type")));
          List<Entity> entities = level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(500.0), e -> e.getType().equals(type) && e != player);
          tracking = WorldUtil.getNearest(entities, player.position(), Entity::position);
       } else if (tag.contains(id)) {

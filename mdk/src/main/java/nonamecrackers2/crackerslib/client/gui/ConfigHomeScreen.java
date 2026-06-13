@@ -111,7 +111,7 @@ public class ConfigHomeScreen extends Screen {
       int heightRemaining = availableScreenHeight - totalHeightTaken;
       this.elementSpacing = heightRemaining / 4;
       int top = this.elementSpacing * 2 + this.title.getHeight();
-      FrameLayout.alignInRectangle(layout, 0, top, this.width, availableScreenHeight - top - this.elementSpacing);
+      FrameLayout.alignInRectangle(layout, 0, top, this.width, availableScreenHeight - top - this.elementSpacing, 0.5F, 0.0F);
       layout.visitWidgets(x$0 -> {
          AbstractWidget var10000 = (AbstractWidget)this.addRenderableWidget(x$0);
       });
@@ -164,7 +164,7 @@ public class ConfigHomeScreen extends Screen {
          this.worldButton.setTooltip(Tooltip.create(worldDesc));
       }
 
-      this.render(stack);
+      this.renderBackground(stack, mouseX, mouseY, partialTicks);
       int titleX = this.width / 2 - this.title.getWidth() / 2;
       int titleY = this.elementSpacing;
       this.title.blit(stack, titleX, titleY, partialTicks);
@@ -183,7 +183,7 @@ public class ConfigHomeScreen extends Screen {
       ModConfigSpec spec = this.specs.get(type);
       if (spec != null) {
          OnConfigScreenOpened event = new OnConfigScreenOpened(this.modid, type);
-         if (!NeoForge.EVENT_BUS.post(event)) {
+         if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             this.minecraft.setScreen(ConfigScreen.makeScreen(this.modid, spec, type, this, event.getInitialPath() != null ? event.getInitialPath() : ""));
          }
       }

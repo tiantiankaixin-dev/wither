@@ -1,8 +1,9 @@
 package nonamecrackers2.witherstormmod.api.common.event;
 
+import net.neoforged.bus.api.ICancellableEvent;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
-public class WitherStormEvolveEvent extends WitherStormEvent {
+public class WitherStormEvolveEvent extends WitherStormEvent implements ICancellableEvent {
    private final int toPhase;
 
    public WitherStormEvolveEvent(WitherStormEntity storm, int toPhase) {

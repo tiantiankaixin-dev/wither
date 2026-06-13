@@ -2,14 +2,13 @@ package nonamecrackers2.witherstormmod.client.jei.category;
 
 import java.util.List;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.library.gui.ingredients.RecipeSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
@@ -22,9 +21,11 @@ import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 public abstract class SuperBeaconCategory<T extends SuperBeaconRecipe> implements IRecipeCategory<T> {
    protected static final ResourceLocation SLOT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/jei/slot.png");
    private final IDrawable background;
+   private final IDrawable slotBackground;
 
    protected SuperBeaconCategory(IGuiHelper helper) {
       this.background = helper.createBlankDrawable(180, 120);
+      this.slotBackground = helper.createDrawable(SLOT, 0, 0, 18, 18);
    }
 
    public IDrawable getBackground() {
@@ -46,11 +47,15 @@ public abstract class SuperBeaconCategory<T extends SuperBeaconRecipe> implement
          float x = Mth.cos(angle * (float) (Math.PI / 180.0)) * 40.0F + (float)halfWidth - 8.0F;
          float y = Mth.sin(angle * (float) (Math.PI / 180.0)) * 40.0F + (float)halfHeight - 8.0F;
          Ingredient ingredient = ingredients.get(i);
-         builder.addSlot(RecipeIngredientRole.INPUT, (int)x, (int)y).addIngredients(ingredient);
+         this.addSlot(builder, RecipeIngredientRole.INPUT, (int)x, (int)y).addIngredients(ingredient);
       }
 
       Minecraft mc = Minecraft.getInstance();
       this.addResult(builder, recipe, focuses, halfWidth, halfHeight, mc.level.registryAccess());
+   }
+
+   protected IRecipeSlotBuilder addSlot(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y) {
+      return builder.addSlot(role, x, y).setBackground(this.slotBackground, -1, -1);
    }
 
    protected abstract void addResult(IRecipeLayoutBuilder var1, T var2, IFocusGroup var3, int var4, int var5, RegistryAccess var6);
@@ -62,13 +67,6 @@ public abstract class SuperBeaconCategory<T extends SuperBeaconRecipe> implement
          stack.drawCenteredString(mc.font, Component.translatable(desc), this.getWidth() / 2, this.getHeight() - 9 - 1, -1);
       }
 
-      for (IRecipeSlotView slotView : recipeSlotsView.getSlotViews()) {
-         if (slotView instanceof RecipeSlot slot) {
-            int x = slot.getRect().getX();
-            int y = slot.getRect().getY();
-            stack.blit(SLOT, x - 1, y - 1, 0, 0.0F, 0.0F, 18, 18, 256, 256);
-         }
-      }
    }
 
    protected static class Icon implements IDrawable {

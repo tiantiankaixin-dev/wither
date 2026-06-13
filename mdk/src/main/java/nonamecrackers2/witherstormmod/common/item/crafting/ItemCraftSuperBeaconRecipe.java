@@ -61,7 +61,7 @@ public class ItemCraftSuperBeaconRecipe extends SuperBeaconRecipe {
                stack = ShapedRecipe.itemStackFromJson(object.get("result").getAsJsonObject());
             } else {
                String rawId = GsonHelper.getAsString(object, "result");
-               ResourceLocation itemId = new ResourceLocation(rawId);
+               ResourceLocation itemId = ResourceLocation.parse(rawId);
                Item item = (Item)BuiltInRegistries.ITEM.get(itemId);
                if (item == null) {
                   throw new JsonSyntaxException("Unknown item '" + rawId + "'");

@@ -20,12 +20,12 @@ public abstract class NumberConfigEntry<T extends Number> extends ConfigEntry<T,
             this.getValueUpdatedResponder().run();
             T val = this.parseValue(value);
             if (this.valueSpec.test(val)) {
-               this.widget.setEditable(-1);
+               this.widget.setTextColor(-1);
             } else {
-               this.widget.setEditable(ChatFormatting.RED.getColor());
+               this.widget.setTextColor(ChatFormatting.RED.getColor());
             }
          } catch (NumberFormatException var3x) {
-            this.widget.setEditable(ChatFormatting.RED.getColor());
+            this.widget.setTextColor(ChatFormatting.RED.getColor());
          }
       });
       return box;

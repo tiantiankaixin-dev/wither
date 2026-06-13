@@ -178,7 +178,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 2.0, Operation.ADD_VALUE));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WitherStormMod.id("extra_health_final_bossfight"), 2.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster && entity.getRandom().nextDouble() >= 0.5) {
                   EquipmentHelper.applyEquipment(monster, difficulty, false);
                }
@@ -217,7 +217,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 4.0, Operation.ADD_VALUE));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WitherStormMod.id("extra_health_final_bossfight"), 4.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster) {
                   EquipmentHelper.applyEquipment(monster, difficulty, false);
                }
@@ -235,7 +235,7 @@ public class BowelsBossFightStages {
                symbiont.setNonBossMode(true);
                symbiont.setRushMode(true);
                symbiont.getAttribute(Attributes.MAX_HEALTH)
-                  .addPermanentModifier(new AttributeModifier("Withered symbiont final boss battle low health", -0.5, Operation.ADD_MULTIPLIED_BASE));
+                  .addPermanentModifier(new AttributeModifier(WitherStormMod.id("withered_symbiont_final_boss_low_health"), -0.5, Operation.ADD_MULTIPLIED_BASE));
                symbiont.setPersistenceRequired();
                symbiont.setHealth(symbiont.getMaxHealth());
                world.sendParticles(
@@ -300,7 +300,7 @@ public class BowelsBossFightStages {
             if (mob != null) {
                ServerLevel serverLevel = (ServerLevel)entity.level();
                DifficultyInstance difficulty = serverLevel.getCurrentDifficultyAt(mob.blockPosition());
-               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Extra health final bossfight", 8.0, Operation.ADD_VALUE));
+               mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WitherStormMod.id("extra_health_final_bossfight"), 8.0, Operation.ADD_VALUE));
                if (WitherSickened.CAN_WEAR_ARMOR.test(mob) && mob instanceof Monster monster) {
                   EquipmentHelper.applyEquipment(monster, difficulty, true);
                }

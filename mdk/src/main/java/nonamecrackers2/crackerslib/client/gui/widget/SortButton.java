@@ -41,7 +41,7 @@ public class SortButton extends AbstractButton {
          texY = 20.0F;
       }
 
-      stack.blit(SORT_ICONS, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0.0F, texY, this.tick(), this.getX(), 256, 256);
+      stack.blit(SORT_ICONS, this.getX(), this.getY(), 0, 0.0F, texY, this.getWidth(), this.getHeight(), 256, 256);
    }
 
    public void renderString(GuiGraphics stack, Font pFont, int pColor) {

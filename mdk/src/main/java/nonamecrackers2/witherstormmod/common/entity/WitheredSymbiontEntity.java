@@ -217,7 +217,9 @@ import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
@@ -1018,7 +1020,7 @@ implements BossThemeEntity {
         double healthAddition;
         List nearbyPlayers = level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(150.0), e -> e.isAlive() && !e.isSpectator());
         if (nearbyPlayers.size() > 1 && (healthAddition = (double)nearbyPlayers.size() * (Double)WitherStormModConfig.SERVER.healthScalePerPlayer.get()) > 0.0) {
-            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("Health scaling", healthAddition, AttributeModifier.Operation.ADD_VALUE));
+            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier(WitherStormMod.id("withered_symbiont_health_scaling"), healthAddition, AttributeModifier.Operation.ADD_VALUE));
             this.setHealth(this.getMaxHealth());
         }
         return super.finalizeSpawn(level, difficulty, spawnType, groupData, tag);
@@ -1194,11 +1196,10 @@ implements BossThemeEntity {
             buffer.writeInt(this.time);
         }
 
-        public Runnable getProcessor(NetworkEvent.Context context) {
+        public Runnable getProcessor(IPayloadContext context) {
             return () -> {
                 if (FMLEnvironment.dist == Dist.CLIENT) {
-                    Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                    optional.ifPresent(world -> {
+                    context.level().ifPresent(world -> {
                         Entity entity = world.getEntity(this.id);
                         if (entity instanceof WitheredSymbiontEntity symbiont) {
                             symbiont.spellCastingTime = this.time;

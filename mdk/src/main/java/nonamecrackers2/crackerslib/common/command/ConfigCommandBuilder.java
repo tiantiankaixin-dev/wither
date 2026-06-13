@@ -152,7 +152,7 @@ public class ConfigCommandBuilder {
       CommandSourceStack source = (CommandSourceStack)context.getSource();
       ConfigValue<T> config = ConfigArgument.get(context, arg, spec);
       T value = valueGetter.apply(context, "value");
-      ValueSpec valueSpec = (ValueSpec)spec.getRaw(config.getPath());
+      ValueSpec valueSpec = (ValueSpec)spec.getSpec().getRaw(config.getPath());
       if (!valueSpec.test(value)) {
          return 0;
       } else {
@@ -181,7 +181,7 @@ public class ConfigCommandBuilder {
       ConfigValue<Object> config = ConfigArgument.get(context, "value", spec);
       Object val = config.get();
       ((CommandSourceStack)context.getSource())
-         .getBuffer(
+         .sendSuccess(
             () -> Component.translatable("commands.crackerslib.getConfig.get", new Object[]{ConfigHelper.DOT_JOINER.join(config.getPath()), config.get()}), false
          );
       if (val instanceof Integer integer) {
@@ -198,7 +198,7 @@ public class ConfigCommandBuilder {
    public static int setDefault(CommandContext<CommandSourceStack> context, String arg, ModConfigSpec spec, String modid, Type type) {
       CommandSourceStack source = (CommandSourceStack)context.getSource();
       ConfigValue<Object> config = ConfigArgument.get(context, arg, spec);
-      ValueSpec valueSpec = (ValueSpec)spec.getRaw(config.getPath());
+      ValueSpec valueSpec = (ValueSpec)spec.getSpec().getRaw(config.getPath());
       boolean flag = !Objects.equals(config.get(), config.getDefault());
       NeoForge.EVENT_BUS.post(new OnConfigOptionSaved<>(modid, type, OnConfigOptionSaved.Source.COMMAND, config, config.getDefault(), flag));
       if (flag) {

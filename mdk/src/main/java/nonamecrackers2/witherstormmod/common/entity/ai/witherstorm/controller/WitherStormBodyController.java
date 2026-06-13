@@ -16,6 +16,7 @@ import net.neoforged.api.distmarker.Dist;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 import net.neoforged.neoforge.network.PacketDistributor;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -176,7 +177,7 @@ public class WitherStormBodyController extends BodyRotationControl {
          buffer.writeVarInt(this.entityId);
       }
 
-      public Runnable getProcessor(Context context) {
+      public Runnable getProcessor(IPayloadContext context) {
          return () -> { if (FMLEnvironment.dist == Dist.CLIENT) processMessage(this); };
       }
 

@@ -59,6 +59,7 @@ import net.neoforged.neoforge.entity.PartEntity;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: DistExecutor removed, use FMLEnvironment.dist == Dist.CLIENT
 import net.neoforged.neoforge.network.PacketDistributor;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkEvent removed, use IPayloadContext.Context
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.witherstormmod.common.entity.part.TentaclePartEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
 import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
@@ -938,11 +939,10 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
          this.anim = buffer.readInt();
       }
 
-      public Runnable getProcessor(Context context) {
+      public Runnable getProcessor(IPayloadContext context) {
          return () -> {
             if (FMLEnvironment.dist == Dist.CLIENT) {
-               Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-               optional.ifPresent(world -> {
+               context.level().ifPresent(world -> {
                   if (world.getEntity(this.id) instanceof TentacleEntity tentacle) {
                      tentacle.tentacleAnim = this.anim;
                   }

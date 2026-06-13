@@ -1,12 +1,11 @@
 package nonamecrackers2.crackerslib.client.event.impl;
 
 import javax.annotation.Nullable;
-// TODO_MIG[CANCELABLE]: removed; class must implement ICancellableEvent
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.fml.config.ModConfig.Type;
 
-// TODO_MIG[CANCELABLE]: implement ICancellableEvent on this class instead
-public class OnConfigScreenOpened extends Event {
+public class OnConfigScreenOpened extends Event implements ICancellableEvent {
    private final String modid;
    private final Type type;
    @Nullable

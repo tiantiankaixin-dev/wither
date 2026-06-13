@@ -38,12 +38,12 @@ public class ListConfigEntry extends ConfigEntry<List<?>, EditBox> {
             this.getValueUpdatedResponder().run();
             List<?> val = this.compileValuesFromString(value);
             if (this.valueSpec.test(val)) {
-               this.widget.setEditable(-1);
+               this.widget.setTextColor(-1);
             } else {
-               this.widget.setEditable(ChatFormatting.RED.getColor());
+               this.widget.setTextColor(ChatFormatting.RED.getColor());
             }
          } catch (NumberFormatException var3x) {
-            this.widget.setEditable(ChatFormatting.RED.getColor());
+            this.widget.setTextColor(ChatFormatting.RED.getColor());
          }
       });
       return box;

@@ -123,7 +123,7 @@ public class ConfigScreen extends Screen {
 
             return Map.entry(path, entry.getValue());
          })
-         .filter(entry -> NeoForge.EVENT_BUS.post(new AddConfigEntryToMenuEvent(modid, type, entry.getKey()).isCanceled() == false))
+         .filter(entry -> !NeoForge.EVENT_BUS.post(new AddConfigEntryToMenuEvent(modid, type, entry.getKey())).isCanceled())
          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
    }
 

@@ -27,7 +27,7 @@ public class CollapseButton extends AbstractButton {
 
    public void renderWidget(GuiGraphics stack, int mouseX, int mouseY, float partialTick) {
       super.renderWidget(stack, mouseX, mouseY, partialTick);
-      stack.blit(ICON, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0.0F, 0.0F, this.tick(), this.getX(), 256, 256);
+      stack.blit(ICON, this.getX(), this.getY(), 0, 0.0F, 0.0F, this.getWidth(), this.getHeight(), 256, 256);
    }
 
    public void renderString(GuiGraphics stack, Font pFont, int pColor) {

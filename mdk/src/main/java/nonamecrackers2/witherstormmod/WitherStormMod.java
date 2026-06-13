@@ -94,9 +94,9 @@ public class WitherStormMod {
    public WitherStormMod(IEventBus modEventBus) {
       ModLoadingContext context = ModLoadingContext.get();
       version = context.getActiveContainer().getModInfo().getVersion();
-      context.registerConfig(Type.CLIENT, WitherStormModConfig.CLIENT_SPEC);
-      context.registerConfig(Type.COMMON, WitherStormModConfig.COMMON_SPEC);
-      context.registerConfig(Type.SERVER, WitherStormModConfig.SERVER_SPEC);
+      context.getActiveContainer().registerConfig(Type.CLIENT, WitherStormModConfig.CLIENT_SPEC);
+      context.getActiveContainer().registerConfig(Type.COMMON, WitherStormModConfig.COMMON_SPEC);
+      context.getActiveContainer().registerConfig(Type.SERVER, WitherStormModConfig.SERVER_SPEC);
       modEventBus.addListener(WitherStormModEntityTypes::addEntityAttributes);
       modEventBus.addListener(WitherStormModEntityTypes::registerSpawnPlacements);
       WitherStormModCapabilities.ATTACHMENT_TYPES.register(modEventBus);
@@ -104,6 +104,7 @@ public class WitherStormMod {
       modEventBus.addListener(WitherStormModConfig::registerPresets);
       modEventBus.addListener(WitherStormModClusterInteractionEvents::registerClusterInteractions);
       modEventBus.addListener(WitherStormModRegistries::registerRegistries);
+      modEventBus.addListener(WitherStormModPacketHandlers::registerPackets);
       modEventBus.addListener(this::commonSetup);
       modEventBus.addListener(this::clientSetup);
       WitherStormModItemTabs.TABS.register(modEventBus);
@@ -157,7 +158,6 @@ public class WitherStormMod {
    private void commonSetup(FMLCommonSetupEvent event) {
       WitherStormModEvents.registerEvents();
       WitherStormModStructures.registerPieceTypes();
-      WitherStormModPacketHandlers.registerPackets();
       WitherStormModStats.register();
       ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(WitherStormModBlocks.TAINTED_MUSHROOM.getId(), WitherStormModBlocks.POTTED_TAINTED_MUSHROOM);
       EntitySelectorManager.register("w", new WitherStormSelector());

@@ -290,7 +290,7 @@ public class WitherStormModConfig {
             List<String> list = Lists.newArrayList();
             list.add("witherstormmod:example");
             return list;
-         }, val -> ResourceLocation.isValidResourceLocation(val), "injectAiMobBlacklist", true, "A list of mobs that should not have custom AI injected into them");
+         }, val -> ResourceLocation.tryParse(val) != null, "injectAiMobBlacklist", true, "A list of mobs that should not have custom AI injected into them");
          this.autoSpawnWitherStorm = this.createValue(
             false, "autoSpawnWitherStorm", false, "Specifies if the Wither Storm should automatically be spawned upon world creation"
          );

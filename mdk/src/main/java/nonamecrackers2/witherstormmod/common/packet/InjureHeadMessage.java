@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import nonamecrackers2.crackerslib.common.packet.Packet;
@@ -47,7 +48,10 @@ public class InjureHeadMessage extends Packet {
    }
 
    public Runnable getProcessor(IPayloadContext context) {
-      return () -> WitherStormModMessageHandlerServer.processInjureHeadMessage(this, context.getSender());
+      return () -> context.player()
+         .filter(ServerPlayer.class::isInstance)
+         .map(ServerPlayer.class::cast)
+         .ifPresent(player -> WitherStormModMessageHandlerServer.processInjureHeadMessage(this, player));
    }
 
    public String toString() {

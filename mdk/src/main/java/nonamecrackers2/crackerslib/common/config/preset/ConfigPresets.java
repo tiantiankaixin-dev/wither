@@ -1,5 +1,4 @@
 package nonamecrackers2.crackerslib.common.config.preset;
-import net.neoforged.fml.ModList;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -10,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import net.neoforged.fml.ModList;
-// 
+import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.config.ModConfig.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +31,7 @@ public class ConfigPresets {
       } else {
          Builder<String, ConfigPresets.Presets> presetsBuilder = ImmutableMap.builder();
          List<RegisterConfigPresetsEvent> postedEvents = Lists.newArrayList();
-         ModList.get().runEventGenerator(mod -> {
+         ModLoader.runEventGenerator(mod -> {
             RegisterConfigPresetsEvent event = new RegisterConfigPresetsEvent(mod.getModId());
             postedEvents.add(event);
             return event;

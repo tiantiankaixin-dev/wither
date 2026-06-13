@@ -7,6 +7,6 @@ import nonamecrackers2.crackerslib.common.data.CrackersLibLangProvider;
 public class CrackersLibDataEvents {
    public static void gatherData(GatherDataEvent event) {
       DataGenerator generator = event.getGenerator();
-      generator.addProvider(event.includeClient(), CrackersLibLangProvider::new);
+      generator.addProvider(event.includeClient(), new CrackersLibLangProvider(generator.getPackOutput()));
    }
 }

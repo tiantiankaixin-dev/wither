@@ -2452,7 +2452,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
    public void consumeEntity(@Nullable Entity entity, int amount) {
       WitherStormConsumeEvent event = new WitherStormConsumeEvent(this, entity, amount);
-      if (!NeoForge.EVENT_BUS.post(event)) {
+      if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
          amount = event.getConsumedAmount();
          this.addToConsumedEntities(amount);
       }
@@ -2965,9 +2965,8 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                      }
                   }
 
-                  return NeoForge.EVENT_BUS.post(new CanWitherStormTargetMobEvent(this, entity))
-                     ? false
-                     : NeoForge.EVENT_BUS.post(new CanWitherStormTargetMobEvent(this, entity)).isCanceled() == false;
+                  CanWitherStormTargetMobEvent event = NeoForge.EVENT_BUS.post(new CanWitherStormTargetMobEvent(this, entity));
+                  return !event.isCanceled();
                }
             }
          } else {

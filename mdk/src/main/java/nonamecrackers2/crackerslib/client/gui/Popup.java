@@ -97,14 +97,14 @@ public class Popup extends Screen {
       Minecraft mc = Minecraft.getInstance();
       return new Popup(screen, (p, r) -> {
          GridLayout layout = new GridLayout();
-         layout.columnSpacing().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
+         layout.defaultCellSetting().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
          RowHelper row = layout.createRowHelper(1);
          GridLayout textLayout = (GridLayout)row.addChild(new GridLayout());
          RowHelper textSubmit = textLayout.createRowHelper(1);
          EditBox box = (EditBox)textSubmit.addChild(new EditBox(mc.font, 0, 0, width / 2, 20, CommonComponents.EMPTY));
          box.setFilter(filter);
          GridLayout buttonLayout = (GridLayout)row.addChild(new GridLayout());
-         buttonLayout.columnSpacing().columnSpacing(5);
+         buttonLayout.columnSpacing(5);
          RowHelper buttonRow = buttonLayout.createRowHelper(2);
          Button submit = (Button)buttonRow.addChild(Button.builder(Component.translatable("gui.popup.submit"), b -> {
             p.close();
@@ -129,7 +129,7 @@ public class Popup extends Screen {
       Minecraft mc = Minecraft.getInstance();
       return new Popup(screen, (p, r) -> {
          GridLayout layout = new GridLayout();
-         layout.columnSpacing().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
+         layout.defaultCellSetting().alignHorizontallyCenter().alignVerticallyMiddle().padding(5);
          RowHelper row = layout.createRowHelper(2);
          int listWidth = (int)(width / 1.2F);
          int listY = r.top();
@@ -144,10 +144,10 @@ public class Popup extends Screen {
          list.setOnObjectSelectedCallback(t -> select.active = true);
          Button cancel = (Button)row.addChild(Button.builder(Component.translatable("gui.popup.cancel"), b -> p.close()).width(80).build());
          layout.arrangeElements();
-         FrameLayout.alignInRectangle(layout, r.left(), list.getBottom() + 5, r.width(), 30);
-         p.addRenderableWidget((T)select);
-         p.addRenderableWidget((T)cancel);
-         p.addRenderableWidget((T)list);
+         FrameLayout.alignInRectangle(layout, r.left(), list.getBottom() + 5, r.width(), 30, 0.5F, 0.0F);
+         p.addRenderableWidget(select);
+         p.addRenderableWidget(cancel);
+         p.addRenderableWidget(list);
       }, width, listHeight + 30, message).open();
    }
 
