@@ -170,7 +170,7 @@ public class SickenedParrot extends Parrot implements WitherSickened, Enemy {
       if (mob instanceof Parrot parrot) {
          this.setVariant(parrot.getVariant());
          if (parrot.isTame()) {
-            this.setTame(true);
+            this.setTame(true, true);
             this.setOwnerUUID(parrot.getOwnerUUID());
          }
       }
@@ -181,7 +181,7 @@ public class SickenedParrot extends Parrot implements WitherSickened, Enemy {
       if (mob instanceof Parrot parrot) {
          parrot.setVariant(this.getVariant());
          if (this.isTame()) {
-            parrot.setTame(true);
+            parrot.setTame(true, true);
             parrot.setOwnerUUID(this.getOwnerUUID());
          }
       }
