@@ -20,7 +20,7 @@ public class PlaySoundEvents {
          if (!WorldUtil.isInAnOpenArea(player)) {
             float original = event.getOriginalVolume();
             float volume = original * ((20.0F - Mth.clamp((float)(-player.getY()) + 40.0F, 0.0F, 20.0F)) / 20.0F) * 0.5F;
-            if (WitherStormEntity.isOccludedSound(sound.get())) {
+            if (WitherStormEntity.isOccludedSound(sound.value())) {
                event.setNewVolume(volume);
             }
          }

@@ -75,7 +75,7 @@ public class BlockClusterRenderer extends EntityRenderer<BlockClusterEntity> {
                entity::isRemoved,
                (s, c, p, o, unusedR, unusedG, unusedB, a) -> {
                   for (Entry<BlockPos, BlockState> blockEntry : entry.getValue().entrySet()) {
-                     BlockState statex = blockEntry.get();
+                     BlockState statex = blockEntry.getValue();
                      BlockPos relativePosx = blockEntry.getKey();
                      s.pushPose();
                      s.translate(

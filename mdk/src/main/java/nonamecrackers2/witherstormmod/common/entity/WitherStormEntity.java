@@ -3512,9 +3512,9 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       this.bodyLerpSteps = steps;
    }
 
-   private double attributeOrConfigValue(Attribute attribute, ConfigValue<Double> config) {
-      AttributeInstance instance = this.getAttribute;
-      return instance.get() != attribute.getDefaultValue() ? instance.get() : (Double)config.get();
+   private double attributeOrConfigValue(Holder<Attribute> attribute, ConfigValue<Double> config) {
+      AttributeInstance instance = this.getAttribute(attribute);
+      return instance.getValue() != attribute.value().getDefaultValue() ? instance.getValue() : (Double)config.get();
    }
 
    @Override

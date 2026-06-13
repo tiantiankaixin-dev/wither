@@ -59,7 +59,7 @@ public class RenderWitherSicknessOverlay {
       this.lastHealth = health;
       int healthLast = this.displayHealth;
       AttributeInstance maxHealth = player.getAttribute(Attributes.MAX_HEALTH);
-      float healthMax = (float)maxHealth.get();
+      float healthMax = (float)maxHealth.getValue();
       int absorbtion = Mth.ceil(player.getAbsorptionAmount());
       int healthRows = Mth.ceil((healthMax + (float)absorbtion) / 2.0F / 10.0F);
       int rowHeight = Math.max(10 - (healthRows - 2), 3);

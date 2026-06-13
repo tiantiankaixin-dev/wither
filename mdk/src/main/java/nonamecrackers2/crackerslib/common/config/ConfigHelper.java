@@ -79,7 +79,7 @@ public abstract class ConfigHelper {
       return searchForValues("", spec.getValues().valueMap())
          .entrySet()
          .stream()
-         .map(e -> Map.entry(e.getKey(), (ConfigValue)e.get()))
+         .map(e -> Map.entry(e.getKey(), (ConfigValue)e.getValue()))
          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
    }
 
@@ -87,7 +87,7 @@ public abstract class ConfigHelper {
       return searchForValues("", spec.getSpec().valueMap())
          .entrySet()
          .stream()
-         .map(e -> Map.entry(e.getKey(), (ValueSpec)e.get()))
+         .map(e -> Map.entry(e.getKey(), (ValueSpec)e.getValue()))
          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
    }
 

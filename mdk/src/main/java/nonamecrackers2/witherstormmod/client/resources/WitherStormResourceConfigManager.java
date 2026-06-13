@@ -128,7 +128,7 @@ public class WitherStormResourceConfigManager extends SimpleJsonResourceReloadLi
                            String phaseStrx = String.valueOf(e.getIntKey());
                            if (byPhase.has(phaseStrx)) {
                               LOGGER.debug("Found phase: {}", e.getIntKey());
-                              populateColorSetBuilder((ColorSet.Builder)e.get(), GsonHelper.getAsJsonObject(byPhase, phaseStrx));
+                              populateColorSetBuilder((ColorSet.Builder)e.getValue(), GsonHelper.getAsJsonObject(byPhase, phaseStrx));
                            }
                         });
                      }

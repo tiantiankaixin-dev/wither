@@ -423,7 +423,7 @@ public class BlockClusterEntity extends Entity {
             if ((float)pos.getY() + this.getBbHeight() <= (float)this.level().getMinBuildHeight() || this.time > 600) {
                if (this.dropItems && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                   for (Entry<BlockPos, BlockState> entryx : blocks.entrySet()) {
-                     BlockState state = entryx.get();
+                     BlockState state = entryx.getValue();
                      BlockPos position = pos.offset((Vec3i)entryx.getKey());
                      this.spawnAtSpecificLocation(state.getBlock().asItem(), position);
                   }

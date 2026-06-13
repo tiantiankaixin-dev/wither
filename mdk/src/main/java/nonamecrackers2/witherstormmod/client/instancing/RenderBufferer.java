@@ -300,7 +300,7 @@ public class RenderBufferer {
 
       while (iterator.hasNext()) {
          Entry<Object, BufferedInstance> instance = iterator.next();
-         instance.get().close();
+         instance.getValue().close();
          iterator.remove();
       }
    }
