@@ -37,7 +37,7 @@ public class RandomizeSicknessModifiersCommand {
       if (entity != null) {
          if (entity instanceof LivingEntity living) {
             if (!living.getType().is(WitherStormModEntityTags.WITHER_SICKNESS_IMMUNE)) {
-               Optional<WitherSicknessTracker> optional = living.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()).resolve();
+               Optional<WitherSicknessTracker> optional = Optional.ofNullable(living.getData(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER.get()));
                if (optional.isPresent()) {
                   WitherSicknessTracker tracker = optional.get();
                   tracker.randomizeModifiers();
