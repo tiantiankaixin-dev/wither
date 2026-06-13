@@ -44,7 +44,7 @@ public class TaintedVeinBlock extends MultifaceBlock implements BonemealableBloc
    }
 
    public BlockState updateShape(BlockState state, Direction direction, BlockState state2, LevelAccessor levelAccessor, BlockPos pos, BlockPos pos2) {
-      if ((Boolean)state.get(WATERLOGGED)) {
+      if ((Boolean)state.getValue(WATERLOGGED)) {
          levelAccessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
       }
 
@@ -68,7 +68,7 @@ public class TaintedVeinBlock extends MultifaceBlock implements BonemealableBloc
    }
 
    public FluidState getFluidState(BlockState state) {
-      return state.get(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+      return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
    }
 
    public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {

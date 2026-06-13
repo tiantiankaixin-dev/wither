@@ -20,7 +20,7 @@ public class TaintedWallTorchBlock extends WallTorchBlock {
    }
 
    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-      Direction direction = (Direction)state.get(FACING);
+      Direction direction = (Direction)state.getValue(FACING);
       double x = (double)pos.getX() + 0.5 + random.nextGaussian() * 0.1;
       double y = (double)pos.getY() + 0.7 + random.nextGaussian() * 0.1;
       double z = (double)pos.getZ() + 0.5 + random.nextGaussian() * 0.1;
