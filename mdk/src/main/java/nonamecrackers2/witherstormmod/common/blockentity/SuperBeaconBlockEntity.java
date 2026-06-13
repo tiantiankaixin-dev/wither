@@ -28,6 +28,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -355,14 +356,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   public void loadAdditional(CompoundTag tag) {
-      super.load(tag);
+   public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       NonNullList<ItemStack> items = NonNullList.create();
       ListTag list = tag.getList("ResummonItems", 10);
 
       for (int i = 0; i < list.size(); i++) {
          CompoundTag item = list.getCompound(i);
-         items.add(ItemStack.of(item));
+         items.add(ItemStack.parseOptional(registries, item));
       }
 
       this.items = items;
@@ -379,13 +380,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       ListTag list = new ListTag();
 
       for (ItemStack stack : this.items) {
-         CompoundTag item = new CompoundTag();
-         list.add(stack.save(item));
+         if (!stack.isEmpty()) {
+            list.add(stack.save(registries));
+         }
       }
 
       tag.put("ResummonItems", list);

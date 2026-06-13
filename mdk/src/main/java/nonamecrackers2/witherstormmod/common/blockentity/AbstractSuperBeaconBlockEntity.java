@@ -21,6 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.inventory.ContainerData;
@@ -241,13 +242,13 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
             this.getLevel().getData(WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES.get()).add(this.getBlockPos());
    }
 
-   public void loadAdditional(CompoundTag tag) {
-      super.load(tag);
+   public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       this.activationTime = tag.getInt("ActivationTime");
       this.beamHeight = tag.getInt("BeamHeight");
       this.isActive = tag.getBoolean("IsActive");
       if (tag.contains("CustomName", 8)) {
-         this.name = Serializer.fromJson(tag.getString("CustomName"));
+         this.name = Serializer.fromJson(tag.getString("CustomName"), registries);
       }
 
       this.poweringUpAnimation = tag.getInt("PowerUpTime");
@@ -258,13 +259,13 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
       this.lockKey = LockCode.fromTag(tag);
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       tag.putInt("ActivationTime", this.activationTime);
       tag.putInt("BeamHeight", this.beamHeight);
       tag.putBoolean("IsActive", this.isActive);
       if (this.name != null) {
-         tag.putString("CustomName", Serializer.toJson(this.name));
+         tag.putString("CustomName", Serializer.toJson(this.name, registries));
       }
 
       tag.putInt("PowerUpTime", this.poweringUpAnimation);
