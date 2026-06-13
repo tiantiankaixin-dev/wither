@@ -72,7 +72,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
 
          public void dataChanged(AbstractContainerMenu container, int slot, int value) {
             SuperBeaconScreen.this.primary = menu.getPrimaryEffect();
-            SuperBeaconScreen.this.level = menu.getLevel();
+            SuperBeaconScreen.this.level() = menu.getLevel();
             SuperBeaconScreen.this.shouldShowArea = menu.shouldShowArea();
             SuperBeaconScreen.this.setEffectCooldown = menu.getCooldown();
          }
@@ -178,7 +178,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       stack.drawString(
          this.font,
          Component.translatable(
-            "container.witherstormmod.withered_beacon.level", new Object[]{this.level > 0 ? Component.translatable("enchantment.level." + this.level) : ""}
+            "container.witherstormmod.withered_beacon.level", new Object[]{this.level() > 0 ? Component.translatable("enchantment.level." + this.level()) : ""}
          ),
          20,
          115 - 9,

@@ -45,7 +45,7 @@ public class TractorBeamParticle extends SimpleAnimatedParticle {
    }
 
    public <T extends LivingEntity & WitherStormBase> boolean canExist() {
-      Entity entity = this.level.getEntity(this.storm);
+      Entity entity = this.level().getEntity(this.storm);
       if (entity instanceof LivingEntity && entity instanceof WitherStormBase) {
          T storm = (T)entity;
          if (TractorBeamHelper.isInsideTractorBeam(this.pos, storm, 4.0, this.head)) {

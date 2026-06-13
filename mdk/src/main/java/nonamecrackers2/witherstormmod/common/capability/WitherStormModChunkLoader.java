@@ -35,7 +35,7 @@ public class WitherStormModChunkLoader {
    private boolean loadedLastKnown;
 
    public WitherStormModChunkLoader(ServerLevel level) {
-      this.level = level;
+      this.level() = level;
    }
 
    @Nullable
@@ -61,7 +61,7 @@ public class WitherStormModChunkLoader {
 
    public void tick() {
       if (this.hasChunkLoaders()) {
-         this.level.resetEmptyTime();
+         this.level().resetEmptyTime();
       }
 
       if (!this.loadedLastKnown) {
@@ -69,14 +69,14 @@ public class WitherStormModChunkLoader {
 
          for (ChunkPos pos : this.lastKnownPositions) {
             count++;
-            this.level.getChunkSource().addRegionTicket(LOAD, pos, 2, pos);
+            this.level().getChunkSource().addRegionTicket(LOAD, pos, 2, pos);
          }
 
-         LOGGER.debug("Loaded {} chunks for initial loading sequence in {}", count, this.level.dimension());
+         LOGGER.debug("Loaded {} chunks for initial loading sequence in {}", count, this.level().dimension());
          this.loadedLastKnown = true;
       }
 
-      for (Entity entity : this.level.getAllEntities()) {
+      for (Entity entity : this.level().getAllEntities()) {
          if (entity instanceof ChunkLoader) {
             ChunkLoader loader = (ChunkLoader)entity;
             if (loader.shouldLoad()) {
@@ -96,7 +96,7 @@ public class WitherStormModChunkLoader {
          Entry<UUID, WitherStormModChunkLoader.Instance> entry = iterator.next();
          WitherStormModChunkLoader.Instance instance = entry.getValue();
          if (instance.loader.isStillValidForChunkLoading()) {
-            if (!(Boolean)WitherStormModConfig.SERVER.shouldChunkLoadWhenNoPlayers.get() && this.level.getServer().getPlayerCount() <= 0) {
+            if (!(Boolean)WitherStormModConfig.SERVER.shouldChunkLoadWhenNoPlayers.get() && this.level().getServer().getPlayerCount() <= 0) {
                if (!instance.needsInit) {
                   instance.unload();
                   instance.needsInit = true;
@@ -169,14 +169,14 @@ public class WitherStormModChunkLoader {
 
       public void unload() {
          WitherStormModChunkLoader.LOGGER.debug("Unloading chunk {}", this.current);
-         WitherStormModChunkLoader.this.level
+         WitherStormModChunkLoader.this.level()
             .getChunkSource()
             .removeRegionTicket(WitherStormModChunkLoader.WITHER_STORM, this.current, this.radius, this.current, true);
       }
 
       public void load() {
          WitherStormModChunkLoader.LOGGER.debug("Loading chunk {} with radius {}", this.current, this.radius);
-         WitherStormModChunkLoader.this.level.getChunkSource().addRegionTicket(WitherStormModChunkLoader.WITHER_STORM, this.current, this.radius, this.current, true);
+         WitherStormModChunkLoader.this.level().getChunkSource().addRegionTicket(WitherStormModChunkLoader.WITHER_STORM, this.current, this.radius, this.current, true);
       }
 
       public boolean checkAndClearNeedsInit() {
