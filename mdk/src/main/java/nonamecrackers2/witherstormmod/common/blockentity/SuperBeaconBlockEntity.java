@@ -116,10 +116,10 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
       }
 
       this.findNearbySupportBeacons();
-      if (!this.level().isClientSide && !this.isDoingResummonAnimation()) {
-         List<ResummonSuperBeaconRecipe> recipes = this.level()
+      if (!this.getLevel().isClientSide && !this.isDoingResummonAnimation()) {
+         List<ResummonSuperBeaconRecipe> recipes = this.getLevel()
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.level());
+            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.getLevel());
          if (!recipes.isEmpty()) {
             ResummonSuperBeaconRecipe recipe = recipes.get(0);
             if (recipe.getCondition().canCraft(this)) {
@@ -131,24 +131,24 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
             }
          }
 
-         List<ItemCraftSuperBeaconRecipe> craftingRecipes = this.level()
+         List<ItemCraftSuperBeaconRecipe> craftingRecipes = this.getLevel()
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.level());
+            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.getLevel());
          if (!craftingRecipes.isEmpty()) {
             ItemCraftSuperBeaconRecipe recipe = craftingRecipes.get(0);
             if (recipe.getCondition().canCraft(this)) {
                Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
-               ServerLevel level = (ServerLevel)this.level();
+               ServerLevel level = (ServerLevel)this.getLevel();
                level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 2.0, pos.z, 20, 1.0, 1.0, 1.0, 0.01);
                level.sendParticles(
                   WitherStormModParticleTypes.COMMAND_BLOCK.get(), pos.x, pos.y + 2.0, pos.z, 50, 1.0, 1.0, 1.0, 0.015
                );
-               this.level()
+               this.getLevel()
                   .playSound(null, this.getBlockPos(), WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
-               ItemStack stack = recipe.assemble(this, this.level().registryAccess());
-               ItemEntity item = new ItemEntity(this.level(), pos.x, pos.y + 2.0, pos.z, stack);
+               ItemStack stack = recipe.assemble(this, this.getLevel().registryAccess());
+               ItemEntity item = new ItemEntity(this.getLevel(), pos.x, pos.y + 2.0, pos.z, stack);
                item.setGlowingTag(true);
-               this.level().addFreshEntity(item);
+               this.getLevel().addFreshEntity(item);
                this.items.clear();
                this.markUpdated();
             }
@@ -164,14 +164,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
             double y = cmdBlockVec.y + this.random.nextGaussian();
             double z = cmdBlockVec.z + this.random.nextGaussian();
             Vec3 delta = cmdBlockVec.subtract(x, y, z).normalize().scale(0.1);
-            this.level().addParticle((ParticleOptions)WitherStormModParticleTypes.COMMAND_BLOCK.get(), x, y, z, delta.x, delta.y, delta.z);
+            this.getLevel().addParticle((ParticleOptions)WitherStormModParticleTypes.COMMAND_BLOCK.get(), x, y, z, delta.x, delta.y, delta.z);
          }
 
-         if (!this.level().isClientSide) {
+         if (!this.getLevel().isClientSide) {
             Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
             if (this.getResummonTicks() == 60) {
                this.items.clear();
-               if (this.level() instanceof ServerLevel level) {
+               if (this.getLevel() instanceof ServerLevel level) {
                   level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y, pos.z, 20, 1.0, 1.0, 1.0, 0.01);
                   level.sendParticles(
                      WitherStormModParticleTypes.COMMAND_BLOCK.get(),
@@ -184,18 +184,18 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      1.0,
                      0.015
                   );
-                  this.level()
+                  this.getLevel()
                      .playSound(null, commandBlockPos, WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
                   boolean flag = this.resummoningEntity == WitherStormModEntityTypes.WITHER_STORM.get();
                   if (flag) {
-                     this.level()
+                     this.getLevel()
                         .playSound(null, commandBlockPos, WitherStormModSoundEvents.COMMAND_BLOCK_BUILD.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
                   }
 
                   if (this.resummoningEntity != null && this.resummonNbt != null && !flag) {
                      Entity entity = this.resummoningEntity.spawn(level, commandBlockPos, MobSpawnType.TRIGGERED);
 
-                     for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(100.0))) {
+                     for (ServerPlayer player : this.getLevel().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(100.0))) {
                         WitherStormModCriteriaTriggers.SUMMON_MOB_SUPER_BEACON.trigger(player, entity);
                      }
 
@@ -221,24 +221,24 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      this.playSound(WitherStormModSoundEvents.BOWELS_LOUD_HURT.get(), 10.0F, 1.0F);
                      WitherStormModPacketHandlers.MAIN
                         .send(
-                           SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
+                           SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.getLevel(), pos.x, pos.y, pos.z, 20.0),
                            new ShakeScreenMessage(80.0F, 4.0F)
                         );
                   }
 
                   int interval = Math.max(1, 372 / this.getResummonTicks());
-                  if (this.getResummonTicks() % interval == 0 && this.getResummonTicks() < 352 && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+                  if (this.getResummonTicks() % interval == 0 && this.getResummonTicks() < 352 && this.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
                      for (int b = 0; b < 2; b++) {
                         int x = this.random.nextInt(97) - 48 + this.getBlockPos().getX();
                         int z = this.random.nextInt(97) - 48 + this.getBlockPos().getZ();
                         BlockPos currentPos = new BlockPos(x, this.getBlockPos().getY() + 3, z);
 
-                        for (int i = 0; i < 30 && this.level().getBlockState(currentPos.below()).isAir(); i++) {
+                        for (int i = 0; i < 30 && this.getLevel().getBlockState(currentPos.below()).isAir(); i++) {
                            currentPos = currentPos.below();
                         }
 
                         currentPos = currentPos.below();
-                        BlockClusterEntity cluster = (BlockClusterEntity)(WitherStormModEntityTypes.BLOCK_CLUSTER.get()).create(this.level());
+                        BlockClusterEntity cluster = (BlockClusterEntity)(WitherStormModEntityTypes.BLOCK_CLUSTER.get()).create(this.getLevel());
                         cluster.populateWithRadius(
                            currentPos,
                            1.0F,
@@ -267,7 +267,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                         cluster.setRotationDelta(new Vec2((float)this.random.nextInt(20) * 0.1F / 2.0F, (float)this.random.nextInt(20) * 0.1F / 2.0F));
                         cluster.setNoGravity(true);
                         cluster.setPhysics(false);
-                        this.level().addFreshEntity(cluster);
+                        this.getLevel().addFreshEntity(cluster);
                         this.clusters.add(cluster);
                      }
                   }
@@ -300,14 +300,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      cluster.discard();
                   }
 
-                  this.level().removeBlock(this.getBlockPos(), false);
+                  this.getLevel().removeBlock(this.getBlockPos(), false);
 
                   for (BlockPos connected : this.getConnected().values()) {
-                     this.level().removeBlock(connected, false);
+                     this.getLevel().removeBlock(connected, false);
                   }
 
-                  this.level().explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
-                  WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level());
+                  this.getLevel().explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
+                  WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.getLevel());
                   storm.getAttribute(WitherStormModAttributes.EVOLUTION_SPEED.get())
                      .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADD_VALUE));
                   storm.setPhase((Integer)WitherStormModConfig.SERVER.resummonedPhase.get());
@@ -316,11 +316,11 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                   storm.getPlayDeadManager().setRecentlyRevived(true);
                   storm.setResummoned(true);
 
-                  for (ServerPlayer player : this.level().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(100.0))) {
+                  for (ServerPlayer player : this.getLevel().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(100.0))) {
                      CriteriaTriggers.SUMMONED_ENTITY.trigger(player, storm);
                   }
 
-                  this.level().addFreshEntity(storm);
+                  this.getLevel().addFreshEntity(storm);
                }
             }
          }
@@ -333,13 +333,13 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
          this.shake = new Vec2(x, z);
       }
 
-      if (!this.level().isClientSide && this.getResummonTicks() == this.getResummonThreshold()) {
+      if (!this.getLevel().isClientSide && this.getResummonTicks() == this.getResummonThreshold()) {
          this.playSound(WitherStormModSoundEvents.WITHERED_BEACON_ACTIVATE.get(), 1.0F, 1.0F);
          this.playSound(WitherStormModSoundEvents.TREMBLE.get(), 10.0F, 1.0F);
          Vec3 posx = Vec3.atCenterOf(this.getBlockPos());
          WitherStormModPacketHandlers.MAIN
             .send(
-               SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), posx.x, posx.y, posx.z, 20.0),
+               SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.getLevel(), posx.x, posx.y, posx.z, 20.0),
                new ShakeScreenMessage(80.0F, 10.0F)
             );
       }
@@ -413,12 +413,12 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    private void findNearbySupportBeacons() {
       AABB box = new AABB(this.getBlockPos()).inflate(5.0);
-      List<BlockEntity> entities = WorldUtil.getBlockEntitiesInAABB(this.level(), box);
+      List<BlockEntity> entities = WorldUtil.getBlockEntitiesInAABB(this.getLevel(), box);
       Iterator<BlockPos> iterator = this.connected.values().iterator();
 
       while (iterator.hasNext()) {
          BlockPos pos = iterator.next();
-         BlockEntity entity = this.level().getBlockEntity(pos);
+         BlockEntity entity = this.getLevel().getBlockEntity(pos);
          if (!this.isValidSupportBeacon.test(entity)) {
             iterator.remove();
          }
@@ -438,7 +438,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
       for (int i = 1; i <= 4; level = i++) {
          int y = pos.getY() - i;
-         if (i < this.level().getMinBuildHeight()) {
+         if (i < this.getLevel().getMinBuildHeight()) {
             break;
          }
 
@@ -446,7 +446,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
          for (int x = pos.getX() - i; x <= pos.getX() + i && flag; x++) {
             for (int z = pos.getZ() - i; z <= pos.getZ() + i; z++) {
-               BlockState state = this.level().getBlockState(new BlockPos(x, y, z));
+               BlockState state = this.getLevel().getBlockState(new BlockPos(x, y, z));
                if (i == 1 ? !state.is(WitherStormModBlockTags.WITHERED_BEACON_BASE) : !state.is(BlockTags.BEACON_BASE_BLOCKS)) {
                   flag = false;
                   break;
@@ -492,14 +492,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      .send(
                         SimpleChannel.toAllPlayers(), new GlobalSoundMessage(WitherStormModSoundEvents.WITHERED_BEACON_POWER_UP.get(), 1.0F, 1.0F)
                      );
-                  this.level()
+                  this.getLevel()
                      .getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0))
                      .forEach(
                         p -> p.connection.send(new ClientboundStopSoundPacket(WitherStormModSoundEvents.WITHERED_BEACON_AMBIENT.getId(), SoundSource.BLOCKS))
                      );
 
                   for (BlockPos pos : this.connected.values()) {
-                     if (this.level().getBlockEntity(pos) instanceof AbstractSuperBeaconBlockEntity superBeacon) {
+                     if (this.getLevel().getBlockEntity(pos) instanceof AbstractSuperBeaconBlockEntity superBeacon) {
                         superBeacon.poweringUpAnimation = 80;
                         superBeacon.markUpdated();
                         superBeacon.doActivationSequence();
@@ -517,9 +517,9 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    @Override
    protected void doPoweringUpAnimation() {
-      if (!this.level().isClientSide && this.poweringUpAnimation == 40) {
+      if (!this.getLevel().isClientSide && this.poweringUpAnimation == 40) {
          WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toAllPlayers(), new ShakeScreenMessage(120.0F, 12.0F));
-         if (this.level() instanceof ServerLevel level) {
+         if (this.getLevel() instanceof ServerLevel level) {
             Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
             level.sendParticles(
                ParticleTypes.DRAGON_BREATH,
@@ -534,7 +534,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
             );
          }
 
-         this.level().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0)).forEach(p -> {
+         this.getLevel().getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0)).forEach(p -> {
                         p.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setActivatedSuperBeacon(true);
             WitherStormModCriteriaTriggers.ACTIVATE_SUPER_BEACON.trigger(p, this.connected.size());
          });
@@ -548,7 +548,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
       return BaseContainerBlockEntity.canUnlock(player, this.lockKey, this.getDisplayName())
-         ? new SuperBeaconMenu(id, inventory, this.data, ContainerLevelAccess.create(this.level(), this.getBlockPos()), this::doPowerUp, this.getValidEffects())
+         ? new SuperBeaconMenu(id, inventory, this.data, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()), this::doPowerUp, this.getValidEffects())
          : null;
    }
 
@@ -581,7 +581,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
       Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
       WitherStormModPacketHandlers.MAIN
          .send(
-            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
+            SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.getLevel(), pos.x, pos.y, pos.z, 20.0),
             new ShakeScreenMessage(80.0F, 10.0F)
          );
    }

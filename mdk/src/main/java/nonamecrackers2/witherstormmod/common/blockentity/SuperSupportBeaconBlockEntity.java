@@ -53,14 +53,14 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    @Override
    public void tick() {
       super.tick();
-      if (!this.level().isClientSide) {
+      if (!this.getLevel().isClientSide) {
          BlockPos searchStart = this.worldPosition.below();
          int radius = 1;
          List<BlockState> blocks = Lists.newArrayList();
 
          for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-               blocks.add(this.level().getBlockState(searchStart.offset(x, 0, z)));
+               blocks.add(this.getLevel().getBlockState(searchStart.offset(x, 0, z)));
             }
          }
 
@@ -105,13 +105,13 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
       if (beaconx != null) {
          this.beaconLevel = beaconx.beaconLevel;
          this.showWorkingArea = beaconx.showWorkingArea();
-         if (!this.level().isClientSide && this.color != null && beaconx.getResummonTicks() == this.getResummonThreshold()) {
+         if (!this.getLevel().isClientSide && this.color != null && beaconx.getResummonTicks() == this.getResummonThreshold()) {
             this.playSound(WitherStormModSoundEvents.WITHERED_BEACON_ACTIVATE.get(), 1.0F, 1.0F);
             this.playSound(WitherStormModSoundEvents.TREMBLE.get(), 10.0F, 1.0F);
             Vec3 pos = Vec3.atCenterOf(this.getConnectedBeacon());
             WitherStormModPacketHandlers.MAIN
                .send(
-                  SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.level(), pos.x, pos.y, pos.z, 20.0),
+                  SimpleChannel.toNear((net.minecraft.server.level.ServerLevel)this.getLevel(), pos.x, pos.y, pos.z, 20.0),
                   new ShakeScreenMessage(80.0F, 10.0F)
                );
          }
@@ -165,7 +165,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    private SuperBeaconBlockEntity getNearbyValidBeacon() {
       AABB box = new AABB(this.getBlockPos()).inflate(5.0);
 
-      for (BlockEntity entity : WorldUtil.getBlockEntitiesInAABB(this.level(), box)) {
+      for (BlockEntity entity : WorldUtil.getBlockEntitiesInAABB(this.getLevel(), box)) {
          if (entity instanceof SuperBeaconBlockEntity beacon && beacon.isConnected(this.getBlockPos())) {
             return beacon;
          }
@@ -181,7 +181,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
 
    public SuperBeaconBlockEntity getConnectedBeaconEntity() {
       if (this.getConnectedBeacon() != null) {
-         BlockEntity entity = this.level().getBlockEntity(this.getConnectedBeacon());
+         BlockEntity entity = this.getLevel().getBlockEntity(this.getConnectedBeacon());
          if (entity instanceof SuperBeaconBlockEntity) {
             return (SuperBeaconBlockEntity)entity;
          }
@@ -248,7 +248,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
       return BaseContainerBlockEntity.canUnlock(player, this.lockKey, this.getDisplayName())
          ? new SuperSupportBeaconMenu(
-            id, inventory, this.data, ContainerLevelAccess.create(this.level(), this.getBlockPos()), this::doPowerUp, this.getValidEffects()
+            id, inventory, this.data, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()), this::doPowerUp, this.getValidEffects()
          )
          : null;
    }

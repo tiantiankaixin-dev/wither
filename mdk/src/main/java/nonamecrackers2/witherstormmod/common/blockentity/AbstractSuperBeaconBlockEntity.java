@@ -123,10 +123,10 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
    public void tick() {
       this.ticks++;
-      if (!this.level().isClientSide) {
+      if (!this.getLevel().isClientSide) {
          WitherStormModPacketHandlers.MAIN
             .send(
-               SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.level()),
+               SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.getLevel()),
                new UpdateDistantSuperBeaconMessage(
                   this.getBlockPos(), this.getBeamColor(), this.isActive(), this.getBeamHeight(), this.getThickness(), this.getOuterThickness()
                )
@@ -142,7 +142,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
       }
 
       if (this.isActive() && !this.isPoweringUp() && (this.ticks + this.randomOffset) % 80 == 0) {
-         this.level().playSound(null, this.getBlockPos(), WitherStormModSoundEvents.WITHERED_BEACON_AMBIENT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+         this.getLevel().playSound(null, this.getBlockPos(), WitherStormModSoundEvents.WITHERED_BEACON_AMBIENT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
       }
 
       if (this.poweringUpAnimation > 0) {
@@ -150,11 +150,11 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
          this.doPoweringUpAnimation();
       }
 
-      if (!this.level().isClientSide && this.effect != null && this.isActive()) {
-         this.applyEffect((ServerLevel)this.level());
+      if (!this.getLevel().isClientSide && this.effect != null && this.isActive()) {
+         this.applyEffect((ServerLevel)this.getLevel());
       }
 
-      if (!this.level().isClientSide && this.effectSetCooldown > 0) {
+      if (!this.getLevel().isClientSide && this.effectSetCooldown > 0) {
          this.effectSetCooldown--;
       }
    }
@@ -209,7 +209,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
    }
 
    protected void playSound(SoundEvent event, float volume, float pitch) {
-      this.level().playSound(null, this.getBlockPos(), event, SoundSource.BLOCKS, volume, pitch + (this.random.nextFloat() - 0.5F) * 0.35F);
+      this.getLevel().playSound(null, this.getBlockPos(), event, SoundSource.BLOCKS, volume, pitch + (this.random.nextFloat() - 0.5F) * 0.35F);
    }
 
    public void setRemoved() {
@@ -218,9 +218,9 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
          this.deactivate();
       }
 
-      if (!this.level().isClientSide) {
+      if (!this.getLevel().isClientSide) {
          WitherStormModPacketHandlers.MAIN
-            .send(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.level()), new RemoveDistantSuperBeaconMessage(this.getBlockPos()));
+            .send(SimpleChannel.toDimension((net.minecraft.server.level.ServerLevel)this.getLevel()), new RemoveDistantSuperBeaconMessage(this.getBlockPos()));
       }
    }
 
@@ -238,7 +238,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
    public void onLoad() {
       super.onLoad();
-            this.level().getData(WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES.get()).add(this.getBlockPos());
+            this.getLevel().getData(WitherStormModCapabilities.CHUNK_LOADING_BLOCK_ENTITIES.get()).add(this.getBlockPos());
    }
 
    public void loadAdditional(CompoundTag tag) {
@@ -277,7 +277,7 @@ public abstract class AbstractSuperBeaconBlockEntity extends BlockEntity impleme
 
    protected void markUpdated() {
       this.setChanged();
-      this.level().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+      this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
    }
 
    public void setCustomName(@Nullable Component component) {
