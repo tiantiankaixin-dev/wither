@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
@@ -34,14 +35,14 @@ public class FireworkBundleBlockEntity extends BlockEntity {
       super((BlockEntityType)WitherStormModBlockEntityTypes.FIREWORK_BUNDLE.get(), pos, state);
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       tag.putInt("Fuse", this.fuse);
       tag.putInt("LaunchDuration", this.launchDuration);
    }
 
-   public void loadAdditional(CompoundTag tag) {
-      super.load(tag);
+   public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       this.fuse = tag.getInt("Fuse");
       this.launchDuration = tag.getInt("LaunchDuration");
    }

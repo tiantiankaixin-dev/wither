@@ -3,6 +3,7 @@ package nonamecrackers2.witherstormmod.common.blockentity;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -111,20 +112,20 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       }
    }
 
-   public void loadAdditional(CompoundTag tag) {
-      super.load(tag);
+   public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
       if (!this.tryLoadLootTable(tag)) {
-         ContainerHelper.loadAllItems(tag, this.items);
+         ContainerHelper.loadAllItems(tag, this.items, registries);
       }
 
       this.storedExperience = tag.getInt("StoredXp");
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       if (!this.trySaveLootTable(tag)) {
-         ContainerHelper.saveAllItems(tag, this.items);
+         ContainerHelper.saveAllItems(tag, this.items, registries);
       }
 
       tag.putInt("StoredXp", this.storedExperience);
@@ -156,14 +157,14 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       return ClientboundBlockEntityDataPacket.create(this);
    }
 
-   public CompoundTag getUpdateTag() {
+   public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
       CompoundTag tag = new CompoundTag();
-      ContainerHelper.saveAllItems(tag, this.items);
+      ContainerHelper.saveAllItems(tag, this.items, registries);
       return tag;
    }
 
-   public void handleUpdateTag(CompoundTag tag) {
-      ContainerHelper.loadAllItems(tag, this.items);
+   public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+      ContainerHelper.loadAllItems(tag, this.items, registries);
    }
 
    public void setChanged() {

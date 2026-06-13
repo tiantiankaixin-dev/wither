@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -196,8 +197,8 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    }
 
    @Override
-   public void loadAdditional(CompoundTag tag) {
-      super.load(tag);
+   public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       int colorIndex = tag.getInt("Color");
       if (colorIndex >= 0 && colorIndex < AbstractSuperBeaconBlockEntity.Color.values().length) {
          this.color = AbstractSuperBeaconBlockEntity.Color.values()[colorIndex];
@@ -215,8 +216,8 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    }
 
    @Override
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       if (this.color != null) {
          tag.putInt("Color", this.color.ordinal());
       } else {
