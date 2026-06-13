@@ -19,7 +19,7 @@ public class StringConfigEntry extends ConfigEntry<String, EditBox> {
    }
 
    protected String getCurrentValue() {
-      return this.widget.get();
+      return this.widget.getValue();
    }
 
    protected void setCurrentValue(String value) {

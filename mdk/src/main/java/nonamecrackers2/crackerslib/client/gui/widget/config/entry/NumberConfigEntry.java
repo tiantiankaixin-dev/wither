@@ -14,7 +14,7 @@ public abstract class NumberConfigEntry<T extends Number> extends ConfigEntry<T,
 
    protected EditBox buildWidget(int x, int y, int width, int height) {
       EditBox box = new EditBox(this.mc.font, x + 6, y + height / 2 - 10, 60, 20, CommonComponents.EMPTY);
-      box.setFocused(String.valueOf(this.value.get()));
+      box.setValue(String.valueOf(this.value.get()));
       box.setResponder(value -> {
          try {
             this.getValueUpdatedResponder().run();
@@ -33,14 +33,14 @@ public abstract class NumberConfigEntry<T extends Number> extends ConfigEntry<T,
 
    protected T getCurrentValue() {
       try {
-         return this.parseValue(this.widget.get());
+         return this.parseValue(this.widget.getValue());
       } catch (NumberFormatException var2) {
          return (T)this.value.get();
       }
    }
 
    protected void setCurrentValue(T value) {
-      this.widget.setFocused(String.valueOf(value));
+      this.widget.setValue(String.valueOf(value));
    }
 
    protected abstract T parseValue(String var1) throws NumberFormatException;

@@ -35,9 +35,9 @@ public class CyclableButton<T> extends Button {
          this.index = 0;
       }
 
-      this.setMessage(this.messageGetter.apply(this.get()));
+      this.setMessage(this.messageGetter.apply(this.getValue()));
       if (this.responder != null) {
-         this.responder.accept(this.get());
+         this.responder.accept(this.getValue());
       }
    }
 

@@ -32,7 +32,7 @@ public class ListConfigEntry extends ConfigEntry<List<?>, EditBox> {
       }
 
       box.setMaxLength(500);
-      box.setFocused(this.compileListToString((List<?>)this.value.get()));
+      box.setValue(this.compileListToString((List<?>)this.value.get()));
       box.setResponder(value -> {
          try {
             this.getValueUpdatedResponder().run();
@@ -65,14 +65,14 @@ public class ListConfigEntry extends ConfigEntry<List<?>, EditBox> {
 
    protected List<?> getCurrentValue() {
       try {
-         return this.compileValuesFromString(this.widget.get());
+         return this.compileValuesFromString(this.widget.getValue());
       } catch (NumberFormatException var2) {
          return (List<?>)this.value.get();
       }
    }
 
    protected void setCurrentValue(List<?> value) {
-      this.widget.setFocused(this.compileListToString(value));
+      this.widget.setValue(this.compileListToString(value));
    }
 
    @FunctionalInterface

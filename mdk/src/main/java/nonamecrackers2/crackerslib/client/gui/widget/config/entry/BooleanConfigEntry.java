@@ -31,7 +31,7 @@ public class BooleanConfigEntry extends ConfigEntry<Boolean, CyclableButton<Bool
    }
 
    protected Boolean getCurrentValue() {
-      return this.widget.get();
+      return this.widget.getValue();
    }
 
    protected void setCurrentValue(Boolean value) {

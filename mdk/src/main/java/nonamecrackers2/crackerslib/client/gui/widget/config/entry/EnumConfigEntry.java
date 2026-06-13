@@ -20,7 +20,7 @@ public class EnumConfigEntry<T extends Enum<T>> extends ConfigEntry<T, CyclableB
    }
 
    protected T getCurrentValue() {
-      return this.widget.get();
+      return this.widget.getValue();
    }
 
    protected void setCurrentValue(T value) {

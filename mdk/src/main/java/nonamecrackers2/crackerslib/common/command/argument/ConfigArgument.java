@@ -63,9 +63,9 @@ public class ConfigArgument implements ArgumentType<String> {
          allValues.entrySet()
             .stream()
             .filter(
-               e -> e.get().getDefault() instanceof Enum<?> enub
+               e -> e.getValue().getDefault() instanceof Enum<?> enub
                   ? enub.getDeclaringClass().isAssignableFrom(arg)
-                  : e.get().getDefault().getClass().isAssignableFrom(arg)
+                  : e.getValue().getDefault().getClass().isAssignableFrom(arg)
             )
             .map(Entry::getKey)
             .toList()

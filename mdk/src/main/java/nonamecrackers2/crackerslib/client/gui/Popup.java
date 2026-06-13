@@ -108,7 +108,7 @@ public class Popup extends Screen {
          RowHelper buttonRow = buttonLayout.createRowHelper(2);
          Button submit = (Button)buttonRow.addChild(Button.builder(Component.translatable("gui.popup.submit"), b -> {
             p.close();
-            onAccepted.accept(box.get());
+            onAccepted.accept(box.getValue());
          }).width(80).build());
          Button cancel = (Button)buttonRow.addChild(Button.builder(Component.translatable("gui.popup.cancel"), b -> p.close()).width(80).build());
          layout.arrangeElements();
