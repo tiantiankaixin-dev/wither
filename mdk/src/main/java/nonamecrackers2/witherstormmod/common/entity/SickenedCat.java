@@ -1,4 +1,5 @@
 package nonamecrackers2.witherstormmod.common.entity;
+import net.minecraft.resources.ResourceLocation;
 
 import net.neoforged.api.distmarker.Dist;
 
@@ -175,9 +176,9 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
          this.setVariant(cat.getVariant());
          this.setCollarColor(cat.getCollarColor());
          if (cat.isTame()) {
-            this.setTame(true);
+            this.setTame(true, true);
             this.setOwnerUUID(cat.getOwnerUUID());
-            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Sickened tamed mob health benefit", 1.4, Operation.ADD_MULTIPLIED_BASE));
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_tamed_health"), 1.4, Operation.ADD_MULTIPLIED_BASE));
             this.setHealth(this.getMaxHealth());
          }
       }
@@ -189,7 +190,7 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
          cat.setVariant(this.getVariant());
          cat.setCollarColor(this.getCollarColor());
          if (this.isTame()) {
-            cat.setTame(true);
+            cat.setTame(true, true);
             cat.setOwnerUUID(this.getOwnerUUID());
          }
       }

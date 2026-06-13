@@ -180,7 +180,7 @@ public class SickenedWolf extends Wolf implements WitherSickened, Enemy {
       if (mob instanceof Wolf wolf) {
          this.setCollarColor(wolf.getCollarColor());
          if (wolf.isTame()) {
-            this.setTame(true);
+            this.setTame(true, true);
             this.setOwnerUUID(wolf.getOwnerUUID());
          }
       }
@@ -191,7 +191,7 @@ public class SickenedWolf extends Wolf implements WitherSickened, Enemy {
       if (mob instanceof Wolf wolf) {
          wolf.setCollarColor(this.getCollarColor());
          if (this.isTame()) {
-            wolf.setTame(true);
+            wolf.setTame(true, true);
             wolf.setOwnerUUID(this.getOwnerUUID());
          }
       }
