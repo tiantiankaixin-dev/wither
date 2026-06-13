@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.blockentity;
 
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.List;

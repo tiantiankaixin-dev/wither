@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.controller;
 
+import nonamecrackers2.crackerslib.common.packet.SimpleChannel;
+
 import net.neoforged.fml.loading.FMLEnvironment;
 
 import net.minecraft.client.Minecraft;
