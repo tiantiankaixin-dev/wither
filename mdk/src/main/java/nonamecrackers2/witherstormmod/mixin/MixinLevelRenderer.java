@@ -21,7 +21,7 @@ public abstract class MixinLevelRenderer {
       at = {@At("TAIL")}
    )
    public void allChangedTail(CallbackInfo ci) {
-      if (this.level() != null) {
+      if (this.level != null) {
          RenderBufferer.INSTANCE.levelReload();
       }
    }

@@ -16,7 +16,7 @@ public class ChunkLoadingBlockEntities {
    private List<BlockPos> loadingEntities = Lists.newArrayList();
 
    public ChunkLoadingBlockEntities(ServerLevel level) {
-      this.level() = level;
+      this.level = level;
    }
 
    public void tick() {
@@ -24,15 +24,15 @@ public class ChunkLoadingBlockEntities {
 
       while (loadingEntities.hasNext()) {
          BlockPos pos = loadingEntities.next();
-         if (this.level().isLoaded(pos)) {
-            BlockEntity entity = this.level().getBlockEntity(pos);
+         if (this.level.isLoaded(pos)) {
+            BlockEntity entity = this.level.getBlockEntity(pos);
             ChunkPos chunk = new ChunkPos(pos);
             if (entity != null && !entity.isRemoved()) {
-               if (!this.level().getForcedChunks().contains(chunk.toLong())) {
-                  this.level().setChunkForced(chunk.x, chunk.z, true);
+               if (!this.level.getForcedChunks().contains(chunk.toLong())) {
+                  this.level.setChunkForced(chunk.x, chunk.z, true);
                }
             } else {
-               this.level().setChunkForced(chunk.x, chunk.z, false);
+               this.level.setChunkForced(chunk.x, chunk.z, false);
                loadingEntities.remove();
             }
          }

@@ -25,7 +25,7 @@ public enum WitherStormModItemTier implements Tier {
    private final Supplier<Ingredient> repairIngredient;
 
    private WitherStormModItemTier(int level, int uses, float speed, float damage, int enchantmentValue, Supplier<Ingredient> ingredient) {
-      this.level() = level;
+      this.level = level;
       this.uses = uses;
       this.speed = speed;
       this.damage = damage;
@@ -46,7 +46,7 @@ public enum WitherStormModItemTier implements Tier {
    }
 
    public int getLevel() {
-      return this.level();
+      return this.level;
    }
 
    public int getEnchantmentValue() {

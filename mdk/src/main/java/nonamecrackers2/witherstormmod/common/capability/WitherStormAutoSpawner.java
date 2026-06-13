@@ -29,7 +29,7 @@ public class WitherStormAutoSpawner {
    private boolean hasSpawnedWitherStorm;
 
    public WitherStormAutoSpawner(ServerLevel level) {
-      this.level() = level;
+      this.level = level;
    }
 
    public void tick() {
@@ -39,11 +39,11 @@ public class WitherStormAutoSpawner {
          if (!this.hasSpawnedWitherStorm && this.tickCount > maxTime) {
             this.hasSpawnedWitherStorm = true;
             Pair<BlockPos, StructureStart> structure = WorldUtil.findNearestMapStructure(
-               this.level(), WitherStormModStructureTags.STORM_SPAWN_PLATFORMS, BlockPos.ZERO, 100, false
+               this.level, WitherStormModStructureTags.STORM_SPAWN_PLATFORMS, BlockPos.ZERO, 100, false
             );
             if (structure != null) {
                BlockPos pos = (BlockPos)structure.getFirst();
-               this.level().getChunk(pos);
+               this.level.getChunk(pos);
                StructureStart start = (StructureStart)structure.getSecond();
 
                for (StructurePiece piece : start.getPieces()) {
@@ -53,17 +53,17 @@ public class WitherStormAutoSpawner {
                   }
                }
 
-               this.level().getChunkSource().addRegionTicket(INITIAL_SPAWN, new ChunkPos(pos), 2, pos, true);
-               WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level());
+               this.level.getChunkSource().addRegionTicket(INITIAL_SPAWN, new ChunkPos(pos), 2, pos, true);
+               WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level);
                storm.moveTo((double)pos.getX() + 0.5, (double)pos.getY(), (double)pos.getZ() + 0.5);
                storm.makeInvulnerable();
                storm.playSound(WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), 4.0F, 1.0F);
 
-               for (ServerPlayer player : this.level().getPlayers(EntitySelector.NO_SPECTATORS)) {
+               for (ServerPlayer player : this.level.getPlayers(EntitySelector.NO_SPECTATORS)) {
                   CriteriaTriggers.SUMMONED_ENTITY.trigger(player, storm);
                }
 
-               this.level().addFreshEntity(storm);
+               this.level.addFreshEntity(storm);
             }
          }
       } else {
