@@ -268,7 +268,7 @@ public class WitherStormBowelsManager {
                      currentPos = currentPos.below();
                   }
 
-                  if (NaturalSpawner.isSpawnPositionOk(Type.ON_GROUND, this.world, currentPos, EntityType.PLAYER)) {
+                  if (NaturalSpawner.isSpawnPositionOk(SpawnPlacementTypes.ON_GROUND, this.world, currentPos, EntityType.PLAYER)) {
                      int scanRadius = 10;
                      int totalAir = 0;
 
@@ -402,7 +402,7 @@ public class WitherStormBowelsManager {
          }
 
          List<TentacleEntity> nearbyTentacles = this.world.getEntitiesOfClass(TentacleEntity.class, new AABB(currentPos).inflate(10.0));
-         if (NaturalSpawner.isSpawnPositionOk(Type.ON_GROUND, this.world, currentPos, WitherStormModEntityTypes.TENTACLE.get())
+         if (NaturalSpawner.isSpawnPositionOk(SpawnPlacementTypes.ON_GROUND, this.world, currentPos, WitherStormModEntityTypes.TENTACLE.get())
             && nearbyTentacles.isEmpty()
             && Math.sqrt(currentPos.distSqr(center)) > 10.0) {
             pos = currentPos;

@@ -220,7 +220,7 @@ public class SymbiontSummoningManager {
             }
 
             if (NaturalSpawner.isSpawnPositionOk(
-               Type.ON_GROUND,
+               SpawnPlacementTypes.ON_GROUND,
                this.entity.level(),
                BlockPos.containing((double)pos.getX() + 0.5, y, (double)pos.getZ() + 0.5),
                WitherStormModEntityTypes.WITHERED_SYMBIONT.get()
