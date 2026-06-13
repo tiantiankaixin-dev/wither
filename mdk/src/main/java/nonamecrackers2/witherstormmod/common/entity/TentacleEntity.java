@@ -942,11 +942,11 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
          return () -> {
             if (FMLEnvironment.dist == Dist.CLIENT) {
                Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-               { var world = optional;
+               optional.ifPresent(world -> {
                   if (world.getEntity(this.id) instanceof TentacleEntity tentacle) {
                      tentacle.tentacleAnim = this.anim;
                   }
-               }
+               });
             }
          };
       }

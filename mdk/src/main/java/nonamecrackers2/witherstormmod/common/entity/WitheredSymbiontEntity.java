@@ -1197,12 +1197,12 @@ implements BossThemeEntity {
             return () -> {
                 if (FMLEnvironment.dist == Dist.CLIENT) {
                     Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
-                    { var world = optional;
+                    optional.ifPresent(world -> {
                         Entity entity = world.getEntity(this.id);
                         if (entity instanceof WitheredSymbiontEntity symbiont) {
                             symbiont.spellCastingTime = this.time;
                         }
-                    }
+                    });
                 }
             };
         }
