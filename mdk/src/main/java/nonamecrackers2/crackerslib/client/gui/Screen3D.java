@@ -137,8 +137,8 @@ public abstract class Screen3D extends Screen {
       BufferSource bufferSource = this.minecraft.renderBuffers().bufferSource();
       if (this.renderOrigin) {
          VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
-         Matrix4f pose = stack.last().pose();
-         Matrix3f normal = stack.last().normal();
+         Matrix4f pose = stack.pose().last().pose();
+         Matrix3f normal = stack.pose().last().normal();
          consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F).setNormal(normal, 0.0F, 1.0F, 0.0F);
          consumer.addVertex(pose, 0.0F, 1.0F, 0.0F).setColor(0.0F, 1.0F, 0.0F, 1.0F).setNormal(normal, 0.0F, 1.0F, 0.0F);
          consumer.addVertex(pose, 0.0F, 0.0F, 0.0F).setColor(1.0F, 0.0F, 0.0F, 1.0F).setNormal(normal, 1.0F, 0.0F, 0.0F);
@@ -147,7 +147,7 @@ public abstract class Screen3D extends Screen {
          consumer.addVertex(pose, 0.0F, 0.0F, 1.0F).setColor(0.0F, 0.0F, 1.0F, 1.0F).setNormal(normal, 0.0F, 0.0F, 1.0F);
       }
 
-      this.poseMatrix = stack.last().pose();
+      this.poseMatrix = stack.pose().last().pose();
       this.render3D(stack, bufferSource, pMouseX, pMouseY, this.minecraft.getPartialTick());
       bufferSource.endBatch();
 

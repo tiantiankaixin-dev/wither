@@ -57,8 +57,8 @@ public class RenderUtil {
 
    public static void line(GuiGraphics stack, Vector2f start, Vector2f end, int blitOffset, float lineWidth, float r, float g, float b, float a) {
       Vector2f normal = start.sub(end, new Vector2f()).normalize();
-      Matrix4f matrix4f = stack.last().pose();
-      Matrix3f matrix3f = stack.last().normal();
+      Matrix4f matrix4f = stack.pose().last().pose();
+      Matrix3f matrix3f = stack.pose().last().normal();
       BufferBuilder bufferbuilder = Tesselator.getInstance();
       RenderSystem.enableBlend();
       RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
