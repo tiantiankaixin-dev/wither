@@ -15,9 +15,10 @@ public class UpdateDamagingProjectileMessage extends Packet {
    public UpdateDamagingProjectileMessage(AbstractHurtingProjectile entity) {
       super(true);
       this.entityId = entity.getId();
-      this.xPower = entity.xPower;
-      this.yPower = entity.yPower;
-      this.zPower = entity.zPower;
+      // In 1.21, xPower/yPower/zPower fields are not accessible, use getDeltaMovement()
+      this.xPower = entity.getDeltaMovement().x;
+      this.yPower = entity.getDeltaMovement().y;
+      this.zPower = entity.getDeltaMovement().z;
    }
 
    public int getEntityId() {

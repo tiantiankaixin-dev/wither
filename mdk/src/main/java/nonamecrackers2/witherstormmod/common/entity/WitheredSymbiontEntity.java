@@ -864,7 +864,7 @@ implements BossThemeEntity {
                     List<Player> players = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(20.0), EntitySelector.NO_SPECTATORS);
                     if (players.size() > 1 && !this.fightContributors.isEmpty()) {
                         for (UUID id : this.fightContributors) {
-                            { var player = players.stream().filter(p -> p.id().equals(id)).findFirst();
+                            { var player = players.stream().filter(p -> p.getUUID().equals(id)).findFirst();
                                 for (ItemStack stack : this.dropItems) {
                                     if (stack.isEmpty()) continue;
                                     ItemStack copy = stack.copy();

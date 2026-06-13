@@ -118,7 +118,7 @@ public class WitherStormBowelsManager {
 
    @Nullable
    public WitherStormBowelsManager.BowelsInstance getOrCreateInstanceFor(WitherStormEntity storm) {
-      WitherStormBowelsManager.BowelsInstance instance = this.get(storm.id());
+      WitherStormBowelsManager.BowelsInstance instance = this.get(storm.getUUID());
       if (instance == null) {
          LOGGER.debug("Searching for available bowels arena for entity {}", storm);
          Pair<BlockPos, StructureStart> start;
@@ -131,7 +131,7 @@ public class WitherStormBowelsManager {
          }
 
          if (start != null) {
-            instance = new WitherStormBowelsManager.BowelsInstance(start, storm.id());
+            instance = new WitherStormBowelsManager.BowelsInstance(start, storm.getUUID());
          } else {
             LOGGER.error("Could not find an available bowels structure for {}. This shouldn't happen!", storm);
          }
@@ -456,7 +456,7 @@ public class WitherStormBowelsManager {
       entity.setState(CommandBlockEntity.State.BOSSFIGHT);
       entity.setMode(CommandBlockEntity.Mode.TENTACLES);
       entity.setOwner(storm);
-      entity.setOwnerUUID(storm.id());
+      entity.setOwnerUUID(storm.getUUID());
       entity.setYRot(rotate(rotation) + 90.0F);
       entity.setYBodyRot(entity.getYRot());
       entity.setYHeadRot(entity.getYRot());
@@ -549,7 +549,7 @@ public class WitherStormBowelsManager {
    public static void queueEnter(ServerPlayer player, WitherStormEntity storm) {
       if (!player.level().dimension().location().equals(WitherStormMod.bowelsLocation()) && player.canChangeDimensions() && !player.isPassenger() && !player.isVehicle()) {
          ServerLevel bowels = WitherStormMod.bowels(player.serverLevel());
-                  bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get()).queuedEnter.putIfAbsent(storm.id(), player);
+                  bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get()).queuedEnter.putIfAbsent(storm.getUUID(), player);
       }
    }
 

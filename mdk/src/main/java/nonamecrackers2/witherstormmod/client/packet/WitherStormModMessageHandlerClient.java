@@ -106,7 +106,7 @@ public class WitherStormModMessageHandlerClient {
                entity.yHeadRot = (float)(message.getHeadYRot() * 360) / 256.0F;
                entity.getHeadManager().updateHeadsFromPacked(message.getRots());
                entity.setId(message.getId());
-               entity.setUUID(message.id());
+               entity.setUUID(message.getUUID());
                entity.absMoveTo(x, y, z, yRot, xRot);
                entity.setDeltaMovement(
                   new Vec3(
@@ -458,9 +458,8 @@ public class WitherStormModMessageHandlerClient {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       if (world.getEntity(message.getEntityId()) instanceof AbstractHurtingProjectile projectile) {
-         projectile.xPower = message.getXPower();
-         projectile.yPower = message.getYPower();
-         projectile.zPower = message.getZPower();
+         // In 1.21, use setDeltaMovement() instead of direct field access
+         projectile.setDeltaMovement(message.getXPower(), message.getYPower(), message.getZPower());
       }
    }
 

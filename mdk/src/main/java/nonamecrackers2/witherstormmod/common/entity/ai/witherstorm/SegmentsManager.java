@@ -177,7 +177,7 @@ public class SegmentsManager {
                int index = segment.isMirrored() ? 1 : 0;
                WitherStormSegmentEntity existing = this.segments[index];
                if (existing != null) {
-                  if (!segment.id().equals(existing.id())) {
+                  if (!segment.getUUID().equals(existing.getUUID())) {
                      if (segment.getTimeWithParent() > existing.getTimeWithParent()) {
                         existing.discard();
                         this.setSegment(segment, index);

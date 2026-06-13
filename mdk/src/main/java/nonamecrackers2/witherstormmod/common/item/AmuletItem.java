@@ -82,7 +82,7 @@ public class AmuletItem extends Item {
                WitherStormEntity nearest = WorldUtil.getNearest(storms, player.position(), Entity::position);
                if (nearest != null) {
                   tag.putString(id + "Type", BuiltInRegistries.ENTITY_TYPE.getKey(nearest.getType()).toString());
-                  tag.putUUID(id, nearest.id());
+                  tag.putUUID(id, nearest.getUUID());
                   tag.putInt(id + "Dist", (int)player.distanceTo(nearest));
                   tag.putString(id + "Name", nearest.getDisplayName().getString());
                   tag.put(id + "Pos", NbtUtils.writeBlockPos(nearest.blockPosition()));

@@ -68,7 +68,7 @@ public class BowelsCommands {
          phase = storm.getPhase();
          ServerLevel bowels = WitherStormMod.bowels(world);
          { var manager = bowels.getData(WitherStormModCapabilities.BOWELS_MANAGER.get());
-            WitherStormBowelsManager.BowelsInstance instance = manager.get(storm.id());
+            WitherStormBowelsManager.BowelsInstance instance = manager.get(storm.getUUID());
             if (instance != null && !instance.isCompleted()) {
                instance.setCompleted(true);
                source.sendSuccess(() -> Component.translatable("commands.witherstormmod.newBowels.success", new Object[]{storm.getDisplayName()}), true);

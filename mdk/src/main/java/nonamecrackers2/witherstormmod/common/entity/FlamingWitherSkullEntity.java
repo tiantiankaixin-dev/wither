@@ -48,9 +48,8 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
 
    public FlamingWitherSkullEntity(EntityType<? extends FlamingWitherSkullEntity> type, Level world, LivingEntity owner, double x, double y, double z) {
       super(type, owner, x, y, z, world);
-      this.xPower = x * 0.1;
-      this.yPower = y * 0.1;
-      this.zPower = z * 0.1;
+      // In 1.21, set initial acceleration via setDeltaMovement
+      this.setDeltaMovement(x * 0.1, y * 0.1, z * 0.1);
    }
 
    public FlamingWitherSkullEntity(Level world, LivingEntity owner, double x, double y, double z) {

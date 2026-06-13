@@ -345,7 +345,7 @@ BossThemeEntity {
         }
         this.tentacleStructure.addSaveData(compound);
         if (this.podiumCluster != null && this.podiumCluster.isAlive()) {
-            compound.putUUID("PodiumCluster", this.podiumCluster.id());
+            compound.putUUID("PodiumCluster", this.podiumCluster.getUUID());
         }
         compound.put("BossfightManager", (Tag)this.bossfightManager.write());
     }
@@ -1107,7 +1107,7 @@ BossThemeEntity {
             for (int i = 0; i < this.savedTentacleStructure.length; ++i) {
                 UUID uuid = this.savedTentacleStructure[i];
                 TentacleEntity preexisting = this.tentacleStructure[i];
-                if ((uuid == null || preexisting == null || preexisting.id().equals(uuid)) && preexisting != null) continue;
+                if ((uuid == null || preexisting == null || preexisting.getUUID().equals(uuid)) && preexisting != null) continue;
                 assert (uuid != null);
                 Entity entity = world.getEntity(uuid);
                 if (!(entity instanceof TentacleEntity)) continue;
@@ -1129,7 +1129,7 @@ BossThemeEntity {
             for (TentacleEntity tentacle : this.tentacleStructure) {
                 CompoundTag tentacleCompound = new CompoundTag();
                 if (tentacle != null) {
-                    tentacleCompound.putUUID("UUID", tentacle.id());
+                    tentacleCompound.putUUID("UUID", tentacle.getUUID());
                 }
                 list.add(tentacleCompound);
             }

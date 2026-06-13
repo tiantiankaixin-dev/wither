@@ -87,7 +87,7 @@ public class ChunkLoaderCommands {
 
          Entity entity = EntityArgument.getEntity(context, "storm");
          if (entity instanceof WitherStormEntity storm) {
-            WitherStormModChunkLoader.Instance instance = loader.getInstance(storm.id());
+            WitherStormModChunkLoader.Instance instance = loader.getInstance(storm.getUUID());
             if (instance != null) {
                source.sendSuccess(
                   () -> Component.translatable(

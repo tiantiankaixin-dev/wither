@@ -88,10 +88,8 @@ public class FireballSpell extends SymbiontSpell {
                }
 
                this.projectiles.remove(i);
-               damaging.setDeltaMovement(Vec3.ZERO);
-               damaging.xPower = targetDelta.x();
-               damaging.yPower = targetDelta.y();
-               damaging.zPower = targetDelta.z();
+               // In 1.21, set the acceleration vector directly
+               damaging.setDeltaMovement(targetDelta.x(), targetDelta.y(), targetDelta.z());
                UpdateDamagingProjectileMessage message = new UpdateDamagingProjectileMessage(damaging);
                WitherStormModPacketHandlers.MAIN.send(SimpleChannel.toTracking(damaging), message);
             } else {

@@ -114,9 +114,9 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
@@ -3458,7 +3458,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
             if (this.fallDistance != 0.0F && d0 >= 1.0) {
                BlockHitResult blockhitresult = this.level()
                   .clip(new ClipContext(this.position(), this.position().add(vec3), Block.FALLDAMAGE_RESETTING, Fluid.WATER, this));
-               if (blockhitresult.getType() != Type.MISS) {
+               if (blockhitresult.getType() != HitResult.Type.MISS) {
                   this.resetFallDistance();
                }
             }

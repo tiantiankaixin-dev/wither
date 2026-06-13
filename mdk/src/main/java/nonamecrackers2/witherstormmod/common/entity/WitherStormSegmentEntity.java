@@ -181,7 +181,7 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
          if (this.isOnDistantRenderer()) {
             { var renderer = this.level().getData(WitherStormModClientCapabilities.DISTANT_RENDERER.get());
                for (WitherStormEntity stormx : renderer.getKnown()) {
-                  if (this.getParentUUID().equals(stormx.id())) {
+                  if (this.getParentUUID().equals(stormx.getUUID())) {
                      this.setParent(stormx);
                   }
                }
@@ -376,7 +376,7 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
    public void setParent(WitherStormEntity parent) {
       this.parent = parent;
       if (parent != null) {
-         this.entityData.set(PARENT_UUID, Optional.of(parent.id()));
+         this.entityData.set(PARENT_UUID, Optional.of(parent.getUUID()));
 
          assert this.getParent() != null;
 

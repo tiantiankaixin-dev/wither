@@ -57,7 +57,7 @@ public class WitherStormEvents {
             }
 
             if (entity instanceof ServerPlayer player) {
-                              player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setKilledByStorm(storm.id());
+                              player.getData(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA.get()).setKilledByStorm(storm.getUUID());
             }
          }
       }
