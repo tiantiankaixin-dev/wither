@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
@@ -217,7 +217,7 @@ public abstract class WitherStormHead {
          float y = this.getHeadYRot();
          Vec3 end = this.headPos.add(this.storm.getViewVector(x, y, 250.0F));
          BlockHitResult hitResult = this.storm.level().clip(new ClipContext(this.headPos, end, Block.COLLIDER, Fluid.NONE, null));
-         if (hitResult.getType() == Type.BLOCK) {
+         if (hitResult.getType() == HitResult.Type.BLOCK) {
             this.tractorBeamCutoffDistance = this.headPos.distanceTo(hitResult.getLocation());
          } else {
             this.tractorBeamCutoffDistance = -1.0;
@@ -564,7 +564,7 @@ public abstract class WitherStormHead {
       Vec3 entityPos = entity.getEyePosition(1.0F);
       return entity.level() != this.storm.level()
          ? false
-         : this.storm.level().clip(new ClipContext(pos, entityPos, Block.COLLIDER, Fluid.NONE, this.storm)).getType() == Type.MISS;
+         : this.storm.level().clip(new ClipContext(pos, entityPos, Block.COLLIDER, Fluid.NONE, this.storm)).getType() == HitResult.Type.MISS;
    }
 
    protected int getRandomHitCount() {

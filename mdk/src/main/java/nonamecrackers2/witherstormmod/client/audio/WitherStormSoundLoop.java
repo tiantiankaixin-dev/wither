@@ -13,9 +13,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.HitResult.Type;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
@@ -67,11 +67,11 @@ public class WitherStormSoundLoop extends FadingSoundLoop implements IForceStopp
          }
 
          BlockHitResult ray = player.level().clip(new ClipContext(this.pos, player.position(), Block.COLLIDER, Fluid.ANY, null));
-         if (ray.getType() == Type.BLOCK && this.dampen < dampenAmount) {
+         if (ray.getType() == HitResult.Type.BLOCK && this.dampen < dampenAmount) {
             this.dampen++;
-         } else if (ray.getType() == Type.BLOCK && this.dampen > dampenAmount) {
+         } else if (ray.getType() == HitResult.Type.BLOCK && this.dampen > dampenAmount) {
             this.dampen--;
-         } else if (ray.getType() == Type.MISS && this.dampen > 0.0F) {
+         } else if (ray.getType() == HitResult.Type.MISS && this.dampen > 0.0F) {
             this.dampen--;
          }
       } else {

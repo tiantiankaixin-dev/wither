@@ -163,7 +163,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    private SuperBeaconBlockEntity getNearbyValidBeacon() {
       AABB box = new AABB(this.getBlockPos()).inflate(5.0);
 
-      for (BlockEntity entity : WorldUtil.getBlockEntitiesInAABB(this.level, box)) {
+      for (BlockEntity entity : WorldUtil.getBlockEntitiesInAABB(this.level(), box)) {
          if (entity instanceof SuperBeaconBlockEntity beacon && beacon.isConnected(this.getBlockPos())) {
             return beacon;
          }
@@ -246,7 +246,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
       return BaseContainerBlockEntity.canUnlock(player, this.lockKey, this.getDisplayName())
          ? new SuperSupportBeaconMenu(
-            id, inventory, this.data, ContainerLevelAccess.create(this.level, this.getBlockPos()), this::doPowerUp, this.getValidEffects()
+            id, inventory, this.data, ContainerLevelAccess.create(this.level(), this.getBlockPos()), this::doPowerUp, this.getValidEffects()
          )
          : null;
    }

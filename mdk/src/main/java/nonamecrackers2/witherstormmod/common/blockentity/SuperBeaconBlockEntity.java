@@ -116,9 +116,9 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
       this.findNearbySupportBeacons();
       if (!this.level().isClientSide && !this.isDoingResummonAnimation()) {
-         List<ResummonSuperBeaconRecipe> recipes = this.level
+         List<ResummonSuperBeaconRecipe> recipes = this.level()
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.level);
+            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.level());
          if (!recipes.isEmpty()) {
             ResummonSuperBeaconRecipe recipe = recipes.get(0);
             if (recipe.getCondition().canCraft(this)) {
@@ -130,22 +130,22 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
             }
          }
 
-         List<ItemCraftSuperBeaconRecipe> craftingRecipes = this.level
+         List<ItemCraftSuperBeaconRecipe> craftingRecipes = this.level()
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.level);
+            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.level());
          if (!craftingRecipes.isEmpty()) {
             ItemCraftSuperBeaconRecipe recipe = craftingRecipes.get(0);
             if (recipe.getCondition().canCraft(this)) {
                Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
-               ServerLevel level = (ServerLevel)this.level;
+               ServerLevel level = (ServerLevel)this.level();
                level.sendParticles(ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 2.0, pos.z, 20, 1.0, 1.0, 1.0, 0.01);
                level.sendParticles(
                   WitherStormModParticleTypes.COMMAND_BLOCK.get(), pos.x, pos.y + 2.0, pos.z, 50, 1.0, 1.0, 1.0, 0.015
                );
-               this.level
+               this.level()
                   .playSound(null, this.getBlockPos(), WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
                ItemStack stack = recipe.assemble(this, this.level().registryAccess());
-               ItemEntity item = new ItemEntity(this.level, pos.x, pos.y + 2.0, pos.z, stack);
+               ItemEntity item = new ItemEntity(this.level(), pos.x, pos.y + 2.0, pos.z, stack);
                item.setGlowingTag(true);
                this.level().addFreshEntity(item);
                this.items.clear();
@@ -183,11 +183,11 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      1.0,
                      0.015
                   );
-                  this.level
+                  this.level()
                      .playSound(null, commandBlockPos, WitherStormModSoundEvents.COMMAND_BLOCK_ACTIVATES.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
                   boolean flag = this.resummoningEntity == WitherStormModEntityTypes.WITHER_STORM.get();
                   if (flag) {
-                     this.level
+                     this.level()
                         .playSound(null, commandBlockPos, WitherStormModSoundEvents.COMMAND_BLOCK_BUILD.get(), SoundSource.BLOCKS, 10.0F, 1.0F);
                   }
 
@@ -237,7 +237,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                         }
 
                         currentPos = currentPos.below();
-                        BlockClusterEntity cluster = (BlockClusterEntity)(WitherStormModEntityTypes.BLOCK_CLUSTER.get()).create(this.level);
+                        BlockClusterEntity cluster = (BlockClusterEntity)(WitherStormModEntityTypes.BLOCK_CLUSTER.get()).create(this.level());
                         cluster.populateWithRadius(
                            currentPos,
                            1.0F,
@@ -306,7 +306,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                   }
 
                   this.level().explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
-                  WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level);
+                  WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level());
                   storm.getAttribute(WitherStormModAttributes.EVOLUTION_SPEED.get())
                      .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADD_VALUE));
                   storm.setPhase((Integer)WitherStormModConfig.SERVER.resummonedPhase.get());
@@ -412,7 +412,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    private void findNearbySupportBeacons() {
       AABB box = new AABB(this.getBlockPos()).inflate(5.0);
-      List<BlockEntity> entities = WorldUtil.getBlockEntitiesInAABB(this.level, box);
+      List<BlockEntity> entities = WorldUtil.getBlockEntitiesInAABB(this.level(), box);
       Iterator<BlockPos> iterator = this.connected.values().iterator();
 
       while (iterator.hasNext()) {
@@ -491,7 +491,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      .send(
                         SimpleChannel.toAllPlayers(), new GlobalSoundMessage(WitherStormModSoundEvents.WITHERED_BEACON_POWER_UP.get(), 1.0F, 1.0F)
                      );
-                  this.level
+                  this.level()
                      .getEntitiesOfClass(ServerPlayer.class, new AABB(this.getBlockPos()).inflate(64.0))
                      .forEach(
                         p -> p.connection.send(new ClientboundStopSoundPacket(WitherStormModSoundEvents.WITHERED_BEACON_AMBIENT.getId(), SoundSource.BLOCKS))
@@ -547,7 +547,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
       return BaseContainerBlockEntity.canUnlock(player, this.lockKey, this.getDisplayName())
-         ? new SuperBeaconMenu(id, inventory, this.data, ContainerLevelAccess.create(this.level, this.getBlockPos()), this::doPowerUp, this.getValidEffects())
+         ? new SuperBeaconMenu(id, inventory, this.data, ContainerLevelAccess.create(this.level(), this.getBlockPos()), this::doPowerUp, this.getValidEffects())
          : null;
    }
 

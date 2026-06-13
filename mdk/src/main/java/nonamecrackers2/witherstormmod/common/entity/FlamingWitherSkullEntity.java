@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
 // TODO_MIG[REMOVED_IMPORT]: // TODO_MIG: NetworkHooks removed, use PacketDistributor
@@ -129,7 +128,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
 
    protected void onHit(@NotNull HitResult ray) {
       super.onHit(ray);
-      if (!this.level().isClientSide && ray.getType() != Type.ENTITY) {
+      if (!this.level().isClientSide && ray.getType() != HitResult.Type.ENTITY) {
          this.explodeAndDiscard();
       }
    }

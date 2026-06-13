@@ -85,10 +85,10 @@ import net.minecraft.world.level.levelgen.structure.placement.ConcentricRingsStr
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import nonamecrackers2.witherstormmod.common.capability.PlayerWitherStormData;
@@ -228,7 +228,7 @@ public class WorldUtil {
    }
 
    public static boolean hasLineOfSight(Entity caster, Entity target) {
-      return raycast(caster, target, 300.0).getType() == Type.MISS;
+      return raycast(caster, target, 300.0).getType() == HitResult.Type.MISS;
    }
 
    public static boolean canSeeOrIsNotInASmallArea(Entity entity, Entity target) {
