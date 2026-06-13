@@ -81,33 +81,33 @@ public class ConfigCommandBuilder {
                      "set"
                   )
                   .then(
-                     ((RequiredArgumentBuilder)Commands.addVertex("double", ConfigArgument.arg(allValues, Double.class))
+                     ((RequiredArgumentBuilder)Commands.argument("double", ConfigArgument.arg(allValues, Double.class))
                            .then(
-                              Commands.addVertex("value", DoubleArgumentType.doubleArg())
+                              Commands.argument("value", DoubleArgumentType.doubleArg())
                                  .executes(ctx -> set(ctx, "double", DoubleArgumentType::getDouble, spec, modid, type))
                            ))
                         .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "double", spec, modid, type)))
                   ))
                .then(
-                  ((RequiredArgumentBuilder)Commands.addVertex("boolean", ConfigArgument.arg(allValues, Boolean.class))
+                  ((RequiredArgumentBuilder)Commands.argument("boolean", ConfigArgument.arg(allValues, Boolean.class))
                         .then(
-                           Commands.addVertex("value", BoolArgumentType.bool())
+                           Commands.argument("value", BoolArgumentType.bool())
                               .executes(ctx -> set(ctx, "boolean", BoolArgumentType::getBool, spec, modid, type))
                         ))
                      .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "boolean", spec, modid, type)))
                ))
             .then(
-               ((RequiredArgumentBuilder)Commands.addVertex("integer", ConfigArgument.arg(allValues, Integer.class))
+               ((RequiredArgumentBuilder)Commands.argument("integer", ConfigArgument.arg(allValues, Integer.class))
                      .then(
-                        Commands.addVertex("value", IntegerArgumentType.integer())
+                        Commands.argument("value", IntegerArgumentType.integer())
                            .executes(ctx -> set(ctx, "integer", IntegerArgumentType::getInteger, spec, modid, type))
                      ))
                   .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "integer", spec, modid, type)))
             ))
          .then(
-            ((RequiredArgumentBuilder)Commands.addVertex("string", ConfigArgument.arg(allValues, String.class))
+            ((RequiredArgumentBuilder)Commands.argument("string", ConfigArgument.arg(allValues, String.class))
                   .then(
-                     Commands.addVertex("value", StringArgumentType.greedyString())
+                     Commands.argument("value", StringArgumentType.greedyString())
                         .executes(ctx -> set(ctx, "string", StringArgumentType::getString, spec, modid, type))
                   ))
                .then(Commands.literal("default").executes(ctx -> setDefault(ctx, "string", spec, modid, type)))
@@ -116,16 +116,16 @@ public class ConfigCommandBuilder {
       for (Class<Enum> clazz : gatherEnumValueClasses(allValues)) {
          String name = clazz.getSimpleName();
          setArg.then(
-            ((RequiredArgumentBuilder)Commands.addVertex(name, ConfigArgument.arg(allValues, clazz))
+            ((RequiredArgumentBuilder)Commands.argument(name, ConfigArgument.arg(allValues, clazz))
                   .then(
-                     Commands.addVertex("value", EnumArgument.enumArgument(clazz))
+                     Commands.argument("value", EnumArgument.enumArgument(clazz))
                         .executes(ctx -> set(ctx, name, (ctx1, arg) -> (Enum)ctx1.getArgument(arg, clazz), spec, modid, type))
                   ))
                .then(Commands.literal("default").executes(ctx -> setDefault(ctx, name, spec, modid, type)))
          );
       }
 
-      specArgument.then(Commands.literal("get").then(Commands.addVertex("value", ConfigArgument.any(allValues)).executes(ctx -> get(ctx, spec))));
+      specArgument.then(Commands.literal("get").then(Commands.argument("value", ConfigArgument.any(allValues)).executes(ctx -> get(ctx, spec))));
       specArgument.then(setArg);
    }
 
