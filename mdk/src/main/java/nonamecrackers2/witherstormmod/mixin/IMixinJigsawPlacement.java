@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.mixin;
 
 import java.util.List;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -25,7 +26,7 @@ public interface IMixinJigsawPlacement {
       StructureTemplateManager manager,
       LevelHeightAccessor accessor,
       RandomSource source,
-      Registry<StructureTemplatePool> registry,
+      Holder<StructureTemplatePool> registry,
       PoolElementStructurePiece start,
       List<PoolElementStructurePiece> pieces,
       VoxelShape maxDistShape

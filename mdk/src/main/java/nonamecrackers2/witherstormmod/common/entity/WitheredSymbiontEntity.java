@@ -119,6 +119,7 @@
  *  org.jetbrains.annotations.NotNull
  */
 package nonamecrackers2.witherstormmod.common.entity;
+import net.minecraft.core.Registry;
 
 import net.neoforged.fml.config.ModConfig.Type;
 
@@ -383,7 +384,7 @@ implements BossThemeEntity {
             this.setStage(BossfightStage.values()[ordinal]);
         }
         this.setStageTicks(compound.getInt("StageTicks"));
-        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((Registry)WitherStormModRegistries.SPELL_TYPES.get()).get(loc)) != null) {
+        if (compound.contains("Spell", 8) && (loc = ResourceLocation.tryParse((String)(rawId = compound.getString("Spell")))) != null && (type = (SpellType)((Registry)WitherStormModRegistries.SPELL_TYPES.get()).getValue(loc)) != null) {
             this.setSpell(type);
         }
         this.spellCastingTime = compound.getInt("SpellCastingTicks");
