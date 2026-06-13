@@ -131,7 +131,7 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
    }
 
    private void playSound(SoundEvent event) {
-      this.level.playSound(null, this.getBlockPos(), event, SoundSource.BLOCKS, 1.0F, 1.0F);
+      this.level().playSound(null, this.getBlockPos(), event, SoundSource.BLOCKS, 1.0F, 1.0F);
    }
 
    public void startOpen(Player player) {
@@ -168,8 +168,8 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
 
    public void setChanged() {
       super.setChanged();
-      if (this.level != null) {
-         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+      if (this.level() != null) {
+         this.level().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
       }
    }
 

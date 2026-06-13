@@ -49,7 +49,7 @@ public class FireworkBundleBlockEntity extends BlockEntity {
    public void beginFuse() {
       if (this.fuse == 0 && this.launchDuration == 0) {
          this.fuse = 100;
-         this.level.playSound(null, this.getBlockPos(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
+         this.level().playSound(null, this.getBlockPos(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
       }
    }
 
