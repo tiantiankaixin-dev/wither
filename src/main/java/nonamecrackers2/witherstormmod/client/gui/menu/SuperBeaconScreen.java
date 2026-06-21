@@ -15,6 +15,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.MobEffectTextureManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffect;
@@ -28,9 +30,9 @@ import nonamecrackers2.witherstormmod.common.packet.SuperBeaconSetEffectMessage;
 import nonamecrackers2.witherstormmod.common.packet.SuperBeaconToggleAreaMessage;
 
 public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeaconMenu> {
-   private static final ResourceLocation BORDER = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon.png");
-   private static final ResourceLocation WINDOW = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon_window.png");
-   private static final ResourceLocation BUTTONS = new ResourceLocation("witherstormmod", "textures/gui/container/super_beacon_buttons.png");
+   private static final ResourceLocation BORDER = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon.png");
+   private static final ResourceLocation WINDOW = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon_window.png");
+   private static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/container/super_beacon_buttons.png");
    private static final Component SELECTED_EFFECT = Component.translatable("container.witherstormmod.withered_beacon.selected");
    private static final Component AVAILABLE_EFFECTS = Component.translatable("container.witherstormmod.withered_beacon.available_effects");
    private static final Component INFO = Component.translatable("withered_beacon.info");
@@ -42,7 +44,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
    private static final int BUTTON_WIDTH = 22;
    private static final int BOTTOM_BAR_HEIGHT = 32;
    @Nullable
-   private MobEffect primary;
+   private Holder<MobEffect> primary;
    private int level;
    private final SuperBeaconScreen.EffectList effectList;
    @Nullable
@@ -64,7 +66,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       this.imageWidth = 230;
       this.imageHeight = 157;
       this.effectList = new SuperBeaconScreen.EffectList(Minecraft.getInstance(), 105, 116, 9, 125);
-      this.effectList.setLeftPos(115);
+      this.effectList.setX(115);
       menu.addSlotListener(new ContainerListener() {
          public void slotChanged(AbstractContainerMenu container, int slot, ItemStack stack) {
          }
@@ -82,21 +84,23 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       super.init();
       int width = (this.width - this.imageWidth) / 2;
       int height = (this.height - this.imageHeight) / 2;
-      this.effectList.updateSize(105, 116, height + 9 + 24, height + 9 + 116 - 4);
-      this.effectList.setLeftPos(width + 10 + 105 + 1);
+      this.effectList.setWidth(105);
+      this.effectList.setHeight(116 - 24 - 4);
+      this.effectList.setY(height + 9 + 24);
+      this.effectList.setX(width + 10 + 105 + 1);
       this.addRenderableWidget(this.effectList);
       int buttonY = 125 + height + 16 - 11;
       int buttonMiddle = 115 + width;
       this.select = (SuperBeaconScreen.BeaconButton)Button.builder(Component.empty(), button -> {
-         MobEffect effect = this.getSelectedEffect();
+         Holder<MobEffect> effect = this.getSelectedEffect();
          if (effect != null) {
-            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(MobEffect.getId(effect)));
+            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(BuiltInRegistries.MOB_EFFECT.getId(effect.value())));
             this.minecraft.player.closeContainer();
          }
       }).pos(buttonMiddle - 2 - 22, buttonY).size(22, 22).build(builder -> new SuperBeaconScreen.BeaconButton(builder, 88));
       this.unselect = (SuperBeaconScreen.BeaconButton)Button.builder(Component.empty(), button -> {
          if (!this.shouldRenderInfo) {
-            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(MobEffect.getId(null)));
+            WitherStormModPacketHandlers.MAIN.sendToServer(new SuperBeaconSetEffectMessage(-1));
          }
       }).pos(buttonMiddle + 2, buttonY).size(22, 22).build(builder -> new SuperBeaconScreen.BeaconButton(builder, 110));
       this.info = Button.builder(Component.literal("i"), button -> {
@@ -127,9 +131,9 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
    }
 
    public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
-      this.renderBackground(stack);
+      this.renderBackground(stack, mouseX, mouseY, partialTicks);
       super.render(stack, mouseX, mouseY, partialTicks);
-      MobEffect effect = this.getSelectedEffect();
+      Holder<MobEffect> effect = this.getSelectedEffect();
       if (this.setEffectCooldown > 0) {
          this.select.setTooltip(Tooltip.create(Component.translatable("gui.witherstormmod.button.select.cooldown.description")));
       } else {
@@ -148,7 +152,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       if (this.shouldRenderInfo) {
          stack.pose().pushPose();
          stack.pose().translate(0.0, 0.0, 1.0);
-         this.renderBackground(stack);
+         this.renderBackground(stack, mouseX, mouseY, partialTicks);
          this.exitInfo.render(stack, mouseX, mouseY, partialTicks);
          int textX = (this.width - this.imageWidth) / 2 - 20;
          int textWidth = this.imageWidth + 40;
@@ -189,7 +193,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
          int x = 62 - (int)((float)sprite.contents().width() * 1.5F);
          int y = 67 - (int)((float)sprite.contents().height() * 1.5F) - 8;
          stack.blit(x, y, 0, 54, 54, sprite);
-         stack.drawCenteredString(this.font, this.primary.getDisplayName(), 62, y + sprite.contents().width() * 3, -1);
+         stack.drawCenteredString(this.font, this.primary.value().getDisplayName(), 62, y + sprite.contents().width() * 3, -1);
       }
    }
 
@@ -201,15 +205,15 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
    }
 
    @Nullable
-   private MobEffect getSelectedEffect() {
+   private Holder<MobEffect> getSelectedEffect() {
       SuperBeaconScreen.EffectList.Entry entry = (SuperBeaconScreen.EffectList.Entry)this.effectList.getSelected();
       return entry != null ? entry.getEffect() : null;
    }
 
-   public void setValidEffects(Set<MobEffect> effects) {
+   public void setValidEffects(Set<Holder<MobEffect>> effects) {
       this.effectList.clear();
 
-      for (MobEffect effect : effects) {
+      for (Holder<MobEffect> effect : effects) {
          this.effectList.addEffect(effect);
       }
    }
@@ -240,12 +244,10 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
 
    public static class EffectList extends ObjectSelectionList<SuperBeaconScreen.EffectList.Entry> {
       public EffectList(Minecraft mc, int width, int height, int top, int bottom) {
-         super(mc, width, height, top, bottom, 20);
-         this.setRenderBackground(false);
-         this.setRenderTopAndBottom(false);
+         super(mc, width, bottom - top, top, 20);
       }
 
-      public void addEffect(MobEffect effect) {
+      public void addEffect(Holder<MobEffect> effect) {
          this.addEntry(new SuperBeaconScreen.EffectList.Entry(effect));
       }
 
@@ -254,7 +256,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       }
 
       protected int getScrollbarPosition() {
-         return this.x0 + this.getWidth() - 7;
+         return this.getX() + this.getWidth() - 7;
       }
 
       public void clear() {
@@ -262,12 +264,12 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
       }
 
       public class Entry extends net.minecraft.client.gui.components.ObjectSelectionList.Entry<SuperBeaconScreen.EffectList.Entry> {
-         private final MobEffect effect;
+         private final Holder<MobEffect> effect;
          private final Component name;
 
-         private Entry(MobEffect effect) {
+         private Entry(Holder<MobEffect> effect) {
             this.effect = effect;
-            this.name = effect.getDisplayName().copy();
+            this.name = effect.value().getDisplayName().copy();
          }
 
          public Component getNarration() {
@@ -284,7 +286,7 @@ public class SuperBeaconScreen extends AbstractContainerScreen<AbstractSuperBeac
             stack.drawString(EffectList.this.minecraft.font, this.name, left + 28, top + height / 2 - 9 / 2, -1);
          }
 
-         public MobEffect getEffect() {
+         public Holder<MobEffect> getEffect() {
             return this.effect;
          }
 

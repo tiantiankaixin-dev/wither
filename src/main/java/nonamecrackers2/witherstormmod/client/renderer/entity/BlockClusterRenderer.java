@@ -121,10 +121,10 @@ public class BlockClusterRenderer extends EntityRenderer<BlockClusterEntity> {
                CompoundTag data = entity.getTileDataFromOffsetPos(relativePos);
                if (data != null) {
                   String id = data.getString("id");
-                  BlockEntity tile = ((BlockEntityType)ForgeRegistries.BLOCK_ENTITY_TYPES.getValue(new ResourceLocation(id))).create(pos, state);
+                  BlockEntity tile = ((BlockEntityType)ForgeRegistries.BLOCK_ENTITY_TYPES.getValue(ResourceLocation.parse(id))).create(pos, state);
                   BlockEntityRenderer<BlockEntity> tileRenderer = minecraft.getBlockEntityRenderDispatcher().getRenderer(tile);
                   tile.setLevel(world);
-                  tile.load(data);
+                  tile.loadWithComponents(data, world.registryAccess());
                   if (tileRenderer != null) {
                      tileRenderer.render(tile, partialTicks, stack, buffer, LevelRenderer.getLightColor(getter, pos), OverlayTexture.NO_OVERLAY);
                   }

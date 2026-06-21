@@ -12,6 +12,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 
 public class SantaHatModel extends Model {
@@ -23,8 +24,13 @@ public class SantaHatModel extends Model {
       this.root = root;
    }
 
+   @Override
+   public void renderToBuffer(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, int color) {
+      this.root.render(stack, consumer, packedLight, overlayTexture, color);
+   }
+
    public void renderToBuffer(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, float r, float g, float b, float alpha) {
-      this.root.render(stack, consumer, packedLight, overlayTexture, r, g, b, alpha);
+      this.renderToBuffer(stack, consumer, packedLight, overlayTexture, FastColor.ARGB32.colorFromFloat(alpha, r, g, b));
    }
 
    public static LayerDefinition createLayerDefinition() {

@@ -48,7 +48,6 @@
 		"IMixinOverlayTexture",
 		"IMixinPartDefinition",
 		"IMixinPostChain",
-		"MixinBufferBuilder",
 		"MixinClientLevel",
 		"MixinCubeMap",
 		"MixinEntityRenderDispatcher",

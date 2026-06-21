@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#witherstormmod:command_block_tools",
-    "#witherstormmod:beacons",
-    "witherstormmod:withered_nether_star"
-  ]
-}

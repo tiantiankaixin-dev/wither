@@ -6,8 +6,9 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,8 +26,8 @@ public class TaintedPumpkinBlock extends Block {
       super(properties);
    }
 
-   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-      ItemStack item = player.getItemInHand(hand);
+   @Override
+   protected ItemInteractionResult useItemOn(ItemStack item, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
       if (item.canPerformAction(ToolActions.SHEARS_CARVE)) {
          if (!level.isClientSide) {
             Direction hitSide = hitResult.getDirection();
@@ -35,14 +36,14 @@ public class TaintedPumpkinBlock extends Block {
             level.setBlock(
                pos, (BlockState)((Block)WitherStormModBlocks.TAINTED_CARVED_PUMPKIN.get()).defaultBlockState().setValue(TaintedCarvedPumpkinBlock.FACING, direction), 11
             );
-            item.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+            item.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             level.gameEvent(player, GameEvent.SHEAR, pos);
             player.awardStat(Stats.ITEM_USED.get(Items.SHEARS));
          }
 
-         return InteractionResult.sidedSuccess(level.isClientSide);
+         return ItemInteractionResult.sidedSuccess(level.isClientSide);
       } else {
-         return InteractionResult.PASS;
+         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
       }
    }
 }

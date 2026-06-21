@@ -2,6 +2,7 @@ package nonamecrackers2.witherstormmod.common.util;
 
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +28,10 @@ public class PhlegmGravestoneHelper {
    }
 
    public static void spawnForEntity(LivingEntity entity, Vec3 pos, List<ItemStack> items) {
-      int reward = ForgeEventFactory.getExperienceDrop(entity, ((MixinLivingEntityAccessor)entity).witherstormmod$getLastHurtByPlayer(), entity.getExperienceReward());
+      Player lastHurtByPlayer = ((MixinLivingEntityAccessor)entity).witherstormmod$getLastHurtByPlayer();
+      int reward = entity.level() instanceof ServerLevel serverLevel
+         ? ForgeEventFactory.getExperienceDrop(entity, lastHurtByPlayer, entity.getExperienceReward(serverLevel, lastHurtByPlayer))
+         : 0;
       entity.skipDropExperience();
       BlockClusterEntity cluster = ClusterBuilderHelper.buildPhlegmClusterWithItems(entity.level(), entity.getRandom(), items, entity.getDisplayName(), reward);
       if (cluster.getSize() > 0) {

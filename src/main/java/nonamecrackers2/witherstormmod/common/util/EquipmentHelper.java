@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import net.minecraft.Util;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -108,7 +109,7 @@ public class EquipmentHelper {
          if (!monster.hasItemInSlot(equipmentSlot)) {
             ItemStack equipmentStack = new ItemStack((ItemLike)itemSupplier.get());
             int enchantmentLevel = (int)(5.0F + difficulty.getSpecialMultiplier() * (float)monster.getRandom().nextInt(40));
-            EnchantmentHelper.enchantItem(monster.getRandom(), equipmentStack, enchantmentLevel, false);
+            EnchantmentHelper.enchantItem(monster.getRandom(), equipmentStack, enchantmentLevel, monster.level().registryAccess(), Optional.empty());
             monster.setItemSlot(equipmentSlot, equipmentStack);
          }
       });

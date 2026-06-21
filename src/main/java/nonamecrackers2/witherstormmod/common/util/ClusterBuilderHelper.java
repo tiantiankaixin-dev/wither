@@ -31,7 +31,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 
 public class ClusterBuilderHelper {
-   private static final ResourceLocation BOWELS_LOOT = new ResourceLocation("witherstormmod", "chests/bowels_general");
+   private static final ResourceLocation BOWELS_LOOT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "chests/bowels_general");
    private static final SimpleWeightedRandomList<Block> OUTSIDE = SimpleWeightedRandomList.<Block>builder()
       .add(WitherStormModBlocks.TAINTED_FLESH_BLOCK.get(), 20)
       .add(WitherStormModBlocks.INFECTED_FLESH_BLOCK.get(), 3)
@@ -223,7 +223,7 @@ public class ClusterBuilderHelper {
 
             CompoundTag tag = new CompoundTag();
             tag.putByte("Slot", (byte)currentSlot);
-            stack.copy().save(tag);
+            stack.copy().save(level.registryAccess(), tag);
             currentListTag.add(tag);
             currentSlot += random.nextIntBetweenInclusive(1, 3);
          }
@@ -286,7 +286,7 @@ public class ClusterBuilderHelper {
          tag.putInt("y", pos.getY());
          tag.putInt("z", pos.getZ());
          if (name != null) {
-            tag.putString("CustomName", Serializer.toJson(name));
+            tag.putString("CustomName", Serializer.toJson(name, level.registryAccess()));
          }
 
          cluster.addTileData(tag);

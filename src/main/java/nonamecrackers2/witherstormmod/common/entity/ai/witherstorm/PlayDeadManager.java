@@ -16,7 +16,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -69,7 +69,7 @@ public class PlayDeadManager {
       this.getState().tick(world, this.entity, this);
       this.totalTickCount++;
       if (this.totalTickCount % 120 == 0) {
-         this.sendChanges(PacketDistributor.DIMENSION.with(() -> this.entity.level().dimension()), true);
+         this.sendChanges(PacketDistributor.DIMENSION.with(this.entity.level().dimension()), true);
       }
 
       if (this.revivalTicks > this.revivalPlayerProtection * 1200) {
@@ -83,14 +83,14 @@ public class PlayDeadManager {
          this.state = state;
          this.state.init(this.entity.level(), this.entity, this);
          this.updateSegments();
-         this.sendChanges(PacketDistributor.DIMENSION.with(() -> this.entity.level().dimension()), false);
+         this.sendChanges(PacketDistributor.DIMENSION.with(this.entity.level().dimension()), false);
       }
    }
 
    public void setStateRaw(PlayDeadManager.State state) {
       if (this.state != state) {
          this.state = state;
-         this.sendChanges(PacketDistributor.DIMENSION.with(() -> this.entity.level().dimension()), false);
+         this.sendChanges(PacketDistributor.DIMENSION.with(this.entity.level().dimension()), false);
       }
    }
 
@@ -105,7 +105,7 @@ public class PlayDeadManager {
          this.state = next;
          this.state.init(this.entity.level(), this.entity, this);
          this.updateSegments();
-         this.sendChanges(PacketDistributor.DIMENSION.with(() -> this.entity.level().dimension()), false);
+         this.sendChanges(PacketDistributor.DIMENSION.with(this.entity.level().dimension()), false);
       }
    }
 
@@ -378,7 +378,7 @@ public class PlayDeadManager {
                   PlayAdditionalLoopingSoundMessage message = new PlayAdditionalLoopingSoundMessage(
                      entity, WitherStormModSoundEvents.WITHER_STORM_TREMBLE.get()
                   );
-                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(entity), message);
                }
             }
 
@@ -392,7 +392,7 @@ public class PlayDeadManager {
             super.finish(world, entity, manager, next);
             if (!world.isClientSide && entity.shouldPlaySoundLoop) {
                RemoveAdditionalLoopingSoundMessage message = new RemoveAdditionalLoopingSoundMessage(entity);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> world.dimension()), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(world.dimension()), message);
             }
          }
 
@@ -413,7 +413,7 @@ public class PlayDeadManager {
                PlayAdditionalLoopingSoundMessage message = new PlayAdditionalLoopingSoundMessage(
                   entity, WitherStormModSoundEvents.WITHER_STORM_TREMBLE.get()
                );
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(entity), message);
             }
          }
       },
@@ -555,7 +555,7 @@ public class PlayDeadManager {
                entity.getTrackedEntities().clearAndMakeAllFall();
                if (entity.shouldPlaySoundLoop) {
                   RemoveSoundLoopMessage message = new RemoveSoundLoopMessage(entity);
-                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> world.dimension()), message);
+                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(world.dimension()), message);
                }
             } else {
                for (WitherStormHead head : entity.getHeadManager().getHeads()) {

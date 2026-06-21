@@ -7,18 +7,19 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.IronGolem.Crackiness;
+import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.Crackiness;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentity.SickenedIronGolemModel;
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 
 public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
-   private static final Map<Crackiness, ResourceLocation> LAYERS = ImmutableMap.of(
-      Crackiness.LOW,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
-      Crackiness.MEDIUM,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
-      Crackiness.HIGH,
-      new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
+   private static final Map<Crackiness.Level, ResourceLocation> LAYERS = ImmutableMap.of(
+      Crackiness.Level.LOW,
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_low.png"),
+      Crackiness.Level.MEDIUM,
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_medium.png"),
+      Crackiness.Level.HIGH,
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_crackiness_high.png")
    );
 
    public SickenedIronGolemCrackinessLayer(RenderLayerParent<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> parent) {
@@ -38,10 +39,18 @@ public class SickenedIronGolemCrackinessLayer extends RenderLayer<SickenedIronGo
       float p_117358_
    ) {
       if (!entity.isInvisible()) {
-         Crackiness irongolem$crackiness = entity.getCrackiness();
-         if (irongolem$crackiness != Crackiness.NONE) {
+         Crackiness.Level irongolem$crackiness = entity.getCrackiness();
+         if (irongolem$crackiness != Crackiness.Level.NONE) {
             ResourceLocation resourcelocation = LAYERS.get(irongolem$crackiness);
-            renderColoredCutoutModel(this.getParentModel(), resourcelocation, stack, buffer, p_117351_, entity, 1.0F, 1.0F, 1.0F);
+            renderColoredCutoutModel(
+               this.getParentModel(),
+               resourcelocation,
+               stack,
+               buffer,
+               p_117351_,
+               entity,
+               FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F)
+            );
          }
       }
    }

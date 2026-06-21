@@ -34,7 +34,7 @@ public abstract class MixinAbstractSkeleton extends Monster {
       cancellable = true,
       locals = LocalCapture.CAPTURE_FAILHARD
    )
-   public void performRangedAttackInvoke(LivingEntity entity, float f, CallbackInfo ci, ItemStack stack, AbstractArrow arrow) {
+   public void performRangedAttackInvoke(LivingEntity entity, float f, CallbackInfo ci, ItemStack stack, ItemStack projectileStack, AbstractArrow arrow) {
       if (entity instanceof WitherStormEntity storm) {
          Pair<Boolean, Integer> pair = TractorBeamHelper.isInsideTractorBeam(this, storm, 4.0);
          if ((Boolean)pair.getFirst()) {

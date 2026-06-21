@@ -11,8 +11,8 @@ import net.minecraft.world.entity.animal.Parrot;
 import nonamecrackers2.witherstormmod.common.entity.WitherSickened;
 
 public class SickenedParrotRenderer extends ParrotRenderer {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_parrot.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_parrot_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_parrot.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_parrot_emissive.png");
 
    public SickenedParrotRenderer(Context context) {
       super(context);

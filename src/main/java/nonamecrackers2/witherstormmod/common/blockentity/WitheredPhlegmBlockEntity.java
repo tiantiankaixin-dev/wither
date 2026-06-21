@@ -1,7 +1,9 @@
 package nonamecrackers2.witherstormmod.common.blockentity;
 
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -68,6 +70,8 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       }
    };
    private int storedExperience;
+   @Nullable
+   private Component customName;
 
    public WitheredPhlegmBlockEntity(BlockPos pos, BlockState state) {
       super((BlockEntityType)WitherStormModBlockEntityTypes.WITHERED_PHLEGM.get(), pos, state);
@@ -89,13 +93,22 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       return Component.translatable("container.witherstormmod.phlegm_block");
    }
 
+   public void setCustomName(@Nullable Component component) {
+      this.customName = component;
+   }
+
+   @Override
+   public Component getCustomName() {
+      return this.customName;
+   }
+
    protected AbstractContainerMenu createMenu(int id, Inventory inventory) {
       return new WitheredPhlegmMenu(id, inventory, this, this.dataAccess);
    }
 
    public static void serverTick(Level level, BlockPos pos, BlockState state, WitheredPhlegmBlockEntity entity) {
       if (!(Boolean)state.getValue(WitheredPhlegmBlock.POWERED) && !entity.getItems().stream().allMatch(Predicate.not(ItemStack::isEmpty))) {
-         AABB box = new AABB(pos, pos.offset(1, 1, 1));
+         AABB box = new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1.0, pos.getY() + 1.0, pos.getZ() + 1.0);
 
          for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, box.inflate(8.0))) {
             Vec3 vec3 = Vec3.atCenterOf(pos);
@@ -111,20 +124,20 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       }
    }
 
-   public void load(CompoundTag tag) {
-      super.load(tag);
+   protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
       if (!this.tryLoadLootTable(tag)) {
-         ContainerHelper.loadAllItems(tag, this.items);
+         ContainerHelper.loadAllItems(tag, this.items, registries);
       }
 
       this.storedExperience = tag.getInt("StoredXp");
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       if (!this.trySaveLootTable(tag)) {
-         ContainerHelper.saveAllItems(tag, this.items);
+         ContainerHelper.saveAllItems(tag, this.items, registries);
       }
 
       tag.putInt("StoredXp", this.storedExperience);
@@ -156,14 +169,14 @@ public class WitheredPhlegmBlockEntity extends RandomizableContainerBlockEntity 
       return ClientboundBlockEntityDataPacket.create(this);
    }
 
-   public CompoundTag getUpdateTag() {
+   public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
       CompoundTag tag = new CompoundTag();
-      ContainerHelper.saveAllItems(tag, this.items);
+      ContainerHelper.saveAllItems(tag, this.items, registries);
       return tag;
    }
 
-   public void handleUpdateTag(CompoundTag tag) {
-      ContainerHelper.loadAllItems(tag, this.items);
+   public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+      ContainerHelper.loadAllItems(tag, this.items, registries);
    }
 
    public void setChanged() {

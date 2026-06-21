@@ -24,7 +24,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
@@ -124,21 +123,21 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
 
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes()
-         .add((Attribute)WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED.get(), 0.4)
-         .add((Attribute)WitherStormModAttributes.SLOW_FLYING_SPEED.get(), 0.05)
-         .add((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get(), 1.0)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED), 0.4)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.SLOW_FLYING_SPEED), 0.05)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.EVOLUTION_SPEED), 1.0)
          .add(Attributes.FLYING_SPEED, 0.0)
          .add(Attributes.MAX_HEALTH, 4000.0)
          .add(Attributes.MOVEMENT_SPEED, 0.6)
          .add(Attributes.FOLLOW_RANGE, 160.0)
-         .add((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get(), 40.0)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE), 40.0)
          .add(Attributes.ARMOR, 6.0);
    }
 
    @Override
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(PARENT_UUID, Optional.empty());
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(PARENT_UUID, Optional.empty());
    }
 
    @Override
@@ -326,15 +325,14 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
       }
    }
 
-   @NotNull
    @Override
-   public EntityDimensions getDimensions(@NotNull Pose pose) {
+   protected EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
       EntityDimensions size = this.getUnmodifiedDimensions(pose);
       if ((Boolean)WitherStormModConfig.SERVER.squashHitbox.get() && this.getPhase() > 3) {
-         size = EntityDimensions.scalable(size.width, 1.0F);
+         size = EntityDimensions.scalable(size.width(), 1.0F);
       }
 
-      return size;
+      return size.withEyeHeight(10.0F);
    }
 
    @Override
@@ -345,11 +343,6 @@ public class WitherStormSegmentEntity extends WitherStormEntity {
       }
 
       return size;
-   }
-
-   @Override
-   protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-      return 10.0F;
    }
 
    @Override

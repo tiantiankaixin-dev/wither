@@ -2,6 +2,7 @@ package nonamecrackers2.witherstormmod.common.config;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.function.Function;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -13,7 +14,6 @@ import nonamecrackers2.crackerslib.common.config.preset.ConfigPreset;
 import nonamecrackers2.crackerslib.common.config.preset.RegisterConfigPresetsEvent;
 import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarget.UltimateTargetManager;
 import nonamecrackers2.witherstormmod.common.util.ItemPreservationCondition;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class WitherStormModConfig {
    public static final WitherStormModConfig.ClientConfig CLIENT;
@@ -99,15 +99,39 @@ public class WitherStormModConfig {
    }
 
    static {
-      Pair<WitherStormModConfig.ClientConfig, ForgeConfigSpec> clientSpecPair = new Builder().configure(WitherStormModConfig.ClientConfig::new);
-      CLIENT_SPEC = (ForgeConfigSpec)clientSpecPair.getRight();
-      CLIENT = (WitherStormModConfig.ClientConfig)clientSpecPair.getLeft();
-      Pair<WitherStormModConfig.CommonConfig, ForgeConfigSpec> commonSpecPair = new Builder().configure(WitherStormModConfig.CommonConfig::new);
-      COMMON_SPEC = (ForgeConfigSpec)commonSpecPair.getRight();
-      COMMON = (WitherStormModConfig.CommonConfig)commonSpecPair.getLeft();
-      Pair<WitherStormModConfig.ServerConfig, ForgeConfigSpec> serverSpecPair = new Builder().configure(WitherStormModConfig.ServerConfig::new);
-      SERVER_SPEC = (ForgeConfigSpec)serverSpecPair.getRight();
-      SERVER = (WitherStormModConfig.ServerConfig)serverSpecPair.getLeft();
+      Object clientSpecPair = configureSpec(WitherStormModConfig.ClientConfig::new);
+      CLIENT_SPEC = (ForgeConfigSpec)getPairRight(clientSpecPair);
+      CLIENT = (WitherStormModConfig.ClientConfig)getPairLeft(clientSpecPair);
+      Object commonSpecPair = configureSpec(WitherStormModConfig.CommonConfig::new);
+      COMMON_SPEC = (ForgeConfigSpec)getPairRight(commonSpecPair);
+      COMMON = (WitherStormModConfig.CommonConfig)getPairLeft(commonSpecPair);
+      Object serverSpecPair = configureSpec(WitherStormModConfig.ServerConfig::new);
+      SERVER_SPEC = (ForgeConfigSpec)getPairRight(serverSpecPair);
+      SERVER = (WitherStormModConfig.ServerConfig)getPairLeft(serverSpecPair);
+   }
+
+   private static Object configureSpec(Function<Builder, ?> factory) {
+      try {
+         return Builder.class.getMethod("configure", Function.class).invoke(new Builder(), factory);
+      } catch (ReflectiveOperationException var2) {
+         throw new IllegalStateException("Could not configure Forge config spec", var2);
+      }
+   }
+
+   private static Object getPairLeft(Object pair) {
+      return invokePairGetter(pair, "getLeft");
+   }
+
+   private static Object getPairRight(Object pair) {
+      return invokePairGetter(pair, "getRight");
+   }
+
+   private static Object invokePairGetter(Object pair, String methodName) {
+      try {
+         return pair.getClass().getMethod(methodName).invoke(pair);
+      } catch (ReflectiveOperationException var3) {
+         throw new IllegalStateException("Could not read Forge config pair", var3);
+      }
    }
 
    public static class ClientConfig extends ConfigHelper {
@@ -290,7 +314,7 @@ public class WitherStormModConfig {
             List<String> list = Lists.newArrayList();
             list.add("witherstormmod:example");
             return list;
-         }, val -> ResourceLocation.isValidResourceLocation(val), "injectAiMobBlacklist", true, "A list of mobs that should not have custom AI injected into them");
+         }, val -> ResourceLocation.tryParse(val) != null, "injectAiMobBlacklist", true, "A list of mobs that should not have custom AI injected into them");
          this.autoSpawnWitherStorm = this.createValue(
             false, "autoSpawnWitherStorm", false, "Specifies if the Wither Storm should automatically be spawned upon world creation"
          );

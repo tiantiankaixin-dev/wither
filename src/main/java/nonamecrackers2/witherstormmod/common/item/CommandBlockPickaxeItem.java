@@ -9,11 +9,11 @@ import net.minecraft.world.item.Item.Properties;
 
 public class CommandBlockPickaxeItem extends PickaxeItem {
    public CommandBlockPickaxeItem(Tier tier, int damage, float attackSpeed, Properties properties) {
-      super(tier, damage, attackSpeed, properties);
+      super(tier, properties.attributes(PickaxeItem.createAttributes(tier, damage, attackSpeed)));
    }
 
    public boolean isEnchantable(ItemStack stack) {
-      return this.getMaxStackSize(stack) == 1;
+      return stack.getMaxStackSize() == 1;
    }
 
    public boolean canBeHurtBy(DamageSource source) {

@@ -14,12 +14,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,7 +32,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
@@ -48,7 +51,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -62,6 +64,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.packet.FormidibombExplosionMessage;
 import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 import nonamecrackers2.witherstormmod.common.util.IFormidibomb;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
@@ -97,10 +100,10 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       this.setBlockState(state);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(BLOCK_STATE, Optional.empty());
-      this.entityData.define(START_FUSE, 0);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(BLOCK_STATE, Optional.empty());
+      builder.define(START_FUSE, 0);
    }
 
    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
@@ -211,7 +214,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
 
    public ItemStack getPickedResult(HitResult target) {
       ItemStack stack = new ItemStack((ItemLike)WitherStormModItems.FORMIDIBOMB.get());
-      CompoundTag compound = stack.getOrCreateTag();
+      CompoundTag compound = ItemStackDataUtil.getOrCreateTag(stack);
       compound.putInt("Fuse", this.getFuse());
       compound.putInt("StartFuse", this.getStartFuse());
       return stack;
@@ -221,7 +224,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       explode(this.level(), this.getOwner(), 48 + this.level().random.nextInt(9), 3, this.getX(), this.getY(), this.getZ());
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR.with(TargetPoint.p(this.getX(), this.getY(), this.getZ(), 100.0, this.level().dimension())),
+            PacketDistributor.NEAR.with(new TargetPoint(this.getX(), this.getY(), this.getZ(), 100.0, this.level().dimension())),
             new ShakeScreenMessage(480.0F, 24.0F)
          );
    }
@@ -241,8 +244,8 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
    }
 
    @NotNull
-   public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+   public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+      return new ClientboundAddEntityPacket(this, serverEntity);
    }
 
    public static void explode(Level world, @Nullable Entity entity, int radius, int squish, double x, double y, double z) {
@@ -251,7 +254,19 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
          ? new ExplosionDamageCalculator()
          : new EntityBasedExplosionDamageCalculator(entity));
       Explosion explosion = new Explosion(
-         world, entity, formidibomb(world.registryAccess(), entity), explosionContext, x, y, z, (float)radius, true, BlockInteraction.DESTROY
+         world,
+         entity,
+         formidibomb(world.registryAccess(), entity),
+         explosionContext,
+         x,
+         y,
+         z,
+         (float)radius,
+         true,
+         BlockInteraction.DESTROY,
+         ParticleTypes.EXPLOSION,
+         ParticleTypes.EXPLOSION_EMITTER,
+         SoundEvents.GENERIC_EXPLODE
       );
       if (world.isClientSide) {
          int poofCount = Math.max(4500, world.random.nextInt(5001));
@@ -288,7 +303,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
       world.playSound(null, x, y, z, WitherStormModSoundEvents.TREMBLE.get(), SoundSource.BLOCKS, 32.0F, 1.0F);
       if (!world.isClientSide) {
          FormidibombExplosionMessage message = new FormidibombExplosionMessage(entity, x, y, z, radius, squish);
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(world::dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(world.dimension()), message);
          float diameter = (float)radius * 2.0F;
          int minX = Mth.floor(x - (double)diameter - 1.0);
          int maxX = Mth.floor(x + (double)diameter + 1.0);
@@ -355,7 +370,7 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
          Vec3 vector = new Vec3(x, y, z);
 
          for (Entity toExplode : entitiesToExplode) {
-            if (!toExplode.ignoreExplosion()) {
+            if (!toExplode.ignoreExplosion(explosion)) {
                double distance = Math.sqrt(toExplode.distanceToSqr(vector)) / (double)diameter;
                if (distance <= 1.0) {
                   double relativeX = toExplode.getX() - x;
@@ -373,8 +388,10 @@ public class FormidibombEntity extends PrimedTnt implements IFormidibomb {
                         (float)((int)((explosionPower * explosionPower + explosionPower) / 2.0 * 7.0 * (double)diameter + 1.0))
                      );
                      double explosionPowerModifiable = explosionPower;
-                     if (toExplode instanceof LivingEntity) {
-                        explosionPowerModifiable = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)toExplode, explosionPower);
+                     if (toExplode instanceof LivingEntity living && world instanceof ServerLevel serverLevel) {
+                        DamageSource damageSource = formidibomb(world.registryAccess(), entity);
+                        float protection = EnchantmentHelper.getDamageProtection(serverLevel, living, damageSource);
+                        explosionPowerModifiable = explosionPower * (double)Mth.clamp(1.0F - protection / 25.0F, 0.0F, 1.0F);
                      }
 
                      toExplode.setDeltaMovement(

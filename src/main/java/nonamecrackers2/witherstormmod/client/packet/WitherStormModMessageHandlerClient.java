@@ -4,6 +4,7 @@ import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.VecDeltaCodec;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket.AttributeSnapshot;
 import net.minecraft.sounds.SoundEvent;
@@ -157,11 +158,11 @@ public class WitherStormModMessageHandlerClient {
                codec.setBase(vector3d);
                float yRot = message.hasRotation() ? (float)(message.getYRot() * 360) / 256.0F : entity.getYRot();
                float xRot = message.hasRotation() ? (float)(message.getXRot() * 360) / 256.0F : entity.getXRot();
-               entity.lerpTo(vector3d.x, vector3d.y, vector3d.z, yRot, xRot, 3, false);
+               entity.lerpTo(vector3d.x, vector3d.y, vector3d.z, yRot, xRot, 3);
             } else if (message.hasRotation()) {
                float yRot = (float)(message.getYRot() * 360) / 256.0F;
                float xRot = (float)(message.getXRot() * 360) / 256.0F;
-               entity.lerpTo(entity.getX(), entity.getY(), entity.getZ(), yRot, xRot, 3, false);
+               entity.lerpTo(entity.getX(), entity.getY(), entity.getZ(), yRot, xRot, 3);
             }
 
             entity.setOnGround(message.onGround());
@@ -184,7 +185,7 @@ public class WitherStormModMessageHandlerClient {
                float yRot = (float)(message.getYRot() * 360) / 256.0F;
                float xRot = (float)(message.getXRot() * 360) / 256.0F;
                if (world.getEntity(entity.getId()) == null) {
-                  entity.lerpTo(x, y, z, yRot, xRot, 3, false);
+                  entity.lerpTo(x, y, z, yRot, xRot, 3);
                } else {
                   entity.xo = x;
                   entity.yo = y;
@@ -251,14 +252,14 @@ public class WitherStormModMessageHandlerClient {
             AttributeMap manager = entity.getAttributes();
 
             for (AttributeSnapshot snapshot : message.getAttributes()) {
-               AttributeInstance attribute = manager.getInstance(snapshot.getAttribute());
+               AttributeInstance attribute = manager.getInstance(snapshot.attribute());
                if (attribute == null) {
-                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, ForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
+                  LOGGER.warn("WitherStormEntity {} does not have attribute {}", entity, BuiltInRegistries.ATTRIBUTE.getKey(snapshot.attribute().value()));
                } else {
-                  attribute.setBaseValue(snapshot.getBase());
+                  attribute.setBaseValue(snapshot.base());
                   attribute.removeModifiers();
 
-                  for (AttributeModifier modifier : snapshot.getModifiers()) {
+                  for (AttributeModifier modifier : snapshot.modifiers()) {
                      attribute.addTransientModifier(modifier);
                   }
                }
@@ -339,10 +340,10 @@ public class WitherStormModMessageHandlerClient {
    public static void processUpdateEffectInstanceMessage(UpdateEffectInstanceMessage message) {
       Minecraft mc = Minecraft.getInstance();
       if (mc.level.getEntity(message.getEntityID()) instanceof LivingEntity living) {
-         MobEffectInstance effect = living.getEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+         MobEffectInstance effect = living.getEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS));
          if (effect != null) {
             MobEffectInstance newEffect = new MobEffectInstance(
-               (MobEffect)WitherStormModEffects.WITHER_SICKNESS.get(), message.getDuration(), message.getAmplifier()
+               WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS), message.getDuration(), message.getAmplifier()
             );
             effect.update(newEffect);
          }
@@ -458,9 +459,7 @@ public class WitherStormModMessageHandlerClient {
       Minecraft mc = Minecraft.getInstance();
       ClientLevel world = mc.level;
       if (world.getEntity(message.getEntityId()) instanceof AbstractHurtingProjectile projectile) {
-         projectile.xPower = message.getXPower();
-         projectile.yPower = message.getYPower();
-         projectile.zPower = message.getZPower();
+         projectile.setDeltaMovement(message.getXPower(), message.getYPower(), message.getZPower());
       }
    }
 

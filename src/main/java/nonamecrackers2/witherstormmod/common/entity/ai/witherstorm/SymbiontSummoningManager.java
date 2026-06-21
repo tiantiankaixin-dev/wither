@@ -16,7 +16,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
@@ -217,11 +218,10 @@ public class SymbiontSummoningManager {
                y = shape.max(Axis.Y) + (double)pos.getY();
             }
 
-            if (NaturalSpawner.isSpawnPositionOk(
-               Type.ON_GROUND,
+            if (SpawnPlacements.isSpawnPositionOk(
+               WitherStormModEntityTypes.WITHERED_SYMBIONT.get(),
                this.entity.level(),
-               BlockPos.containing((double)pos.getX() + 0.5, y, (double)pos.getZ() + 0.5),
-               WitherStormModEntityTypes.WITHERED_SYMBIONT.get()
+               BlockPos.containing((double)pos.getX() + 0.5, y, (double)pos.getZ() + 0.5)
             )) {
                WitheredSymbiontEntity entity = (WitheredSymbiontEntity)(WitherStormModEntityTypes.WITHERED_SYMBIONT.get())
                   .create(this.entity.level());
@@ -243,7 +243,7 @@ public class SymbiontSummoningManager {
                   CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer)nearbyPlayers, entity);
                }
 
-               ForgeEventFactory.onFinalizeSpawn(entity, world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+               ForgeEventFactory.onFinalizeSpawn(entity, world, world.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.TRIGGERED, null);
                entity.spawnAnim();
                world.sendParticles(
                   WitherStormModParticleTypes.COMMAND_BLOCK.get(),

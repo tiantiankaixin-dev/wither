@@ -94,7 +94,7 @@ public class PulseSpell extends SymbiontSpell {
             entity.setDeltaMovement(deltaMovement);
             if (entity instanceof ServerPlayer) {
                PlayerMotionMessage message = new PlayerMotionMessage(deltaMovement);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)entity), message);
             }
          }
       }

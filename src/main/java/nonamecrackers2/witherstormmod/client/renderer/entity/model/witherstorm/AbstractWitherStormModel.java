@@ -17,6 +17,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.client.instancing.RenderBufferer;
@@ -95,7 +96,7 @@ public abstract class AbstractWitherStormModel<T extends WitherStormEntity> {
       int hurtDir = entity.getHeadManager().getHead(head).getHeadHurtDuration();
       int overlay = hurtDir > 0 ? 3 : overlayTexture;
       if (!entity.areOtherHeadsDisabled() || head == 0) {
-         headModel.root().render(stack, consumer, packedLight, overlay, r, g, b, a);
+         headModel.root().render(stack, consumer, packedLight, overlay, color(a, r, g, b));
       }
 
       stack.popPose();
@@ -125,7 +126,7 @@ public abstract class AbstractWitherStormModel<T extends WitherStormEntity> {
       for (int i = 0; i < this.tentacles.length; i++) {
          stack.pushPose();
          this.scaleTentacles(stack, this.tentacles[i]);
-         this.tentacles[i].tentacle.render(stack, consumer, packedLight, overlayTexture, 1.0F, 1.0F, 1.0F, alpha);
+         this.tentacles[i].tentacle.render(stack, consumer, packedLight, overlayTexture, color(alpha, 1.0F, 1.0F, 1.0F));
          stack.popPose();
       }
 
@@ -157,7 +158,7 @@ public abstract class AbstractWitherStormModel<T extends WitherStormEntity> {
          this + ", " + type + ", " + this.lowResModelsEnabled(entity),
          type,
          () -> false,
-         this.getMassModel(entity)::render,
+         (poseStack, vertexConsumer, light, overlay, red, green, blue, alphaValue) -> this.getMassModel(entity).render(poseStack, vertexConsumer, light, overlay, color(alphaValue, red, green, blue)),
          stack,
          packedLight,
          overlayTexture,
@@ -173,7 +174,7 @@ public abstract class AbstractWitherStormModel<T extends WitherStormEntity> {
             this + ", " + massEmissiveType + ", " + this.lowResModelsEnabled(entity) + ", emissive",
             massEmissiveType,
             () -> false,
-            this.getMassModel(entity)::render,
+            (poseStack, vertexConsumer, light, overlay, red, green, blue, alphaValue) -> this.getMassModel(entity).render(poseStack, vertexConsumer, light, overlay, color(alphaValue, red, green, blue)),
             stack,
             packedLight,
             overlayTexture,
@@ -200,6 +201,10 @@ public abstract class AbstractWitherStormModel<T extends WitherStormEntity> {
    }
 
    protected void renderExtra(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, float r, float g, float b, float a) {
+   }
+
+   protected static int color(float a, float r, float g, float b) {
+      return FastColor.ARGB32.colorFromFloat(a, r, g, b);
    }
 
    public ModelPart getMassModel(T entity) {

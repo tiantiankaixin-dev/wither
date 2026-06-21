@@ -22,7 +22,7 @@ public class SourceTestFireballItem extends Item {
       level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GHAST_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
       if (!level.isClientSide) {
          Vec3 view = player.getViewVector(1.0F);
-         LargeFireball fireball = new LargeFireball(level, player, view.x, view.y, view.z, 1);
+         LargeFireball fireball = new LargeFireball(level, player, view, 1);
          fireball.setPos(player.getX() + view.x * 2.0, player.getEyeY() - 0.1 + view.y * 2.0, player.getZ() + view.z * 2.0);
          level.addFreshEntity(fireball);
       }

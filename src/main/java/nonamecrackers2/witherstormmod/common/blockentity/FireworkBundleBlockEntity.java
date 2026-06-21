@@ -1,12 +1,13 @@
 package nonamecrackers2.witherstormmod.common.blockentity;
 
-import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.List;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,7 +16,9 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.FireworkRocketItem.Shape;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.FireworkExplosion.Shape;
+import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,14 +37,14 @@ public class FireworkBundleBlockEntity extends BlockEntity {
       super((BlockEntityType)WitherStormModBlockEntityTypes.FIREWORK_BUNDLE.get(), pos, state);
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       tag.putInt("Fuse", this.fuse);
       tag.putInt("LaunchDuration", this.launchDuration);
    }
 
-   public void load(CompoundTag tag) {
-      super.load(tag);
+   protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       this.fuse = tag.getInt("Fuse");
       this.launchDuration = tag.getInt("LaunchDuration");
    }
@@ -49,7 +52,7 @@ public class FireworkBundleBlockEntity extends BlockEntity {
    public void beginFuse() {
       if (this.fuse == 0 && this.launchDuration == 0) {
          this.fuse = 100;
-         this.level.playSound(null, this.getBlockPos(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
+         this.level.playSound(null, this.getBlockPos(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
       }
    }
 
@@ -87,11 +90,7 @@ public class FireworkBundleBlockEntity extends BlockEntity {
 
    private static ItemStack createRandomFireworkItem(RandomSource random) {
       ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
-      ListTag list = new ListTag();
-      CompoundTag tag = new CompoundTag();
-      tag.putBoolean("Flicker", random.nextBoolean());
-      tag.putBoolean("Trail", random.nextBoolean());
-      List<Integer> colors = Lists.newArrayList();
+      IntArrayList colors = new IntArrayList();
       int size = random.nextInt(5) + 1;
 
       for (int i = 0; i < size; i++) {
@@ -99,12 +98,14 @@ public class FireworkBundleBlockEntity extends BlockEntity {
          colors.add(color.getFireworkColor());
       }
 
-      tag.putIntArray("Colors", colors);
-      tag.putByte("Type", (byte)((Shape)Util.getRandom(Shape.values(), random)).getId());
-      list.add(tag);
-      CompoundTag fireworks = stack.getOrCreateTagElement("Fireworks");
-      fireworks.putByte("Flight", (byte)(random.nextInt(1) + 2));
-      fireworks.put("Explosions", list);
+      FireworkExplosion explosion = new FireworkExplosion(
+         (Shape)Util.getRandom(Shape.values(), random),
+         colors,
+         new IntArrayList(),
+         random.nextBoolean(),
+         random.nextBoolean()
+      );
+      stack.set(DataComponents.FIREWORKS, new Fireworks(random.nextInt(1) + 2, List.of(explosion)));
       return stack;
    }
 }

@@ -43,9 +43,13 @@ public class AccessDeniedScreen extends Screen {
       this.access = access;
    }
 
+   private String getUserId() {
+      return this.minecraft.getUser().getProfileId().toString();
+   }
+
    protected void init() {
       this.openLink = Button.builder(Component.literal("Open Link"), button -> {
-         String url = "https://patronauthenticator-sp4uwbgqwa-uc.a.run.app/login?mc_uuid=" + this.minecraft.getUser().getUuid();
+         String url = "https://patronauthenticator-sp4uwbgqwa-uc.a.run.app/login?mc_uuid=" + this.getUserId();
          this.minecraft.setScreen(new ConfirmLinkScreen(b -> {
             if (b) {
                Util.getPlatform().openUri(url);
@@ -68,7 +72,7 @@ public class AccessDeniedScreen extends Screen {
    }
 
    public void render(GuiGraphics stack, int mouseX, int mouseY, float partialTicks) {
-      this.renderBackground(stack);
+      this.renderBackground(stack, mouseX, mouseY, partialTicks);
       int y = this.height / 8;
       stack.drawCenteredString(this.font, TITLE, this.width / 2, y, -1);
       if (this.access != Contributors.Result.ERROR) {
@@ -123,7 +127,7 @@ public class AccessDeniedScreen extends Screen {
       this.refresh.active = false;
       this.openLink.active = false;
       if (this.resultGetter == null) {
-         this.resultGetter = CompletableFuture.supplyAsync(() -> Contributors.getAccess(this.minecraft.getUser().getUuid()));
+         this.resultGetter = CompletableFuture.supplyAsync(() -> Contributors.getAccess(this.getUserId()));
       }
    }
 }

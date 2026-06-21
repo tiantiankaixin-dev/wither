@@ -1,12 +1,10 @@
 package nonamecrackers2.witherstormmod.common.item.crafting.builder;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.nbt.CompoundTag;
@@ -66,53 +64,18 @@ public abstract class SuperBeaconRecipeBuilder implements RecipeBuilder {
       return this;
    }
 
-   public SuperBeaconRecipeBuilder unlockedBy(String name, CriterionTriggerInstance instance) {
+   public SuperBeaconRecipeBuilder unlockedBy(String name, Criterion<?> instance) {
       return this;
    }
 
    public RecipeBuilder group(String group) {
       this.group = group;
-      return null;
+      return this;
    }
 
-   public abstract static class Result implements FinishedRecipe {
-      private final ResourceLocation id;
-      private final SuperBeaconRecipe.Condition condition;
-      private final String group;
-      private final List<Ingredient> ingredients;
-
-      public Result(ResourceLocation id, SuperBeaconRecipe.Condition condition, String group, List<Ingredient> ingredients) {
-         this.id = id;
-         this.condition = condition;
-         this.group = group;
-         this.ingredients = ingredients;
-      }
-
-      public void serializeRecipeData(JsonObject object) {
-         object.addProperty("condition", this.condition.getSerializedName());
-         if (!this.group.isEmpty()) {
-            object.addProperty("group", this.group);
-         }
-
-         JsonArray array = new JsonArray();
-
-         for (Ingredient ingredient : this.ingredients) {
-            array.add(ingredient.toJson());
-         }
-
-         object.add("ingredients", array);
-      }
-
-      public ResourceLocation getId() {
-         return this.id;
-      }
-
-      public JsonObject serializeAdvancement() {
-         return null;
-      }
-
-      public ResourceLocation getAdvancementId() {
-         return null;
-      }
+   protected NonNullList<Ingredient> copyIngredients() {
+      NonNullList<Ingredient> copy = NonNullList.create();
+      copy.addAll(this.ingredients);
+      return copy;
    }
 }

@@ -1,12 +1,12 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class UpdateEffectInstanceMessage extends Packet {
@@ -19,7 +19,7 @@ public class UpdateEffectInstanceMessage extends Packet {
    public UpdateEffectInstanceMessage(int entityId, MobEffectInstance effect, boolean showDuration) {
       super(true);
       this.entityId = entityId;
-      this.effectId = (byte)(MobEffect.getId(effect.getEffect()) & 0xFF);
+      this.effectId = (byte)(BuiltInRegistries.MOB_EFFECT.getId(effect.getEffect().value()) & 0xFF);
       this.amplifier = (byte)(effect.getAmplifier() & 0xFF);
       if (effect.getDuration() > 32767) {
          this.duration = 32767;

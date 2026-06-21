@@ -3,11 +3,12 @@ package nonamecrackers2.witherstormmod.common.packet;
 import com.google.common.collect.Lists;
 import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class StormMetadataMessage extends DistantRendererMessage {
@@ -42,10 +43,11 @@ public class StormMetadataMessage extends DistantRendererMessage {
    @Override
    public void encode(FriendlyByteBuf buffer) {
       super.encode(buffer);
+      RegistryFriendlyByteBuf registryBuffer = (RegistryFriendlyByteBuf)buffer;
       buffer.writeVarInt(this.entityId);
 
       for (DataValue<?> value : this.packedItems) {
-         value.write(buffer);
+         value.write(registryBuffer);
       }
 
       buffer.writeByte(255);
@@ -58,8 +60,9 @@ public class StormMetadataMessage extends DistantRendererMessage {
       List<DataValue<?>> packedData = Lists.newArrayList();
 
       int j;
+      RegistryFriendlyByteBuf registryBuffer = (RegistryFriendlyByteBuf)buffer;
       while ((j = buffer.readUnsignedByte()) != 255) {
-         packedData.add(DataValue.read(buffer, j));
+         packedData.add(DataValue.read(registryBuffer, j));
       }
 
       this.packedItems = packedData;

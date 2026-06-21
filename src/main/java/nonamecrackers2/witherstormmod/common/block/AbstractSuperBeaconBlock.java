@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,7 +30,7 @@ public abstract class AbstractSuperBeaconBlock extends BaseEntityBlock {
    }
 
    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack) {
-      if (stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof AbstractSuperBeaconBlockEntity beacon) {
+      if (stack.has(DataComponents.CUSTOM_NAME) && level.getBlockEntity(pos) instanceof AbstractSuperBeaconBlockEntity beacon) {
          beacon.setCustomName(stack.getHoverName());
       }
    }

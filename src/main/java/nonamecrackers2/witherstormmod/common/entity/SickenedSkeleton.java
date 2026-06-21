@@ -19,7 +19,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
@@ -53,10 +52,8 @@ public class SickenedSkeleton extends AbstractSkeleton implements WitherSickened
       this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
       this.targetSelector.addGoal(3, new SickenedMobsAttackGoal(this));
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    public static Builder createAttributes() {
@@ -111,9 +108,9 @@ public class SickenedSkeleton extends AbstractSkeleton implements WitherSickened
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -169,8 +166,8 @@ public class SickenedSkeleton extends AbstractSkeleton implements WitherSickened
       return flag;
    }
 
-   protected AbstractArrow getArrow(ItemStack stack, float damage) {
-      AbstractArrow abstractArrow = super.getArrow(stack, damage);
+   protected AbstractArrow getArrow(ItemStack stack, float damage, ItemStack weapon) {
+      AbstractArrow abstractArrow = super.getArrow(stack, damage, weapon);
       if (abstractArrow instanceof Arrow arrow && (double)this.random.nextFloat() < 0.25) {
          arrow.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 1));
       }
@@ -178,8 +175,8 @@ public class SickenedSkeleton extends AbstractSkeleton implements WitherSickened
       return abstractArrow;
    }
 
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag tag) {
-      groupData = super.finalizeSpawn(level, difficulty, spawnType, groupData, tag);
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData) {
+      groupData = super.finalizeSpawn(level, difficulty, spawnType, groupData);
       ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
       if (head.is(Items.JACK_O_LANTERN)) {
          this.setItemSlot(EquipmentSlot.HEAD, new ItemStack((ItemLike)WitherStormModBlocks.TAINTED_JACK_O_LANTERN.get()));

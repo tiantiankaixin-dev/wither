@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class UpdateDistantSuperBeaconMessage extends Packet {

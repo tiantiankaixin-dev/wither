@@ -15,8 +15,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.WitheredSymbi
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitheredSymbiontRenderer extends MobRenderer<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont.png");
-   private static final ResourceLocation EGG_TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/misc/crackers.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont.png");
+   private static final ResourceLocation EGG_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/misc/crackers.png");
 
    public WitheredSymbiontRenderer(Context context) {
       super(context, new WitheredSymbiontModel(context.bakeLayer(WitherStormModRenderers.WITHERED_SYMBIONT)), 0.8F);
@@ -37,8 +37,8 @@ public class WitheredSymbiontRenderer extends MobRenderer<WitheredSymbiontEntity
       return entity.hasCustomName() && entity.getName().getString().equals("nonamecrackers2") ? EGG_TEXTURE : TEXTURE;
    }
 
-   protected void setupRotations(WitheredSymbiontEntity entity, PoseStack stack, float p_225621_3_, float p_225621_4_, float p_225621_5_) {
-      super.setupRotations(entity, stack, p_225621_3_, p_225621_4_, p_225621_5_);
+   protected void setupRotations(WitheredSymbiontEntity entity, PoseStack stack, float p_225621_3_, float p_225621_4_, float p_225621_5_, float scale) {
+      super.setupRotations(entity, stack, p_225621_3_, p_225621_4_, p_225621_5_, scale);
       if (!((double)entity.walkAnimation.speed() < 0.01)) {
          float f1 = entity.walkAnimation.position(p_225621_5_) + 6.0F;
          float f2 = (Math.abs(f1 % 13.0F - 6.5F) - 3.25F) / 3.25F;

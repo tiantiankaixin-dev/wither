@@ -30,7 +30,7 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRe
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 
 public class SuperBeaconSummoning extends SuperBeaconCategory<ResummonSuperBeaconRecipe> {
-   private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("witherstormmod", "textures/gui/jei/summoning_icon.png");
+   private static final ResourceLocation ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/jei/summoning_icon.png");
    private final IDrawable icon;
 
    public SuperBeaconSummoning(IGuiHelper helper) {
@@ -102,7 +102,7 @@ public class SuperBeaconSummoning extends SuperBeaconCategory<ResummonSuperBeaco
          }
 
          RenderBufferer.pushTempDisabled();
-         InventoryScreen.renderEntityInInventoryFollowsMouse(stack, x, y, 20, angleX, angleY, recipe.toRender);
+         InventoryScreen.renderEntityInInventoryFollowsMouse(stack, x - 20, y - 20, x + 20, y + 20, 20, angleX, angleY, 0.0F, recipe.toRender);
          stack.pose().popPose();
       }
 
@@ -110,6 +110,6 @@ public class SuperBeaconSummoning extends SuperBeaconCategory<ResummonSuperBeaco
    }
 
    public boolean isHandled(ResummonSuperBeaconRecipe recipe) {
-      return !recipe.getId().toString().equals("witherstormmod:summon_pig");
+      return recipe.getResummonEntity() != EntityType.PIG;
    }
 }

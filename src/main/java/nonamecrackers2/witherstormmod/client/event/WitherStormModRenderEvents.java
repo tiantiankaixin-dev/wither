@@ -26,7 +26,8 @@ public class WitherStormModRenderEvents {
       if (event.getStage().equals(Stage.AFTER_PARTICLES)) {
          Minecraft mc = Minecraft.getInstance();
          ClientLevel world = mc.level;
-         PoseStack stack = event.getPoseStack();
+         PoseStack stack = new PoseStack();
+         stack.mulPose(event.getPoseStack());
          BufferSource buffer = mc.renderBuffers().bufferSource();
          Vec3 pos = mc.gameRenderer.getMainCamera().getPosition();
          Vec3 negPos = new Vec3(-pos.x, -pos.y, -pos.z);

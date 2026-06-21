@@ -181,7 +181,7 @@ public class WitherSicknessTracker extends EntityCapability<WitherSicknessTracke
 
          if (this.shouldUpdate) {
             UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(this.entity);
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.entity), message);
+            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(this.entity), message);
             this.shouldUpdate = false;
          }
       }
@@ -232,19 +232,19 @@ public class WitherSicknessTracker extends EntityCapability<WitherSicknessTracke
                   this.infect();
                }
 
-               MobEffectInstance effect = this.entity.getEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+               MobEffectInstance effect = this.entity.getEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS));
                if (effect != null && effect.getDuration() < 7200) {
                   MobEffectInstance newEffect = new MobEffectInstance(
-                     (MobEffect)WitherStormModEffects.WITHER_SICKNESS.get(), 12000, effect.getAmplifier(), false, false, true
+                     WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS), 12000, effect.getAmplifier(), false, false, true
                   );
                   effect.update(newEffect);
                   UpdateEffectInstanceMessage message = new UpdateEffectInstanceMessage(this.entity.getId(), newEffect, true);
-                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.entity), message);
+                  WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(this.entity), message);
                }
             }
 
             if (!this.entity.level().isClientSide
-               && !this.entity.hasEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get())
+               && !this.entity.hasEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS))
                && this.delayTicks >= this.getApplicationDelay()) {
                this.setInfected(false);
                this.setProximityTicks(0);
@@ -325,7 +325,7 @@ public class WitherSicknessTracker extends EntityCapability<WitherSicknessTracke
          this.shouldUpdate = true;
          this.totalInfections++;
          MobEffectInstance effect = new MobEffectInstance(
-            (MobEffect)WitherStormModEffects.WITHER_SICKNESS.get(), 12000, this.getAmplifier(), false, false, true
+            WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS), 12000, this.getAmplifier(), false, false, true
          );
          this.entity.addEffect(effect);
          if ((Boolean)WitherStormModConfig.SERVER.increaseAmplifier.get()) {
@@ -453,7 +453,7 @@ public class WitherSicknessTracker extends EntityCapability<WitherSicknessTracke
    public void cure() {
       if (this.isInfected() && !this.isActuallyImmune()) {
          this.shouldUpdate = true;
-         this.entity.removeEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+         this.entity.removeEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS));
          this.setInfected(false);
          this.setProximityTicks(0);
          this.setCureTicks(0);

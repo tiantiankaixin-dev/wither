@@ -5,10 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import nonamecrackers2.witherstormmod.common.entity.BlueFlamingWitherSkullEntity;
 
 public class BlueFlamingWitherSkullRenderer extends FlamingWitherSkullRenderer<BlueFlamingWitherSkullEntity> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/flaming_wither_skull/blue_flaming_wither_skull.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation(
-      "witherstormmod", "textures/entity/flaming_wither_skull/blue_flaming_wither_skull_emissive.png"
-   );
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/flaming_wither_skull/blue_flaming_wither_skull.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/flaming_wither_skull/blue_flaming_wither_skull_emissive.png");
 
    public BlueFlamingWitherSkullRenderer(Context context) {
       super(context);

@@ -33,11 +33,13 @@ import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.common.BasicItemListing;
 import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.mixin.IMixinZombieVillager;
@@ -102,10 +104,17 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
       };
    }
 
+   private record BasicItemListing(int emeralds, ItemStack result, int maxUses, int xp) implements ItemListing {
+      @Override
+      public MerchantOffer getOffer(net.minecraft.world.entity.Entity entity, net.minecraft.util.RandomSource random) {
+         return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeralds), this.result.copy(), this.maxUses, this.xp, 0.05F);
+      }
+   }
+
    @Override
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
    }
 
    @Override
@@ -156,7 +165,10 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
       }
 
       if (this.tradeOffers != null) {
-         villager.setOffers(new MerchantOffers(this.tradeOffers));
+         MerchantOffers.CODEC
+            .parse(new Dynamic(NbtOps.INSTANCE, this.tradeOffers))
+            .resultOrPartial(error -> LOGGER.error(error.toString()))
+            .ifPresent(offers -> villager.setOffers((MerchantOffers)offers));
       }
 
       villager.setVillagerXp(this.villagerXp);
@@ -182,7 +194,11 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
 
       if (mob instanceof Villager villager) {
          this.setGossips((Tag)villager.getGossips().store(NbtOps.INSTANCE));
-         this.setTradeOffers(villager.getOffers().createTag());
+         MerchantOffers.CODEC.encodeStart(NbtOps.INSTANCE, villager.getOffers()).resultOrPartial(LOGGER::error).ifPresent(tag -> {
+            if (tag instanceof CompoundTag compound) {
+               this.setTradeOffers(compound);
+            }
+         });
          this.setVillagerXp(villager.getVillagerXp());
       } else if (mob instanceof ZombieVillager villager) {
          IMixinZombieVillager mixinVillager = (IMixinZombieVillager)villager;
@@ -212,14 +228,22 @@ public class SickenedVillager extends SickenedZombie implements VillagerDataHold
       this.tradeOffers = tag;
    }
 
+   public void setTradeOffers(MerchantOffers offers) {
+      MerchantOffers.CODEC.encodeStart(NbtOps.INSTANCE, offers).resultOrPartial(LOGGER::error).ifPresent(tag -> {
+         if (tag instanceof CompoundTag compound) {
+            this.setTradeOffers(compound);
+         }
+      });
+   }
+
    public void setGossips(Tag tag) {
       this.gossips = tag;
    }
 
    @Override
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance instance, MobSpawnType reason, SpawnGroupData data, CompoundTag compound) {
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance instance, MobSpawnType reason, SpawnGroupData data) {
       this.setVillagerData(this.getVillagerData().setType(VillagerType.byBiome(world.getBiome(this.blockPosition()))));
-      return super.finalizeSpawn(world, instance, reason, data, compound);
+      return super.finalizeSpawn(world, instance, reason, data);
    }
 
    public VillagerData getVillagerData() {

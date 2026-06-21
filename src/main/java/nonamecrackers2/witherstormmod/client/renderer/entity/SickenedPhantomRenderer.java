@@ -13,8 +13,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedPhantom;
 
 public class SickenedPhantomRenderer extends MobRenderer<SickenedPhantom, PhantomModel<SickenedPhantom>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_phantom.png");
-   private static final ResourceLocation TEXTURE_EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_phantom_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_phantom.png");
+   private static final ResourceLocation TEXTURE_EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_phantom_emissive.png");
 
    public SickenedPhantomRenderer(Context context) {
       super(context, new PhantomModel(context.bakeLayer(WitherStormModRenderers.SICKENED_PHANTOM)), 0.75F);
@@ -36,8 +36,8 @@ public class SickenedPhantomRenderer extends MobRenderer<SickenedPhantom, Phanto
       stack.translate(0.0F, 1.3125F, 0.1875F);
    }
 
-   protected void setupRotations(SickenedPhantom phantom, PoseStack stack, float p_115687_, float p_115688_, float p_115689_) {
-      super.setupRotations(phantom, stack, p_115687_, p_115688_, p_115689_);
+   protected void setupRotations(SickenedPhantom phantom, PoseStack stack, float p_115687_, float p_115688_, float p_115689_, float scale) {
+      super.setupRotations(phantom, stack, p_115687_, p_115688_, p_115689_, scale);
       stack.mulPose(Axis.XP.rotationDegrees(phantom.getXRot()));
    }
 }

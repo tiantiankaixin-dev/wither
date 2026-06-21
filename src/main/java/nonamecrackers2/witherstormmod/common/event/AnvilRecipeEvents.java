@@ -1,10 +1,8 @@
 package nonamecrackers2.witherstormmod.common.event;
 
 import java.util.List;
-import java.util.Map;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -19,13 +17,11 @@ public class AnvilRecipeEvents {
       ItemStack right = event.getRight();
       Level level = event.getPlayer().level();
       AnvilRecipe.AnvilContents contents = new AnvilRecipe.AnvilContents(left, right);
-      List<AnvilRecipe> recipes = level.getRecipeManager().getRecipesFor((RecipeType)WitherStormModRecipeTypes.ANVIL.get(), contents, level);
+      List<RecipeHolder<AnvilRecipe>> recipes = level.getRecipeManager().getRecipesFor(WitherStormModRecipeTypes.ANVIL.get(), contents, level);
       if (!recipes.isEmpty()) {
-         AnvilRecipe recipe = recipes.get(0);
-         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(left);
-         enchantments.putAll(EnchantmentHelper.getEnchantments(right));
+         AnvilRecipe recipe = recipes.get(0).value();
          ItemStack output = recipe.assemble(contents, level.registryAccess());
-         EnchantmentHelper.setEnchantments(enchantments, output);
+         EnchantmentHelper.setEnchantments(output, EnchantmentHelper.getEnchantmentsForCrafting(left));
          event.setOutput(output);
          event.setCost(recipe.getCost());
       }

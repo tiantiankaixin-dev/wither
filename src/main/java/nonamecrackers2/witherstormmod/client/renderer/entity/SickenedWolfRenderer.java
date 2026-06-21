@@ -11,8 +11,8 @@ import net.minecraft.world.entity.animal.Wolf;
 import nonamecrackers2.witherstormmod.common.entity.WitherSickened;
 
 public class SickenedWolfRenderer extends WolfRenderer {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_wolf.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_wolf_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_wolf.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_wolf_emissive.png");
 
    public SickenedWolfRenderer(Context context) {
       super(context);

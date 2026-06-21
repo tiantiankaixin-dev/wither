@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +19,26 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class WitherStormModNBTUtil {
+   public static Optional<BlockPos> readBlockPos(Tag tag) {
+      CompoundTag wrapper = new CompoundTag();
+      wrapper.put("Pos", tag);
+      return readBlockPos(wrapper, "Pos");
+   }
+
+   public static Optional<BlockPos> readBlockPos(CompoundTag tag, String key) {
+      Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, key);
+      if (pos.isPresent()) {
+         return pos;
+      } else if (tag.contains(key, Tag.TAG_COMPOUND)) {
+         CompoundTag oldPos = tag.getCompound(key);
+         if (oldPos.contains("X", Tag.TAG_ANY_NUMERIC) && oldPos.contains("Y", Tag.TAG_ANY_NUMERIC) && oldPos.contains("Z", Tag.TAG_ANY_NUMERIC)) {
+            return Optional.of(new BlockPos(oldPos.getInt("X"), oldPos.getInt("Y"), oldPos.getInt("Z")));
+         }
+      }
+
+      return Optional.empty();
+   }
+
    public static ListTag writeBlockStatePosMap(Map<BlockPos, BlockState> map) {
       ListTag list = new ListTag();
 
@@ -60,8 +81,7 @@ public class WitherStormModNBTUtil {
       for (int i = 0; i < list.size(); i++) {
          CompoundTag stateCompound = list.getCompound(i);
          BlockState state = NbtUtils.readBlockState(getter, stateCompound);
-         BlockPos pos = NbtUtils.readBlockPos(stateCompound.getCompound("RelativePos"));
-         blocks.put(pos, state);
+         readBlockPos(stateCompound, "RelativePos").ifPresent(pos -> blocks.put(pos, state));
       }
 
       return blocks;

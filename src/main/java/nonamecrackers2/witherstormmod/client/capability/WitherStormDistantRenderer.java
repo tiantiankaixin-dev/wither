@@ -287,7 +287,9 @@ public class WitherStormDistantRenderer {
       @SubscribeEvent
       public static void renderTickDistantRenderer(RenderLevelStageEvent event) {
          if (event.getStage().equals(Stage.AFTER_PARTICLES)) {
-            render(event.getPoseStack(), event.getPartialTick());
+            PoseStack stack = new PoseStack();
+            stack.mulPose(event.getPoseStack());
+            render(stack, event.getPartialTick());
          }
       }
 

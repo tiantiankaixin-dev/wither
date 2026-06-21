@@ -5,7 +5,9 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,8 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class EyeOfTheStormItem extends CommandBlockSwordItem {
    public static final UUID DAMAGE_MODIFIER_ID = UUID.fromString("823350e7-4c91-4a1f-8c01-8735113f066e");
@@ -25,7 +29,7 @@ public class EyeOfTheStormItem extends CommandBlockSwordItem {
    }
 
    public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
-      CompoundTag tag = stack.getOrCreateTag();
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       if (entity instanceof LivingEntity living && (!(living instanceof Player) || !((Player)living).getAbilities().instabuild)) {
          tag.putFloat("EntityHealthRatio", living.getHealth() / living.getMaxHealth());
          return;
@@ -34,7 +38,16 @@ public class EyeOfTheStormItem extends CommandBlockSwordItem {
       tag.remove("EntityHealthRatio");
    }
 
-   public void appendHoverText(ItemStack stack, Level level, List<Component> text, TooltipFlag flag) {
+   public float getAttackDamageBonus(Entity target, float damage, DamageSource source) {
+      Entity attacker = source.getEntity();
+      if (attacker instanceof LivingEntity living && (!(living instanceof Player player) || !player.getAbilities().instabuild)) {
+         return super.getAttackDamageBonus(target, damage, source) - living.getHealth() / living.getMaxHealth() * 5.0F;
+      }
+
+      return super.getAttackDamageBonus(target, damage, source);
+   }
+
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
       text.add(Component.translatable("item.witherstormmod.eye_of_the_storm.author").withStyle(ChatFormatting.DARK_GRAY));
    }
 
@@ -48,7 +61,9 @@ public class EyeOfTheStormItem extends CommandBlockSwordItem {
             int total = 5;
             int spread = 2;
             float hitAngle = (float)Mth.atan2(hit.getZ() - living.getZ(), hit.getX() - living.getX());
-            float damageModifier = EnchantmentHelper.getDamageBonus(stack, hit.getMobType());
+            float damageModifier = living.level() instanceof ServerLevel serverLevel
+               ? EnchantmentHelper.modifyDamage(serverLevel, stack, hit, living.damageSources().mobAttack(living), 0.0F)
+               : 0.0F;
             createSpike(living, hit.getX(), hit.getZ(), minHeight, maxHeight, hitAngle, 0, damageModifier);
 
             for (int i = 0; i < total; i++) {

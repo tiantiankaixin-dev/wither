@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
@@ -49,10 +49,8 @@ public class SickenedSpider extends Spider implements WitherSickened {
    public SickenedSpider(EntityType<? extends SickenedSpider> type, Level world) {
       super(type, world);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    public static Builder createAttributes() {
@@ -115,9 +113,9 @@ public class SickenedSpider extends Spider implements WitherSickened {
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -157,13 +155,13 @@ public class SickenedSpider extends Spider implements WitherSickened {
       return flag;
    }
 
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag tag) {
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData) {
       RandomSource random = level.getRandom();
       if (random.nextInt(100) == 0) {
          SickenedSkeleton sickenedSkeleton = (SickenedSkeleton)(WitherStormModEntityTypes.SICKENED_SKELETON.get()).create(this.level());
          if (sickenedSkeleton != null) {
             sickenedSkeleton.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
-            sickenedSkeleton.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null, null);
+            sickenedSkeleton.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null);
             sickenedSkeleton.startRiding(this);
          }
       }
@@ -176,7 +174,7 @@ public class SickenedSpider extends Spider implements WitherSickened {
       }
 
       if (groupData instanceof SpiderEffectsGroupData sickenedSpider$spidereffectsgroupdata) {
-         MobEffect mobEffect = sickenedSpider$spidereffectsgroupdata.effect;
+         Holder<MobEffect> mobEffect = sickenedSpider$spidereffectsgroupdata.effect;
          if (mobEffect != null) {
             this.addEffect(new MobEffectInstance(mobEffect, -1));
          }

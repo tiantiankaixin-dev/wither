@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import org.apache.commons.compress.utils.Lists;
 

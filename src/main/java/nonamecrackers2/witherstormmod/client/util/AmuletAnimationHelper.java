@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -23,10 +22,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.common.item.AmuletItem;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 import org.joml.Matrix4f;
 
 public class AmuletAnimationHelper {
-   public static final ResourceLocation GLARE = new ResourceLocation("witherstormmod", "textures/misc/glare.png");
+   public static final ResourceLocation GLARE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/glare.png");
    private static final Map<InteractionHand, AmuletAnimationHelper.AnimationHolder> ANIMATIONS = ImmutableMap.of(
       InteractionHand.MAIN_HAND, new AmuletAnimationHelper.AnimationHolder(), InteractionHand.OFF_HAND, new AmuletAnimationHelper.AnimationHolder()
    );
@@ -148,48 +149,51 @@ public class AmuletAnimationHelper {
       Matrix4f matrix = stack.last().pose();
       float alpha = Mth.clamp(Mth.cos(((float)ticks + degreeOffset + partialTicks) * 0.2F) * pulseIntensity, 0.0F, 1.0F);
       if (alpha > 0.0F) {
-         consumer.vertex(matrix, 0.0F, 0.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(0.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 0.0F, 1.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(0.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 1.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(1.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 0.0F, 0.0F)
-            .color(r, g, b, alpha)
-            .uv(1.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 0.0F)
-            .endVertex();
+         consumer.addVertex(matrix, 0.0F, 0.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(0.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+;
+         consumer.addVertex(matrix, 0.0F, 1.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(0.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+;
+         consumer.addVertex(matrix, 1.0F, 1.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(1.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+;
+         consumer.addVertex(matrix, 1.0F, 0.0F, 0.0F)
+            .setColor(r, g, b, alpha)
+            .setUv(1.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 0.0F)
+;
       }
 
       stack.popPose();
    }
 
    public static float getPulseIntensity(AbstractClientPlayer player, ClientLevel level, ItemStack stack, String id, int distance) {
-      CompoundTag tag = stack.getOrCreateTag();
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       if (tag.contains(id + "Pos")) {
-         BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(id + "Pos"));
-         float angle = (float)(Mth.atan2((double)pos.getX() - player.getX(), (double)pos.getZ() - player.getZ()) * (180.0 / Math.PI));
-         float angleDiff = (Mth.wrapDegrees(-player.yHeadRot) - angle + 180.0F + 360.0F) % 360.0F - 180.0F;
-         float value = 1.0F - Mth.clamp(Mth.abs(angleDiff * 0.03F), 0.0F, 0.8F);
-         int dist = tag.getInt(id + "Dist");
-         return dist >= 0 ? value * Mth.clamp(((float)distance - (float)dist) * 0.05F, 0.0F, 1.0F) : 0.0F;
+         return WitherStormModNBTUtil.readBlockPos(tag, id + "Pos")
+            .map(pos -> {
+               float angle = (float)(Mth.atan2((double)pos.getX() - player.getX(), (double)pos.getZ() - player.getZ()) * (180.0 / Math.PI));
+               float angleDiff = (Mth.wrapDegrees(-player.yHeadRot) - angle + 180.0F + 360.0F) % 360.0F - 180.0F;
+               float value = 1.0F - Mth.clamp(Mth.abs(angleDiff * 0.03F), 0.0F, 0.8F);
+               int dist = tag.getInt(id + "Dist");
+               return dist >= 0 ? value * Mth.clamp(((float)distance - (float)dist) * 0.05F, 0.0F, 1.0F) : 0.0F;
+            })
+            .orElse(0.0F);
       } else {
          return 0.0F;
       }
@@ -204,7 +208,7 @@ public class AmuletAnimationHelper {
                AmuletAnimationHelper.AnimationHolder holder = ANIMATIONS.get(hand);
                if (holder != null) {
                   holder.tickCount++;
-                  CompoundTag tag = item.getOrCreateTag();
+                  CompoundTag tag = ItemStackDataUtil.getOrCreateTag(item);
                   int index = tag.getInt("SelectedIndex");
                   float target = getSwapDegrees(hand, index);
                   if (target != holder.targetO) {

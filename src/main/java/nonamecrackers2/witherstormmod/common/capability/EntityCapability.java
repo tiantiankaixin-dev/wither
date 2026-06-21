@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.capability;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -40,11 +41,11 @@ public abstract class EntityCapability<E extends EntityCapability<E, T>, T exten
          return cap == this.capability ? this.optional.cast() : LazyOptional.empty();
       }
 
-      public Tag serializeNBT() {
+      public Tag serializeNBT(HolderLookup.Provider registries) {
          return this.optional.isPresent() ? ((EntityCapability)this.optional.orElse(null)).write() : null;
       }
 
-      public void deserializeNBT(Tag nbt) {
+      public void deserializeNBT(HolderLookup.Provider registries, Tag nbt) {
          if (this.optional.isPresent()) {
             ((EntityCapability)this.optional.orElse(null)).read((CompoundTag)nbt);
          }

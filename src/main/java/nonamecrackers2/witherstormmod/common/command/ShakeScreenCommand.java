@@ -47,7 +47,7 @@ public class ShakeScreenCommand {
          float strength = FloatArgumentType.getFloat(context, "strength");
 
          for (ServerPlayer player : players) {
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> player), new ShakeScreenMessage((float)time, strength));
+            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(player), new ShakeScreenMessage((float)time, strength));
          }
 
          stack.sendSuccess(() -> Component.translatable("commands.witherstormmod.screenShake.success", new Object[]{players.size()}), true);

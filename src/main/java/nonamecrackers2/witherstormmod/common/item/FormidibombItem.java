@@ -19,6 +19,7 @@ import nonamecrackers2.witherstormmod.common.blockentity.FormidibombBlockEntity;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.FormidibombEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class FormidibombItem extends BlockItem {
    public FormidibombItem(Block block, Properties properties) {
@@ -117,20 +118,20 @@ public class FormidibombItem extends BlockItem {
    }
 
    public int getFuse(ItemStack stack) {
-      return stack.getOrCreateTag().getInt("Fuse");
+      return ItemStackDataUtil.getOrCreateTag(stack).getInt("Fuse");
    }
 
    public int getStartFuse(ItemStack stack) {
-      return stack.getOrCreateTag().getInt("StartFuse");
+      return ItemStackDataUtil.getOrCreateTag(stack).getInt("StartFuse");
    }
 
    protected void countFuse(ItemStack stack, int amount) {
-      CompoundTag compound = stack.getOrCreateTag();
+      CompoundTag compound = ItemStackDataUtil.getOrCreateTag(stack);
       compound.putInt("Fuse", compound.getInt("Fuse") + amount);
    }
 
    public void setFuse(ItemStack stack, int fuse) {
-      CompoundTag compound = stack.getOrCreateTag();
+      CompoundTag compound = ItemStackDataUtil.getOrCreateTag(stack);
       compound.putInt("Fuse", fuse);
       compound.putInt("StartFuse", fuse);
    }

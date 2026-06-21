@@ -9,11 +9,11 @@ import net.minecraft.world.item.Item.Properties;
 
 public class CommandBlockHoeItem extends HoeItem {
    public CommandBlockHoeItem(Tier tier, int damage, float attackSpeed, Properties properties) {
-      super(tier, damage, attackSpeed, properties);
+      super(tier, properties.attributes(HoeItem.createAttributes(tier, damage, attackSpeed)));
    }
 
    public boolean isEnchantable(ItemStack stack) {
-      return this.getMaxStackSize(stack) == 1;
+      return stack.getMaxStackSize() == 1;
    }
 
    public boolean canBeHurtBy(DamageSource source) {

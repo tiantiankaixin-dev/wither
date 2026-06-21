@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingIn;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent.DebugText;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent.DebugText.Side;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.WitherStormMod;
@@ -19,8 +20,8 @@ public class WitherStormModGuiEvents {
    @SubscribeEvent
    public static void onRenderOverlay(DebugText event) {
       Minecraft mc = Minecraft.getInstance();
-      if (mc.options.renderDebug) {
-         List<String> text = event.getRight();
+      if (mc.getDebugOverlay().showDebugScreen() && event.getSide() == Side.Right) {
+         List<String> text = event.getText();
          text.add("");
          text.add("witherstormmod: " + WitherStormMod.getVersion());
          text.add("Buffered Instances: " + RenderBufferer.INSTANCE.getTotalInstances());

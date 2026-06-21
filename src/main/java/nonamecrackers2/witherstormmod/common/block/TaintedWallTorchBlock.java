@@ -15,7 +15,7 @@ public class TaintedWallTorchBlock extends WallTorchBlock {
    protected final Supplier<? extends ParticleOptions> flameParticle;
 
    public TaintedWallTorchBlock(Properties properties, Supplier<? extends ParticleOptions> flameParticle) {
-      super(properties, null);
+      super(ParticleTypes.FLAME, properties);
       this.flameParticle = flameParticle;
    }
 

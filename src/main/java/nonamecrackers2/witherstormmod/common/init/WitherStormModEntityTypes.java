@@ -5,7 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType.Builder;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -156,7 +156,7 @@ public class WitherStormModEntityTypes {
    );
 
    private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, Builder<T> builder) {
-      return ENTITIES.register(id, () -> builder.build(new ResourceLocation("witherstormmod", id).toString()));
+      return ENTITIES.register(id, () -> builder.build(ResourceLocation.fromNamespaceAndPath("witherstormmod", id).toString()));
    }
 
    public static void addEntityAttributes(EntityAttributeCreationEvent event) {
@@ -188,9 +188,9 @@ public class WitherStormModEntityTypes {
    }
 
    public static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
-      event.register(SICKENED_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
-      event.register(SICKENED_SKELETON.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
-      event.register(SICKENED_SPIDER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
-      event.register(SICKENED_CREEPER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
+      event.register(SICKENED_ZOMBIE.get(), SpawnPlacementTypes.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
+      event.register(SICKENED_SKELETON.get(), SpawnPlacementTypes.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
+      event.register(SICKENED_SPIDER.get(), SpawnPlacementTypes.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
+      event.register(SICKENED_CREEPER.get(), SpawnPlacementTypes.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, Operation.OR);
    }
 }

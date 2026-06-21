@@ -14,7 +14,7 @@ public class WitherStormModStats {
    }
 
    private static ResourceLocation makeCustomStat(String id, StatFormatter formatter) {
-      ResourceLocation rl = new ResourceLocation("witherstormmod", id);
+      ResourceLocation rl = ResourceLocation.fromNamespaceAndPath("witherstormmod", id);
       Registry.register(BuiltInRegistries.CUSTOM_STAT, rl, rl);
       Stats.CUSTOM.get(rl, formatter);
       return rl;

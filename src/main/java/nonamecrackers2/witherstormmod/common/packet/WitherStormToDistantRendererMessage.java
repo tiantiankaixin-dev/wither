@@ -4,8 +4,11 @@ import com.google.common.collect.Lists;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import java.util.UUID;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket.AttributeSnapshot;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
@@ -19,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
@@ -138,8 +141,9 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       List<DataValue<?>> packedData = Lists.newArrayList();
 
       int j;
+      RegistryFriendlyByteBuf registryBuffer = (RegistryFriendlyByteBuf)buffer;
       while ((j = buffer.readUnsignedByte()) != 255) {
-         packedData.add(DataValue.read(buffer, j));
+         packedData.add(DataValue.read(registryBuffer, j));
       }
 
       this.packedItems = packedData;
@@ -147,14 +151,14 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
 
       for (int i = 0; i < attributeSize; i++) {
          ResourceLocation location = buffer.readResourceLocation();
-         Attribute attribute = (Attribute)ForgeRegistries.ATTRIBUTES.getValue(location);
+         Holder<Attribute> attribute = BuiltInRegistries.ATTRIBUTE.getHolder(location).orElseThrow();
          double base = buffer.readDouble();
          List<AttributeModifier> list = Lists.newArrayList();
          int modifierSize = buffer.readVarInt();
 
          for (int l = 0; l < modifierSize; l++) {
-            UUID uuid = buffer.readUUID();
-            list.add(new AttributeModifier(uuid, "Unknown synced attribute modifier", buffer.readDouble(), Operation.fromValue(buffer.readByte())));
+            ResourceLocation modifierId = buffer.readResourceLocation();
+            list.add(new AttributeModifier(modifierId, buffer.readDouble(), Operation.BY_ID.apply(buffer.readByte())));
          }
 
          this.attributes.add(new AttributeSnapshot(attribute, base, list));
@@ -186,23 +190,24 @@ public class WitherStormToDistantRendererMessage extends DistantRendererMessage 
       buffer.writeShort(this.delta.getX());
       buffer.writeShort(this.delta.getY());
       buffer.writeShort(this.delta.getZ());
+      RegistryFriendlyByteBuf registryBuffer = (RegistryFriendlyByteBuf)buffer;
 
       for (DataValue<?> value : this.packedItems) {
-         value.write(buffer);
+         value.write(registryBuffer);
       }
 
       buffer.writeByte(255);
       buffer.writeInt(this.attributes.size());
 
       for (AttributeSnapshot snapshot : this.attributes) {
-         buffer.writeResourceLocation(ForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
-         buffer.writeDouble(snapshot.getBase());
-         buffer.writeVarInt(snapshot.getModifiers().size());
+         buffer.writeResourceLocation(BuiltInRegistries.ATTRIBUTE.getKey(snapshot.attribute().value()));
+         buffer.writeDouble(snapshot.base());
+         buffer.writeVarInt(snapshot.modifiers().size());
 
-         for (AttributeModifier modifier : snapshot.getModifiers()) {
-            buffer.writeUUID(modifier.getId());
-            buffer.writeDouble(modifier.getAmount());
-            buffer.writeByte(modifier.getOperation().toValue());
+         for (AttributeModifier modifier : snapshot.modifiers()) {
+            buffer.writeResourceLocation(modifier.id());
+            buffer.writeDouble(modifier.amount());
+            buffer.writeByte(modifier.operation().id());
          }
       }
 

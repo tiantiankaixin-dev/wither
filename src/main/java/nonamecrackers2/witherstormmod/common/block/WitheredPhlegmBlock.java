@@ -1,14 +1,17 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -38,11 +42,17 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 
 public class WitheredPhlegmBlock extends BaseEntityBlock {
+   public static final MapCodec<WitheredPhlegmBlock> CODEC = simpleCodec(WitheredPhlegmBlock::new);
    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
    public WitheredPhlegmBlock(Properties properties) {
       super(properties);
       this.registerDefaultState((BlockState)((BlockState)this.stateDefinition.any()).setValue(POWERED, false));
+   }
+
+   @Override
+   protected MapCodec<WitheredPhlegmBlock> codec() {
+      return CODEC;
    }
 
    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
@@ -56,7 +66,19 @@ public class WitheredPhlegmBlock extends BaseEntityBlock {
       }
    }
 
-   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+   @Override
+   protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+      return this.interact(level, pos, player);
+   }
+
+   @Override
+   protected ItemInteractionResult useItemOn(ItemStack item, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+      return this.interact(level, pos, player).consumesAction()
+         ? ItemInteractionResult.sidedSuccess(level.isClientSide)
+         : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+   }
+
+   private InteractionResult interact(Level level, BlockPos pos, Player player) {
       if (level.isClientSide) {
          return InteractionResult.SUCCESS;
       } else {
@@ -100,7 +122,7 @@ public class WitheredPhlegmBlock extends BaseEntityBlock {
    }
 
    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack item) {
-      if (item.hasCustomHoverName() && level.getBlockEntity(pos) instanceof WitheredPhlegmBlockEntity phlegmBlock) {
+      if (item.has(DataComponents.CUSTOM_NAME) && level.getBlockEntity(pos) instanceof WitheredPhlegmBlockEntity phlegmBlock) {
          phlegmBlock.setCustomName(item.getHoverName());
       }
    }
@@ -132,7 +154,8 @@ public class WitheredPhlegmBlock extends BaseEntityBlock {
       }
    }
 
-   public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> text, TooltipFlag flag) {
+   @Override
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
       text.add(Component.translatable("description.withered_phlegm.use").withStyle(ChatFormatting.DARK_GRAY));
    }
 

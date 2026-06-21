@@ -33,15 +33,14 @@ public class WitherStormHeadModel extends EntityModel<WitherStormHeadEntity> {
    }
 
    public void setupAnim(WitherStormHeadEntity entity, float walkAnimPos, float walkAnimSpeed, float bob, float yRot, float xRot) {
-      this.head.setupAnimations(entity, Minecraft.getInstance().getPartialTick(), bob, yRot, xRot, 0);
+      this.head.setupAnimations(entity, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true), bob, yRot, xRot, 0);
    }
 
-   public void renderToBuffer(
-      PoseStack stack, VertexConsumer builder, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float p_225598_8_
-   ) {
+   @Override
+   public void renderToBuffer(PoseStack stack, VertexConsumer builder, int p_225598_3_, int p_225598_4_, int color) {
       stack.pushPose();
       this.head.scale(stack);
-      this.head.root().render(stack, builder, p_225598_3_, p_225598_4_);
+      this.head.root().render(stack, builder, p_225598_3_, p_225598_4_, color);
       stack.popPose();
    }
 

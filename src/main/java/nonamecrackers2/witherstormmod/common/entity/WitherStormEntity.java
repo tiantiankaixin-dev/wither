@@ -21,7 +21,9 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +36,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +60,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.PowerableMob;
@@ -188,6 +190,7 @@ import nonamecrackers2.witherstormmod.common.predicate.EntityPredicateBuilder;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModBlockTags;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModEntityTags;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModItemTags;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import nonamecrackers2.witherstormmod.common.util.ClusterBuilderHelper;
 import nonamecrackers2.witherstormmod.common.util.DebrisCluster;
 import nonamecrackers2.witherstormmod.common.util.DebrisRingSettings;
@@ -195,6 +198,7 @@ import nonamecrackers2.witherstormmod.common.util.EntitySyncableData;
 import nonamecrackers2.witherstormmod.common.util.EvolutionProfiler;
 import nonamecrackers2.witherstormmod.common.util.StormHeadOffsets;
 import nonamecrackers2.witherstormmod.common.util.TractorBeamHelper;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -208,8 +212,8 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    private static final EntityDataAccessor<Integer> CONSUMED_ENTITIES = SynchedEntityData.defineId(WitherStormEntity.class, EntityDataSerializers.INT);
    private static final EntityDataAccessor<Boolean> MIRRORED = SynchedEntityData.defineId(WitherStormEntity.class, EntityDataSerializers.BOOLEAN);
    private static final EntityDataAccessor<Boolean> SHOULD_SHOW_HOLE = SynchedEntityData.defineId(WitherStormEntity.class, EntityDataSerializers.BOOLEAN);
-   private static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("9B8DA22B-138B-4B68-879D-3FD329FAF903");
-   private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("C806DBFA-2B10-4BEA-B16C-C3233707399C");
+   private static final ResourceLocation HEALTH_MODIFIER_ID = AttributeModifierUtil.id("9B8DA22B-138B-4B68-879D-3FD329FAF903");
+   private static final ResourceLocation ARMOR_MODIFIER_ID = AttributeModifierUtil.id("C806DBFA-2B10-4BEA-B16C-C3233707399C");
    public static final Predicate<LivingEntity> DESTROYER_LIVING_ENTITY_SELECTOR = ((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)((EntityPredicateBuilder)EntityPredicateBuilder.and()
                                           .addTest(Entity::isAttackable))
                                        .isNotTag(WitherStormModEntityTags.WITHER_STORM_TARGETING_BLACKLIST)
@@ -374,7 +378,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                   if (entity instanceof ThrownEnderpearl pearl) {
                      Entity owner = pearl.getOwner();
                      if (owner instanceof ServerPlayer player) {
-                        if (player.connection.connection.isConnected() && player.level() == pearl.level() && !player.isSleeping()) {
+                        if (player.connection.isAcceptingMessages() && player.level() == pearl.level() && !player.isSleeping()) {
                            if (player.isPassenger()) {
                               player.stopRiding();
                            }
@@ -405,17 +409,17 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       return new WitherStormBodyController(this);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(INVULNERABLE, 0);
-      this.entityData.define(STARTING_INVULNERABLE, (Integer)WitherStormModConfig.SERVER.invulnerabilityTime.get() * 20);
-      this.entityData.define(PHASE, 0);
-      this.entityData.define(CONSUMED_ENTITIES, 0);
-      this.entityData.define(MIRRORED, false);
-      this.entityData.define(SHOULD_SHOW_HOLE, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(INVULNERABLE, 0);
+      builder.define(STARTING_INVULNERABLE, (Integer)WitherStormModConfig.SERVER.invulnerabilityTime.get() * 20);
+      builder.define(PHASE, 0);
+      builder.define(CONSUMED_ENTITIES, 0);
+      builder.define(MIRRORED, false);
+      builder.define(SHOULD_SHOW_HOLE, false);
 
       for (WitherStormEntity.DataAccessorHolder<?> holder : DATA_ACCESSORS) {
-         holder.defineTo(this.entityData);
+         holder.defineTo(builder);
       }
    }
 
@@ -504,14 +508,14 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
    public static net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder createAttributes() {
       return Monster.createMonsterAttributes()
-         .add((Attribute)WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED.get())
-         .add((Attribute)WitherStormModAttributes.SLOW_FLYING_SPEED.get())
-         .add((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get(), 1.0)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED))
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.SLOW_FLYING_SPEED))
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.EVOLUTION_SPEED), 1.0)
          .add(Attributes.FLYING_SPEED, 0.0)
          .add(Attributes.MAX_HEALTH, 400.0)
          .add(Attributes.MOVEMENT_SPEED, 0.6)
          .add(Attributes.FOLLOW_RANGE, 120.0)
-         .add((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get(), 40.0)
+         .add(WitherStormModAttributes.holder(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE), 40.0)
          .add(Attributes.ARMOR, 8.0)
          .add(Attributes.ATTACK_DAMAGE, 3.5);
    }
@@ -541,18 +545,18 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
          return flyingSpeed;
       } else {
-         return this.getAttributeValue((Attribute)WitherStormModAttributes.SLOW_FLYING_SPEED.get());
+         return this.getAttributeValue(WitherStormModAttributes.holder(WitherStormModAttributes.SLOW_FLYING_SPEED));
       }
    }
 
    protected double getDefaultChasingSpeed() {
       return this.attributeOrConfigValue(
-         (Attribute)WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED.get(), WitherStormModConfig.SERVER.chasingFlyingSpeed
+         WitherStormModAttributes.holder(WitherStormModAttributes.TARGET_STATIONARY_FLYING_SPEED), WitherStormModConfig.SERVER.chasingFlyingSpeed
       );
    }
 
    protected double getDefaultNormalSpeed() {
-      return this.attributeOrConfigValue((Attribute)WitherStormModAttributes.SLOW_FLYING_SPEED.get(), WitherStormModConfig.SERVER.normalFlyingSpeed);
+      return this.attributeOrConfigValue(WitherStormModAttributes.holder(WitherStormModAttributes.SLOW_FLYING_SPEED), WitherStormModConfig.SERVER.normalFlyingSpeed);
    }
 
    public void aiStep() {
@@ -610,13 +614,13 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
             if (flag && this.level().random.nextInt(4) == 0) {
                this.level()
                   .addParticle(
-                     ParticleTypes.ENTITY_EFFECT,
+                     ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.7F, 0.7F, 0.5F),
                      d8 + this.random.nextGaussian() * 0.3F,
                      d10 + this.random.nextGaussian() * 0.3F,
                      d2 + this.random.nextGaussian() * 0.3F,
-                     0.7F,
-                     0.7F,
-                     0.5
+                     0.0,
+                     0.0,
+                     0.0
                   );
             }
          }
@@ -643,13 +647,13 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          for (int i1 = 0; i1 < 3; i1++) {
             this.level()
                .addParticle(
-                  ParticleTypes.ENTITY_EFFECT,
+                  ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0.7F, 0.7F, 0.9F),
                   this.getX() + this.random.nextGaussian(),
                   this.getY() + (double)(this.random.nextFloat() * 3.3F),
                   this.getZ() + this.random.nextGaussian(),
-                  0.7F,
-                  0.7F,
-                  0.9F
+                  0.0,
+                  0.0,
+                  0.0
                );
          }
       }
@@ -709,7 +713,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public double getHeightToAscendTo(Vec3 vector3d, double height, double ascendSpeed) {
       double finalHeight = vector3d.y;
       double yToStart = Math.min((double)(this.level().getMaxBuildHeight() - 1), this.getBoundingBox().getCenter().y());
-      int radius = (int)(this.getDimensions(this.getPose()).width * 1.5F);
+      int radius = (int)(this.getDimensions(this.getPose()).width() * 1.5F);
       double highest = -1.0;
 
       for (int x = -radius; x < radius; x++) {
@@ -845,7 +849,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       for (BlockEntity entity : WorldUtil.getBlockEntitiesInAABB(this.level(), this.getSearchBox())) {
          if (entity instanceof JukeboxBlockEntity) {
             JukeboxBlockEntity jukebox = (JukeboxBlockEntity)entity;
-            if (jukebox.isRecordPlaying() && !this.playingJukeboxes.contains(jukebox.getBlockPos())) {
+            if (jukebox.getSongPlayer().isPlaying() && !this.playingJukeboxes.contains(jukebox.getBlockPos())) {
                this.playingJukeboxes.add(jukebox.getBlockPos());
             }
          }
@@ -1161,7 +1165,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                   BlockEntity entityxx = this.level().getBlockEntity(pos);
                   if (entityxx instanceof JukeboxBlockEntity) {
                      JukeboxBlockEntity jukebox = (JukeboxBlockEntity)entityxx;
-                     if (!jukebox.isRecordPlaying()) {
+                     if (!jukebox.getSongPlayer().isPlaying()) {
                         iterator.remove();
                      }
                   } else {
@@ -1269,7 +1273,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       Vec3 vecPos = this.getHeadPos(head);
       Vec3 end = vecPos.add(this.getViewVector(x, y, 200.0F));
       if (ForgeEventFactory.getMobGriefingEvent(this.level(), this) && this.getPhase() > 3) {
-         BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.ANY, null));
+         BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.ANY, (Entity)null));
          BlockPos hitPos = result.getBlockPos();
          if (WorldUtil.isLoaded((ServerLevel)this.level(), hitPos)
             && hitPos.getY() > (Integer)WitherStormModConfig.SERVER.tractorBeamFluidRemovalHeight.get()) {
@@ -1296,7 +1300,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       Vec3 vecPos = this.getHeadPos(head);
       Vec3 end = vecPos.add(this.getViewVector(x, y, 200.0F));
       if (ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
-         BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.NONE, null));
+         BlockHitResult result = this.level().clip(new ClipContext(vecPos, end, Block.COLLIDER, Fluid.NONE, (Entity)null));
          BlockPos hitPos = result.getBlockPos();
          if (WorldUtil.isLoaded((ServerLevel)this.level(), hitPos)) {
             for (int i = 0; i < 512; i++) {
@@ -1319,7 +1323,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                   if (!state.is(WitherStormModBlockTags.WITHER_STORM_BLOCK_BLACKLIST)
                      && (
                         !(this.random.nextDouble() > 0.999)
-                           || !state.is(Blocks.STONE) && !state.is(BlockTags.DIRT) && !state.is(BlockTags.SAND)
+                           || !state.is(net.minecraft.world.level.block.Blocks.STONE) && !state.is(BlockTags.DIRT) && !state.is(BlockTags.SAND)
                      )
                      && (
                         !(Boolean)WitherStormModConfig.SERVER.onlyTryPickingUpTractorTagged.get()
@@ -1373,7 +1377,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
    private void setPlayerDeltaMovement(ServerPlayer player, Vec3 motion) {
       PlayerMotionMessage message = new PlayerMotionMessage(motion);
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> player), message);
+      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(player), message);
    }
 
    @NotNull
@@ -1381,18 +1385,18 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       return this.getBoundingBox().inflate(50.0);
    }
 
-   @NotNull
-   public EntityDimensions getDimensions(@NotNull Pose pose) {
+   @Override
+   protected EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
       EntityDimensions size = this.getUnmodifiedDimensions(pose);
       if ((Boolean)WitherStormModConfig.SERVER.squashHitbox.get() && this.getPhase() > 3) {
-         size = EntityDimensions.scalable(size.width, 1.0F);
+         size = EntityDimensions.scalable(size.width(), 1.0F);
       }
 
       if (this.getPlayDeadManager().getState() == PlayDeadManager.State.PLAYING_DEAD) {
-         size = EntityDimensions.scalable(size.width, 0.1F);
+         size = EntityDimensions.scalable(size.width(), 0.1F);
       }
 
-      return size;
+      return this.getPhase() > 3 ? size.withEyeHeight(17.5F) : size;
    }
 
    public EntityDimensions getUnmodifiedDimensions(Pose pos) {
@@ -1411,21 +1415,17 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    }
 
    public float getUnmodifiedHeight() {
-      return this.getUnmodifiedDimensions(this.getPose()).height;
+      return this.getUnmodifiedDimensions(this.getPose()).height();
    }
 
    public float getUnmodifiedWidth() {
-      return this.getUnmodifiedDimensions(this.getPose()).width;
+      return this.getUnmodifiedDimensions(this.getPose()).width();
    }
 
    public float getUnmodifiedSize() {
       float width = this.getUnmodifiedWidth();
       float height = this.getUnmodifiedHeight();
       return (width + height + width) / 3.0F;
-   }
-
-   protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-      return this.getPhase() > 3 ? 17.5F : super.getStandingEyeHeight(pose, size);
    }
 
    public void baseTick() {
@@ -1541,7 +1541,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          StormSoundPositionMessage message = new StormSoundPositionMessage(
             this.getId(), this.getX(), this.getEyeY(), this.getZ(), (byte)this.getPhase()
          );
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> this.level().dimension()), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(this.level().dimension()), message);
       }
 
       this.headManager.tick();
@@ -1619,7 +1619,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                            )
                         )
                         .add(0.0, 5.5, 0.0);
-                     BlockHitResult blockHitResult = this.level().clip(new ClipContext(headPos, end, Block.COLLIDER, Fluid.NONE, null));
+                     BlockHitResult blockHitResult = this.level().clip(new ClipContext(headPos, end, Block.COLLIDER, Fluid.NONE, (Entity)null));
                      BlockPos hitPos = blockHitResult.getBlockPos();
                      if (WorldUtil.isBlockExposed(this.level(), hitPos)) {
                         BlockState hitState = this.level().getBlockState(hitPos);
@@ -1754,7 +1754,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       if ((Boolean)WitherStormModConfig.SERVER.shouldPlayGlobalSoundsCrossDimensionally.get()) {
          WitherStormModPacketHandlers.MAIN.send(PacketDistributor.ALL.noArg(), message);
       } else {
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> this.level().dimension()), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(this.level().dimension()), message);
       }
    }
 
@@ -1789,7 +1789,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
                      1.0F
                   );
                RemoveSoundLoopMessage message = new RemoveSoundLoopMessage(this);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> this.level().dimension()), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(this.level().dimension()), message);
             }
 
             for (WitherStormHead head : this.headManager.getHeads()) {
@@ -1825,7 +1825,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       double d3 = x - pos.x;
       double d4 = y - pos.y;
       double d5 = z - pos.z;
-      WitherSkull witherskullentity = new WitherSkull(this.level(), this, d3, d4, d5);
+      WitherSkull witherskullentity = new WitherSkull(this.level(), this, new Vec3(d3, d4, d5));
       witherskullentity.setOwner(this);
       if (dangerous) {
          witherskullentity.setDangerous(true);
@@ -1991,7 +1991,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       PlayDeadManager playDeadManager = this.getPlayDeadManager();
       playDeadManager.setPodiumPlaced(playDeadManagerNBT.getBoolean("PodiumPlaced"));
       if (playDeadManagerNBT.contains("PodiumPos")) {
-         playDeadManager.setPodiumPos(NbtUtils.readBlockPos(playDeadManagerNBT.getCompound("PodiumPos")));
+         playDeadManager.setPodiumPos(WitherStormModNBTUtil.readBlockPos(playDeadManagerNBT, "PodiumPos").orElse(null));
       }
 
       playDeadManager.setTickAmountAndO(playDeadManagerNBT.getInt("StateTicks"));
@@ -2042,7 +2042,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
       for (int i = 0; i < playingJukeboxes.size(); i++) {
          CompoundTag entry = playingJukeboxes.getCompound(i);
-         this.playingJukeboxes.add(NbtUtils.readBlockPos(entry.getCompound("Pos")));
+         WitherStormModNBTUtil.readBlockPos(entry, "Pos").ifPresent(this.playingJukeboxes::add);
       }
 
       this.isLocked = compound.getBoolean("IsConsumptionLocked");
@@ -2121,7 +2121,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
    public double getEvolutionSpeedModifier() {
       double modifier = this.attributeOrConfigValue(
-         (Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get(), WitherStormModConfig.SERVER.evolutionAttributeModifier
+         WitherStormModAttributes.holder(WitherStormModAttributes.EVOLUTION_SPEED), WitherStormModConfig.SERVER.evolutionAttributeModifier
       );
       WitherStormModifyEvolutionSpeedEvent event = new WitherStormModifyEvolutionSpeedEvent(this, modifier);
       MinecraftForge.EVENT_BUS.post(event);
@@ -2161,10 +2161,10 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          if (!this.level().isClientSide) {
             if (this.shouldPlaySoundLoops()) {
                CreateLoopingSoundMessage message = new CreateLoopingSoundMessage(this);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> this.level().dimension()), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(this.level().dimension()), message);
             } else {
                RemoveSoundLoopMessage message = new RemoveSoundLoopMessage(this);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> this.level().dimension()), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(this.level().dimension()), message);
             }
          }
 
@@ -2173,25 +2173,23 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          AttributeInstance armor = this.getAttribute(Attributes.ARMOR);
          if (!this.level().isClientSide) {
             if (phase < 4) {
-               health.removePermanentModifier(HEALTH_MODIFIER_UUID);
-               armor.removePermanentModifier(ARMOR_MODIFIER_UUID);
+               health.removeModifier(HEALTH_MODIFIER_ID);
+               armor.removeModifier(ARMOR_MODIFIER_ID);
                this.currentFlyingHeight = 10.0;
             } else {
-               AttributeModifier healthModifier = new AttributeModifier(HEALTH_MODIFIER_UUID, "Phase health modifier", 624.0, Operation.ADDITION);
+               AttributeModifier healthModifier = new AttributeModifier(HEALTH_MODIFIER_ID, 624.0, Operation.ADD_VALUE);
 
                assert health != null;
 
-               if (!health.hasModifier(healthModifier)) {
+               if (!health.hasModifier(HEALTH_MODIFIER_ID)) {
                   health.addPermanentModifier(healthModifier);
                }
 
-               AttributeModifier armorModifier = new AttributeModifier(
-                  ARMOR_MODIFIER_UUID, "Phase armor modifier", (double)((phase + 1) * 2), Operation.ADDITION
-               );
+               AttributeModifier armorModifier = new AttributeModifier(ARMOR_MODIFIER_ID, (double)((phase + 1) * 2), Operation.ADD_VALUE);
 
                assert armor != null;
 
-               if (!armor.hasModifier(armorModifier)) {
+               if (!armor.hasModifier(ARMOR_MODIFIER_ID)) {
                   armor.addPermanentModifier(armorModifier);
                }
 
@@ -2361,17 +2359,15 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public boolean addEffect(@NotNull MobEffectInstance effect, @Nullable Entity entity) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    protected boolean canRide(@NotNull Entity entity) {
       return false;
    }
 
-   public boolean canChangeDimensions() {
+   public boolean canChangeDimensions(Level currentLevel, Level destinationLevel) {
       return false;
    }
 
@@ -2407,7 +2403,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          }
 
          Entity entity1 = source.getEntity();
-         if (!(entity1 instanceof Player) && entity1 instanceof LivingEntity && ((LivingEntity)entity1).getMobType() == this.getMobType()) {
+         if (!(entity1 instanceof Player) && entity1 instanceof LivingEntity living && WitherStormModMobTypes.isSickened(living)) {
             return false;
          } else {
             if (this.destroyBlocksTick <= 0) {
@@ -2706,7 +2702,9 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    }
 
    public AABB getSearchBox() {
-      double range = this.getPhase() > 3 ? this.getAttributeValue(Attributes.FOLLOW_RANGE) : this.getAttributeValue((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get());
+      double range = this.getPhase() > 3
+         ? this.getAttributeValue(Attributes.FOLLOW_RANGE)
+         : this.getAttributeValue(WitherStormModAttributes.holder(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE));
       return this.getPhase() > 3 ? this.getBoundingBox().inflate(range, range + 255.0, range) : this.getBoundingBox().inflate(range, range * 2.0, range);
    }
 
@@ -2846,7 +2844,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    public void shake(float duration, float power) {
       if (!this.level().isClientSide) {
          ShakeScreenMessage message = new ShakeScreenMessage(duration, power);
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(this), message);
       }
    }
 
@@ -2898,9 +2896,12 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
 
    public boolean isAttractingFormidibomb() {
       boolean flag = false;
-      Stream<WrappedGoal> goals = this.goalSelector.getRunningGoals();
 
-      for (WrappedGoal prioritizedGoal : goals.toArray(WrappedGoal[]::new)) {
+      for (WrappedGoal prioritizedGoal : this.goalSelector.getAvailableGoals()) {
+         if (!prioritizedGoal.isRunning()) {
+            continue;
+         }
+
          Goal var8 = prioritizedGoal.getGoal();
          if (var8 instanceof LookAtFormidibombGoal) {
             LookAtFormidibombGoal goal = (LookAtFormidibombGoal)var8;
@@ -3094,7 +3095,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       item.setNoGravity(true);
       this.level().addFreshEntity(item);
       ServerLevel level = (ServerLevel)this.level();
-      ExperienceOrb.award(level, player.position().add(0.0, 10.0, 0.0), ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, this.getExperienceReward()));
+      ExperienceOrb.award(level, player.position().add(0.0, 10.0, 0.0), ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, this.getExperienceReward(level, player)));
 
       for (Player nearby : this.level().getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(15.0))) {
          BlockPos nearestVillage = level.findNearestMapStructure(StructureTags.VILLAGE, player.blockPosition(), 50, false);
@@ -3476,7 +3477,7 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
          this.horizontalCollision = noXMovement || noZMovement;
          this.verticalCollision = delta.y != vec3.y;
          this.verticalCollisionBelow = this.verticalCollision && delta.y < 0.0;
-         this.setOnGroundWithKnownMovement(this.verticalCollisionBelow, vec3);
+         this.setOnGroundWithMovement(this.verticalCollisionBelow, vec3);
          BlockPos pos = this.getOnPosLegacy();
          BlockState state = this.level().getBlockState(pos);
          if (!this.isRemoved()) {
@@ -3515,9 +3516,9 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
       this.bodyLerpSteps = steps;
    }
 
-   private double attributeOrConfigValue(Attribute attribute, ConfigValue<Double> config) {
+   private double attributeOrConfigValue(Holder<Attribute> attribute, ConfigValue<Double> config) {
       AttributeInstance instance = this.getAttribute(attribute);
-      return instance.getValue() != attribute.getDefaultValue() ? instance.getValue() : (Double)config.get();
+      return instance.getValue() != attribute.value().getDefaultValue() ? instance.getValue() : (Double)config.get();
    }
 
    @Override
@@ -3575,8 +3576,8 @@ public class WitherStormEntity extends Monster implements PowerableMob, EntitySy
    }
 
    private static record DataAccessorHolder<T>(EntityDataAccessor<T> accessor, Supplier<T> defaultValue) {
-      private void defineTo(SynchedEntityData data) {
-         data.define(this.accessor, this.defaultValue.get());
+      private void defineTo(SynchedEntityData.Builder builder) {
+         builder.define(this.accessor, this.defaultValue.get());
       }
    }
 }

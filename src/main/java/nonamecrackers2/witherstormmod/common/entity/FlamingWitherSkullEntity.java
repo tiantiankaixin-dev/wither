@@ -4,17 +4,21 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
@@ -26,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PacketDistributor.TargetPoint;
 import nonamecrackers2.witherstormmod.WitherStormMod;
@@ -45,10 +48,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
    }
 
    public FlamingWitherSkullEntity(EntityType<? extends FlamingWitherSkullEntity> type, Level world, LivingEntity owner, double x, double y, double z) {
-      super(type, owner, x, y, z, world);
-      this.xPower = x * 0.1;
-      this.yPower = y * 0.1;
-      this.zPower = z * 0.1;
+      super(type, owner, new Vec3(x, y, z), world);
    }
 
    public FlamingWitherSkullEntity(Level world, LivingEntity owner, double x, double y, double z) {
@@ -99,10 +99,13 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
 
          boolean flag;
          if (this.getOwner() instanceof LivingEntity livingOwner) {
-            flag = victim.hurt(damageSource(this, livingOwner), 10.0F);
+            DamageSource source = damageSource(this, livingOwner);
+            flag = victim.hurt(source, 10.0F);
             if (flag) {
                if (victim.isAlive()) {
-                  this.doEnchantDamageEffects(livingOwner, victim);
+                  if (this.level() instanceof ServerLevel serverLevel) {
+                     EnchantmentHelper.doPostAttackEffects(serverLevel, victim, source);
+                  }
                } else {
                   livingOwner.heal(10.0F);
                }
@@ -141,7 +144,7 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
       WitherStormModPacketHandlers.MAIN
          .send(
             PacketDistributor.NEAR
-               .with(TargetPoint.p(this.position().x, this.position().y, this.position().z, 45.0, this.level().dimension())),
+               .with(new TargetPoint(this.position().x, this.position().y, this.position().z, 45.0, this.level().dimension())),
             new ShakeScreenMessage(20.0F, 4.0F)
          );
       this.level()
@@ -163,8 +166,8 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
          if (!item.isEmpty() && item.getItem() instanceof SwordItem) {
             boolean flag = super.hurt(source, amount);
             if (flag && !this.level().isClientSide()) {
-               item.hurtAndBreak(120 + this.random.nextInt(140), entity, e -> e.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateDamagingProjectileMessage(this));
+               item.hurtAndBreak(120 + this.random.nextInt(140), entity, EquipmentSlot.MAINHAND);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(this), new UpdateDamagingProjectileMessage(this));
             }
 
             return flag;
@@ -183,19 +186,17 @@ public class FlamingWitherSkullEntity extends AbstractHurtingProjectile implemen
    }
 
    @NotNull
-   public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+   public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+      return new ClientboundAddEntityPacket(this, serverEntity);
    }
 
    public void writeSpawnData(FriendlyByteBuf buffer) {
-      buffer.writeDouble(this.xPower);
-      buffer.writeDouble(this.yPower);
-      buffer.writeDouble(this.zPower);
+      buffer.writeDouble(this.getDeltaMovement().x);
+      buffer.writeDouble(this.getDeltaMovement().y);
+      buffer.writeDouble(this.getDeltaMovement().z);
    }
 
    public void readSpawnData(FriendlyByteBuf additionalData) {
-      this.xPower = additionalData.readDouble();
-      this.yPower = additionalData.readDouble();
-      this.zPower = additionalData.readDouble();
+      this.setDeltaMovement(additionalData.readDouble(), additionalData.readDouble(), additionalData.readDouble());
    }
 }

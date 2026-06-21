@@ -3,6 +3,8 @@ package nonamecrackers2.witherstormmod.common.packet;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket.AttributeSnapshot;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.registries.ForgeRegistries;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class StormAttributesMessage extends DistantRendererMessage {
@@ -52,12 +53,12 @@ public class StormAttributesMessage extends DistantRendererMessage {
       super.encode(buffer);
       buffer.writeVarInt(this.entityId);
       buffer.writeCollection(this.attributes, (buffer1, snapshot) -> {
-         buffer1.writeResourceLocation(ForgeRegistries.ATTRIBUTES.getKey(snapshot.getAttribute()));
-         buffer1.writeDouble(snapshot.getBase());
-         buffer1.writeCollection(snapshot.getModifiers(), (buffer2, modifier) -> {
-            buffer2.writeUUID(modifier.getId());
-            buffer2.writeDouble(modifier.getAmount());
-            buffer2.writeByte(modifier.getOperation().toValue());
+         buffer1.writeResourceLocation(BuiltInRegistries.ATTRIBUTE.getKey(snapshot.attribute().value()));
+         buffer1.writeDouble(snapshot.base());
+         buffer1.writeCollection(snapshot.modifiers(), (buffer2, modifier) -> {
+            buffer2.writeResourceLocation(modifier.id());
+            buffer2.writeDouble(modifier.amount());
+            buffer2.writeByte(modifier.operation().id());
          });
       });
    }
@@ -69,11 +70,11 @@ public class StormAttributesMessage extends DistantRendererMessage {
       this.attributes = buffer.readList(
          buffer1 -> {
             ResourceLocation location = buffer1.readResourceLocation();
-            Attribute attribute = (Attribute)ForgeRegistries.ATTRIBUTES.getValue(location);
+            Holder<Attribute> attribute = BuiltInRegistries.ATTRIBUTE.getHolder(location).orElseThrow();
             double base = buffer1.readDouble();
             List<AttributeModifier> list = buffer1.readList(
                buffer2 -> new AttributeModifier(
-                     buffer2.readUUID(), "Unknown synced attribute modifier", buffer.readDouble(), Operation.fromValue(buffer.readByte())
+                     buffer2.readResourceLocation(), buffer2.readDouble(), Operation.BY_ID.apply(buffer2.readByte())
                   )
             );
             return new AttributeSnapshot(attribute, base, list);

@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.Goal.Flag;
@@ -118,7 +117,7 @@ public class WitherStormTargetingGoal extends Goal {
    protected void findApplicableTarget() {
       double range = this.storm.getPhase() > 3
          ? this.storm.getAttributeValue(Attributes.FOLLOW_RANGE)
-         : this.storm.getAttributeValue((Attribute)WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE.get());
+         : this.storm.getAttributeValue(WitherStormModAttributes.holder(WitherStormModAttributes.HUNCHBACK_FOLLOW_RANGE));
       List<LivingEntity> nearbyEntities = WorldUtil.getPerformantEntitiesOfClass(
          (ServerLevel)this.storm.level(), LivingEntity.class, this.getTargetSearchArea(range)
       );

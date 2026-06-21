@@ -1,19 +1,16 @@
 package nonamecrackers2.witherstormmod.common.item.crafting.builder;
 
-import com.google.gson.JsonObject;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
-import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
+import nonamecrackers2.witherstormmod.common.item.crafting.AnvilRecipe;
 
 public class AnvilRecipeBuilder implements RecipeBuilder {
    private final Ingredient left;
@@ -39,7 +36,7 @@ public class AnvilRecipeBuilder implements RecipeBuilder {
       );
    }
 
-   public RecipeBuilder unlockedBy(String str, CriterionTriggerInstance instance) {
+   public RecipeBuilder unlockedBy(String str, Criterion<?> instance) {
       return this;
    }
 
@@ -52,36 +49,7 @@ public class AnvilRecipeBuilder implements RecipeBuilder {
       return this.result;
    }
 
-   public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-      consumer.accept(new AnvilRecipeBuilder.Result(id, this.group == null ? "" : this.group, this.left, this.right, this.result, this.xpCost));
-   }
-
-   public static record Result(ResourceLocation id, String group, Ingredient left, Ingredient right, Item result, int xpCost) implements FinishedRecipe {
-      public void serializeRecipeData(JsonObject object) {
-         if (!this.group.isEmpty()) {
-            object.addProperty("group", this.group);
-         }
-
-         object.add("left", this.left.toJson());
-         object.add("right", this.right.toJson());
-         object.addProperty("cost", this.xpCost);
-         object.addProperty("result", ForgeRegistries.ITEMS.getKey(this.result).toString());
-      }
-
-      public ResourceLocation getId() {
-         return this.id;
-      }
-
-      public RecipeSerializer<?> getType() {
-         return (RecipeSerializer<?>)WitherStormModRecipeSerializers.ANVIL_RECIPE.get();
-      }
-
-      public JsonObject serializeAdvancement() {
-         return null;
-      }
-
-      public ResourceLocation getAdvancementId() {
-         return null;
-      }
+   public void save(RecipeOutput output, ResourceLocation id) {
+      output.accept(id, new AnvilRecipe(id, this.left, this.right, new ItemStack(this.result), this.xpCost), null);
    }
 }

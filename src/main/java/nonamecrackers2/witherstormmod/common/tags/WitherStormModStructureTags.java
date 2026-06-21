@@ -8,7 +8,7 @@ import nonamecrackers2.witherstormmod.WitherStormMod;
 
 public class WitherStormModStructureTags {
    public static final TagKey<Structure> WITHER_STORM_DISTRACTABLE = TagKey.create(
-      Registries.STRUCTURE, new ResourceLocation("witherstormmod", "wither_storm_distractable")
+      Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_distractable")
    );
    public static final TagKey<Structure> STORM_SPAWN_PLATFORMS = TagKey.create(Registries.STRUCTURE, WitherStormMod.id("storm_spawn_platforms"));
 }

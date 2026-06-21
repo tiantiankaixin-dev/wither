@@ -27,7 +27,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -46,6 +45,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModFeatures;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.packet.CreateDebrisMessage;
 import nonamecrackers2.witherstormmod.common.util.EvolutionProfiler;
+import nonamecrackers2.witherstormmod.common.util.PotionStackUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 import nonamecrackers2.witherstormmod.common.world.gen.feature.CommandBlockPodiumFeature;
 
@@ -180,7 +180,7 @@ public class DebugCommands {
          if (entity instanceof WitherStormEntity storm) {
             phase = storm.getPhase();
             WitherStormModPacketHandlers.MAIN
-               .send(PacketDistributor.DIMENSION.with(() -> storm.level().dimension()), new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
+               .send(PacketDistributor.DIMENSION.with(storm.level().dimension()), new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
             source.sendSuccess(() -> Component.translatable("commands.witherstormmod.createDebris.success", new Object[]{storm.getDisplayName()}), true);
          } else {
             source.sendFailure(Component.translatable("commands.witherstormmod.entity.arg.invalid"));
@@ -278,8 +278,8 @@ public class DebugCommands {
       ServerPlayer player = ((CommandSourceStack)context.getSource()).getPlayer();
       ThrownPotion potion = new ThrownPotion(player.level(), player);
       ItemStack item = new ItemStack(Items.SPLASH_POTION);
-      PotionUtils.setPotion(item, Potions.WATER);
-      PotionUtils.setCustomEffects(item, Lists.newArrayList(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 60, 2)}));
+      PotionStackUtil.setPotion(item, Potions.WATER);
+      PotionStackUtil.setCustomEffects(item, Lists.newArrayList(new MobEffectInstance[]{new MobEffectInstance(MobEffects.WITHER, 60, 2)}));
       potion.setItem(item);
       player.level().addFreshEntity(potion);
       return 0;

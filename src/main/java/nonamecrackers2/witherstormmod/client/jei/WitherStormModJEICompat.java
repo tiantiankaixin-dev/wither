@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 import nonamecrackers2.witherstormmod.client.jei.category.SuperBeaconItemCrafting;
@@ -30,7 +31,7 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRe
 
 @JeiPlugin
 public class WitherStormModJEICompat implements IModPlugin {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "jei_compat");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "jei_compat");
    public static final RecipeType<ItemCraftSuperBeaconRecipe> SUPER_BEACON_ITEM_CRAFTING = RecipeType.create(
       "witherstormmod", "item_craft_super_beacon", ItemCraftSuperBeaconRecipe.class
    );
@@ -46,10 +47,10 @@ public class WitherStormModJEICompat implements IModPlugin {
       Minecraft mc = Minecraft.getInstance();
       RecipeManager manager = mc.level.getRecipeManager();
       registration.addRecipes(
-         SUPER_BEACON_ITEM_CRAFTING, manager.getAllRecipesFor((net.minecraft.world.item.crafting.RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get())
+         SUPER_BEACON_ITEM_CRAFTING, manager.getAllRecipesFor(WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get()).stream().map(RecipeHolder::value).toList()
       );
       registration.addRecipes(
-         SUPER_BEACON_SUMMONING, manager.getAllRecipesFor((net.minecraft.world.item.crafting.RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get())
+         SUPER_BEACON_SUMMONING, manager.getAllRecipesFor(WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get()).stream().map(RecipeHolder::value).toList()
       );
       Component info = Component.translatable("withered_beacon.info");
       registration.addItemStackInfo(new ItemStack((ItemLike)WitherStormModBlocks.SUPER_BEACON.get()), new Component[]{info});
@@ -60,7 +61,8 @@ public class WitherStormModJEICompat implements IModPlugin {
       registration.addItemStackInfo(new ItemStack((ItemLike)WitherStormModBlocks.TAINTED_JACK_O_LANTERN.get()), new Component[]{pumpkinInfo});
       List<IJeiAnvilRecipe> recipes = Lists.newArrayList();
 
-      for (AnvilRecipe recipe : manager.getAllRecipesFor((net.minecraft.world.item.crafting.RecipeType<AnvilRecipe>)WitherStormModRecipeTypes.ANVIL.get())) {
+      for (RecipeHolder<AnvilRecipe> holder : manager.getAllRecipesFor(WitherStormModRecipeTypes.ANVIL.get())) {
+         AnvilRecipe recipe = holder.value();
          recipes.add(
             registration.getVanillaRecipeFactory()
                .createAnvilRecipe(

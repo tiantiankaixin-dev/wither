@@ -1,5 +1,6 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -33,6 +34,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 
 public class TaintedCarvedPumpkinBlock extends HorizontalDirectionalBlock implements Equipable {
+   public static final MapCodec<TaintedCarvedPumpkinBlock> CODEC = simpleCodec(TaintedCarvedPumpkinBlock::new);
    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
    @Nullable
    private BlockPattern taintedSnowGolemBase;
@@ -51,6 +53,11 @@ public class TaintedCarvedPumpkinBlock extends HorizontalDirectionalBlock implem
    public TaintedCarvedPumpkinBlock(Properties properties) {
       super(properties);
       this.registerDefaultState((BlockState)((BlockState)this.stateDefinition.any()).setValue(FACING, Direction.NORTH));
+   }
+
+   @Override
+   protected MapCodec<TaintedCarvedPumpkinBlock> codec() {
+      return CODEC;
    }
 
    public boolean canSpawnGolem(LevelReader level, BlockPos pos) {

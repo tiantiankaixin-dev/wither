@@ -11,14 +11,12 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent.Pre;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent.Chat;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEffects;
 
 public class RenderWitherSicknessOverlay {
-   private static final ResourceLocation WITHER_SICKNESS_ICONS = new ResourceLocation("witherstormmod", "textures/gui/wither_sickness.png");
+   private static final ResourceLocation WITHER_SICKNESS_ICONS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/wither_sickness.png");
    private final RandomSource random = RandomSource.create();
    private int lastHealth;
    private int displayHealth;
@@ -26,19 +24,16 @@ public class RenderWitherSicknessOverlay {
    private long healthBlinkTime;
 
    @SubscribeEvent
-   public void renderOverlay(Pre event) {
+   public void renderOverlay(Chat event) {
       Minecraft mc = Minecraft.getInstance();
-      ForgeGui gui = (ForgeGui)mc.gui;
-      if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type() && !mc.options.hideGui && gui.shouldDrawSurvivalElements()) {
+      if (!mc.options.hideGui && mc.player != null) {
          LocalPlayer player = mc.player;
-         if (player.hasEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get())) {
-            gui.setupOverlayRenderState(true, false);
+         if (player.hasEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS))) {
             int width = event.getWindow().getGuiScaledWidth();
             int height = event.getWindow().getGuiScaledHeight();
-            event.setCanceled(true);
             RenderSystem.enableBlend();
             int health = Mth.ceil(player.getHealth());
-            int tickCount = gui.getGuiTicks();
+            int tickCount = mc.gui.getGuiTicks();
             boolean highlight = this.healthBlinkTime > (long)tickCount && (this.healthBlinkTime - (long)tickCount) / 3L % 2L == 1L;
             if (health < this.lastHealth && player.invulnerableTime > 0) {
                this.lastHealthTime = Util.getMillis();
@@ -63,11 +58,7 @@ public class RenderWitherSicknessOverlay {
             int rowHeight = Math.max(10 - (healthRows - 2), 3);
             this.random.setSeed((long)(tickCount * 312871));
             int left = width / 2 - 91;
-            int top = height - gui.leftHeight;
-            gui.leftHeight += healthRows * rowHeight;
-            if (rowHeight != 10) {
-               gui.leftHeight += 10 - rowHeight;
-            }
+            int top = height - 39;
 
             int regen = -1;
             if (player.hasEffect(MobEffects.REGENERATION)) {

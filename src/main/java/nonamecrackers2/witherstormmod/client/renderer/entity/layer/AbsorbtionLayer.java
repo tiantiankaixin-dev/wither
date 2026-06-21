@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -15,7 +16,7 @@ import nonamecrackers2.witherstormmod.client.rendertype.UtilRenderTypes;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
 public class AbsorbtionLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/misc/absorbtion.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/absorbtion.png");
    private static final RenderType RENDER_TYPE = UtilRenderTypes.entityDecalTranslucent(TEXTURE);
 
    public AbsorbtionLayer(RenderLayerParent<T, M> parent) {
@@ -55,6 +56,6 @@ public class AbsorbtionLayer<T extends LivingEntity, M extends EntityModel<T>> e
    }
 
    private void renderOverlay(PoseStack stack, MultiBufferSource buffer, int packedLight, T entity, float alpha) {
-      this.getParentModel().renderToBuffer(stack, buffer.getBuffer(RENDER_TYPE), packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, alpha);
+      this.getParentModel().renderToBuffer(stack, buffer.getBuffer(RENDER_TYPE), packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
    }
 }

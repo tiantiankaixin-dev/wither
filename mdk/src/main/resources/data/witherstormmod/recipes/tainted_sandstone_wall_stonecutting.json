@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 1,
-  "ingredient": {
-    "item": "witherstormmod:tainted_sandstone"
-  },
-  "result": "witherstormmod:tainted_sandstone_wall"
-}

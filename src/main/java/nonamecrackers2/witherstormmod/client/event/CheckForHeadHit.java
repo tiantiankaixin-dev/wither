@@ -39,7 +39,7 @@ public class CheckForHeadHit {
                   if (storm.tractorBeamActive(head.getIndex())) {
                      Vec3 pos = localPlayer.getEyePosition(1.0F);
                      Vec3 eye = localPlayer.getViewVector(1.0F);
-                     float pickRange = mc.gameMode.getPickRange();
+                     float pickRange = (float)localPlayer.blockInteractionRange();
                      Vec3 reach = pos.add(eye.x * (double)pickRange, eye.y * (double)pickRange, eye.z * (double)pickRange);
                      if (WorldUtil.checkForIntersect(head.getBoundingBox(), pos, reach)) {
                         if (head.getHeadInjureAttemptCooldown() <= 0 && head.getHeadInjuryTicks() <= 0 && !storm.isDeadOrPlayingDead()) {

@@ -3,6 +3,7 @@ package nonamecrackers2.witherstormmod.common.init;
 import java.util.Optional;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -38,14 +39,14 @@ public class WitherStormModSymbiontSpellTypes {
          int randomFireball = s.getRandom().nextInt(7);
 
          FireballSpell.ProjectileFactory factory = switch (randomFireball) {
-            case 0 -> SmallFireball::new;
+            case 0 -> (level, entity, x, y, z) -> new SmallFireball(level, entity, new Vec3(x, y, z));
             case 1 -> (level, entity, x, y, z) -> {
-            DragonFireball fireball = new DragonFireball(level, entity, x, y, z);
+            DragonFireball fireball = new DragonFireball(level, entity, new Vec3(x, y, z));
             ((DragonFireballAccessor)fireball).setCreatedBySymbiont(true);
             return fireball;
          };
             case 2 -> FlamingWitherSkullEntity::new;
-            default -> (level, entity, x, y, z) -> new LargeFireball(level, entity, x, y, z, 1);
+            default -> (level, entity, x, y, z) -> new LargeFireball(level, entity, new Vec3(x, y, z), 1);
          };
 
          int amount = switch (randomFireball) {

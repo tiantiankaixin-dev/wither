@@ -44,14 +44,14 @@ public class WitherStormSyncHelper {
    public static void onPlayerStartTracking(StartTracking event) {
       Entity target = event.getTarget();
       if (event.getEntity() instanceof ServerPlayer player && target instanceof WitherStormEntity storm) {
-         PacketTarget packetTarget = PacketDistributor.PLAYER.with(() -> player);
+         PacketTarget packetTarget = PacketDistributor.PLAYER.with(player);
          storm.getPlayDeadManager().sendChanges(packetTarget, false);
          WitherStormModPacketHandlers.MAIN.send(packetTarget, new CreateDebrisMessage(storm, storm.isDeadOrPlayingDead()));
       }
    }
 
    private static void sendWitherStormsToPlayer(ServerPlayer player) {
-      WorldUtil.getAllStorms(player.serverLevel()).forEach(storm -> sendWitherStormToClient(PacketDistributor.PLAYER.with(() -> player), storm));
+      WorldUtil.getAllStorms(player.serverLevel()).forEach(storm -> sendWitherStormToClient(PacketDistributor.PLAYER.with(player), storm));
    }
 
    public static void sendWitherStormToClient(PacketTarget target, WitherStormEntity storm) {
@@ -67,7 +67,7 @@ public class WitherStormSyncHelper {
    }
 
    public static void sendWitherStormToClient(WitherStormEntity storm) {
-      sendWitherStormToClient(PacketDistributor.DIMENSION.with(storm.level()::dimension), storm);
+      sendWitherStormToClient(PacketDistributor.DIMENSION.with(storm.level().dimension()), storm);
    }
 
    public static void removeWitherStorm(PacketTarget target, WitherStormEntity storm) {
@@ -79,6 +79,6 @@ public class WitherStormSyncHelper {
    }
 
    public static void removeWitherStorm(WitherStormEntity storm) {
-      removeWitherStorm(PacketDistributor.DIMENSION.with(storm.level()::dimension), storm);
+      removeWitherStorm(PacketDistributor.DIMENSION.with(storm.level().dimension()), storm);
    }
 }

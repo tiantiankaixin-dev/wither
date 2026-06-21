@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpyglassItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.HitResult.Type;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.ultimatetarget.UltimateTargetManager;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 
 public class PhasometerItem extends SpyglassItem {
@@ -35,7 +37,7 @@ public class PhasometerItem extends SpyglassItem {
    }
 
    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-      clearDataTags(player.getItemInHand(hand).getOrCreateTag());
+      clearDataTags(ItemStackDataUtil.getOrCreateTag(player.getItemInHand(hand)));
       return super.use(level, player, hand);
    }
 
@@ -45,7 +47,7 @@ public class PhasometerItem extends SpyglassItem {
          Vec3 view = entity.getViewVector(1.0F);
          Vec3 end = pos.add(view.scale(10000.0));
          EntityHitResult result = ProjectileUtil.getEntityHitResult(entity.level(), entity, pos, end, new AABB(pos, end).inflate(1.0), e -> !e.isSpectator(), 0.0F);
-         CompoundTag tag = item.getOrCreateTag();
+         CompoundTag tag = ItemStackDataUtil.getOrCreateTag(item);
          if (result != null
             && result.getType() == Type.ENTITY
             && result.getEntity() instanceof WitherStormEntity storm
@@ -100,12 +102,13 @@ public class PhasometerItem extends SpyglassItem {
    }
 
    public ItemStack finishUsingItem(ItemStack item, Level level, LivingEntity entity) {
-      clearDataTags(item.getOrCreateTag());
+      clearDataTags(ItemStackDataUtil.getOrCreateTag(item));
       return super.finishUsingItem(item, level, entity);
    }
 
-   public void appendHoverText(ItemStack stack, Level level, List<Component> text, TooltipFlag flag) {
-      CompoundTag tag = stack.getOrCreateTag();
+   @Override
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       text.add(Component.translatable("description.phasometer.use").withStyle(ChatFormatting.DARK_GRAY));
       if (tag.getBoolean("IsUpgraded")) {
          text.add(Component.translatable("description.phasometer.use.upgraded").withStyle(ChatFormatting.GOLD));
@@ -113,7 +116,7 @@ public class PhasometerItem extends SpyglassItem {
    }
 
    public boolean isUpgraded(ItemStack stack) {
-      return stack.getOrCreateTag().getBoolean("IsUpgraded");
+      return ItemStackDataUtil.getOrCreateTag(stack).getBoolean("IsUpgraded");
    }
 
    public static enum DataEntry {

@@ -19,10 +19,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +45,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.serializer.WitherStormModDataSerializers;
@@ -157,7 +158,7 @@ public class BlockClusterEntity extends Entity {
             if (state.hasBlockEntity()) {
                BlockEntity tile = this.level().getBlockEntity(pos);
                if (tile != null) {
-                  this.addTileData(tile.serializeNBT());
+                  this.addTileData(tile.saveWithFullMetadata(this.level().registryAccess()));
                   this.level().removeBlockEntity(pos);
                }
             }
@@ -193,7 +194,7 @@ public class BlockClusterEntity extends Entity {
                      if (state.hasBlockEntity()) {
                         BlockEntity tile = this.level().getBlockEntity(currentPos);
                         if (tile != null) {
-                           this.addTileData(tile.serializeNBT());
+                           this.addTileData(tile.saveWithFullMetadata(this.level().registryAccess()));
                            this.level().removeBlockEntity(currentPos);
                         }
                      }
@@ -215,25 +216,25 @@ public class BlockClusterEntity extends Entity {
       this.time = time;
    }
 
-   protected void defineSynchedData() {
-      this.entityData.define(START_POS, BlockPos.ZERO);
-      this.entityData.define(BLOCKS, new HashMap());
-      this.entityData.define(TILE_DATA, new ArrayList());
-      this.entityData.define(ROTATION_DELTA, new Vec2(0.0F, 0.0F));
-      this.entityData.define(PHYSICS, true);
-      this.entityData.define(FORCE_RENDER, false);
-      this.entityData.define(X_SIZE, 1.0F);
-      this.entityData.define(Y_SIZE, 1.0F);
-      this.entityData.define(Z_SIZE, 1.0F);
-      this.entityData.define(SHAKE_TIME, 0);
-      this.entityData.define(FADE_POINT, Optional.empty());
-      this.entityData.define(FADE_STRENGTH, 10.0F);
-      this.entityData.define(FADE_DISTANCE_OFFSET, 0);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      builder.define(START_POS, BlockPos.ZERO);
+      builder.define(BLOCKS, new HashMap());
+      builder.define(TILE_DATA, new ArrayList());
+      builder.define(ROTATION_DELTA, new Vec2(0.0F, 0.0F));
+      builder.define(PHYSICS, true);
+      builder.define(FORCE_RENDER, false);
+      builder.define(X_SIZE, 1.0F);
+      builder.define(Y_SIZE, 1.0F);
+      builder.define(Z_SIZE, 1.0F);
+      builder.define(SHAKE_TIME, 0);
+      builder.define(FADE_POINT, Optional.empty());
+      builder.define(FADE_STRENGTH, 10.0F);
+      builder.define(FADE_DISTANCE_OFFSET, 0);
    }
 
    protected void readAdditionalSaveData(CompoundTag compound) {
       if (compound.contains("StartPos")) {
-         this.setStartPos(NbtUtils.readBlockPos(compound.getCompound("StartPos")));
+         WitherStormModNBTUtil.readBlockPos(compound, "StartPos").ifPresent(this::setStartPos);
       }
 
       if (compound.contains("Blocks")) {
@@ -276,7 +277,7 @@ public class BlockClusterEntity extends Entity {
       this.setSink(compound.getInt("GroundSink"));
       this.setAntiStacking(compound.getBoolean("AntiStacking"));
       if (compound.contains("StaticFadePos")) {
-         this.entityData.set(FADE_POINT, Optional.of(NbtUtils.readBlockPos(compound.getCompound("StaticFadePos"))));
+         this.entityData.set(FADE_POINT, WitherStormModNBTUtil.readBlockPos(compound, "StaticFadePos"));
       }
 
       this.shouldCrumble = compound.getBoolean("ShouldCrumble");
@@ -480,7 +481,7 @@ public class BlockClusterEntity extends Entity {
                      tileData.putInt("x", placementPos.getX());
                      tileData.putInt("y", placementPos.getY());
                      tileData.putInt("z", placementPos.getZ());
-                     tile.load(tileData);
+                     tile.loadWithComponents(tileData, this.level().registryAccess());
                      tile.setChanged();
                   }
                }
@@ -571,8 +572,8 @@ public class BlockClusterEntity extends Entity {
       );
    }
 
-   public Packet<ClientGamePacketListener> getAddEntityPacket() {
-      return NetworkHooks.getEntitySpawningPacket(this);
+   public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+      return new ClientboundAddEntityPacket(this, serverEntity);
    }
 
    public int getSize() {
@@ -746,7 +747,7 @@ public class BlockClusterEntity extends Entity {
       return this.tractorBeamDistanceThreshold;
    }
 
-   public boolean canChangeDimensions() {
+   public boolean canChangeDimensions(Level currentLevel, Level destinationLevel) {
       return false;
    }
 

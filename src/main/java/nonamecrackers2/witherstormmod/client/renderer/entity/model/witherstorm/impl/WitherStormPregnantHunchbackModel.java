@@ -91,7 +91,7 @@ public class WitherStormPregnantHunchbackModel<T extends WitherStormEntity> exte
 
    @Override
    protected void renderExtra(PoseStack stack, VertexConsumer consumer, int packedLight, int overlayTexture, float r, float g, float b, float a) {
-      this.base.render(stack, consumer, packedLight, overlayTexture, r, g, b, a);
+      this.base.render(stack, consumer, packedLight, overlayTexture, color(a, r, g, b));
    }
 
    @Override

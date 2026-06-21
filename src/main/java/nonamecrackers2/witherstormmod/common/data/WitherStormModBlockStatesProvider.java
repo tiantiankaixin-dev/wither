@@ -401,7 +401,7 @@ public class WitherStormModBlockStatesProvider extends BlockStateProvider {
    }
 
    private ResourceLocation extend(ResourceLocation rl, String suffix) {
-      return new ResourceLocation(rl.getNamespace(), rl.getPath() + suffix);
+      return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + suffix);
    }
 
    private void pumpkin(Block block, ResourceLocation side, ResourceLocation front, ResourceLocation top) {

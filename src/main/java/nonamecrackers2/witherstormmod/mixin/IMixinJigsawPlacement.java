@@ -7,8 +7,10 @@ import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +30,9 @@ public interface IMixinJigsawPlacement {
       Registry<StructureTemplatePool> registry,
       PoolElementStructurePiece start,
       List<PoolElementStructurePiece> pieces,
-      VoxelShape maxDistShape
+      VoxelShape maxDistShape,
+      PoolAliasLookup poolAliasLookup,
+      LiquidSettings liquidSettings
    ) {
       throw new AssertionError();
    }

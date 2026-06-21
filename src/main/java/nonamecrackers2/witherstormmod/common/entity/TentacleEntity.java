@@ -29,7 +29,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.Entity.MoveFunction;
@@ -44,6 +43,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.Level;
@@ -56,7 +56,7 @@ import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import nonamecrackers2.witherstormmod.common.entity.part.TentaclePartEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
@@ -157,22 +157,22 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       this.targetSelector.addGoal(1, new TentacleEntity.TargetGoal(this, Animal.class, true, true));
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DORMANT, false);
-      this.entityData.define(ANIMATION_OFFSET, 0);
-      this.entityData.define(XOFFSET, 20.0F);
-      this.entityData.define(YOFFSET, 0.0F);
-      this.entityData.define(OFFSETSTEPS, 0);
-      this.entityData.define(SHOULDWRAPY, true);
-      this.entityData.define(XOFFSETANIM, 0.0F);
-      this.entityData.define(YOFFSETANIM, 0.0F);
-      this.entityData.define(XCURL, 1.3F);
-      this.entityData.define(YCURL, 1.0F);
-      this.entityData.define(CURLSTEPS, 0);
-      this.entityData.define(XCURLANIM, 0.0F);
-      this.entityData.define(YCURLANIM, 0.0F);
-      this.entityData.define(LASTXCURLANIM, 0.0F);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(DORMANT, false);
+      builder.define(ANIMATION_OFFSET, 0);
+      builder.define(XOFFSET, 20.0F);
+      builder.define(YOFFSET, 0.0F);
+      builder.define(OFFSETSTEPS, 0);
+      builder.define(SHOULDWRAPY, true);
+      builder.define(XOFFSETANIM, 0.0F);
+      builder.define(YOFFSETANIM, 0.0F);
+      builder.define(XCURL, 1.3F);
+      builder.define(YCURL, 1.0F);
+      builder.define(CURLSTEPS, 0);
+      builder.define(XCURLANIM, 0.0F);
+      builder.define(YCURLANIM, 0.0F);
+      builder.define(LASTXCURLANIM, 0.0F);
    }
 
    public void readAdditionalSaveData(CompoundTag compound) {
@@ -322,7 +322,7 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       this.tentacle.setYRot(this.getYRot());
       if (!this.level().isClientSide && this.tickCount % 120 == 0) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
+            .send(PacketDistributor.TRACKING_ENTITY.with(this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
       }
 
       if (!this.isDeadOrDying()) {
@@ -359,12 +359,15 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
                      this.level().broadcastEntityEvent(player, (byte)30);
                   }
 
-                  boolean flag = target.hurt(this.damageSources().mobAttack(this), (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3.5F);
+                  DamageSource source = this.damageSources().mobAttack(this);
+                  boolean flag = target.hurt(source, (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3.5F);
                   if (flag) {
                      target.knockback(
                         (double)((float)this.getAttributeValue(Attributes.ATTACK_KNOCKBACK)), this.getX() - target.getX(), this.getZ() - target.getZ()
                      );
-                     this.doEnchantDamageEffects(this, target);
+                     if (this.level() instanceof ServerLevel serverLevel) {
+                        EnchantmentHelper.doPostAttackEffects(serverLevel, target, source);
+                     }
                      this.setLastHurtByMob(target);
                   }
                }
@@ -424,14 +427,14 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
    public boolean canBeAffected(MobEffectInstance effect) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
-   protected float getStandingEyeHeight(Pose pose, EntityDimensions size) {
-      return size.height / 2.0F;
+   @Override
+   protected EntityDimensions getDefaultDimensions(Pose pose) {
+      EntityDimensions size = super.getDefaultDimensions(pose);
+      return size.withEyeHeight(size.height() / 2.0F);
    }
 
    public void startSleeping(BlockPos pos) {
@@ -472,10 +475,10 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       this.entityData.set(ANIMATION_OFFSET, offset);
    }
 
-   public Packet<ClientGamePacketListener> getAddEntityPacket() {
+   public Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
       WitherStormModPacketHandlers.MAIN
-         .send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
-      return super.getAddEntityPacket();
+         .send(PacketDistributor.TRACKING_ENTITY.with(this), new TentacleEntity.UpdateAnimationMessage(this.getId(), this.tentacleAnim));
+      return super.getAddEntityPacket(serverEntity);
    }
 
    public TentaclePartEntity<TentacleEntity> getTentacle() {
@@ -735,12 +738,12 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
    protected void pushEntities() {
    }
 
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData existing, CompoundTag data) {
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData existing) {
       this.setSavedYOffset((float)this.random.nextInt(360));
       this.setSavedXOffset(15.0F + this.random.nextFloat() * 5.0F);
       this.setSavedXCurl(1.25F + this.random.nextFloat() * 0.1F);
       this.setAnimationOffset(this.random.nextInt(35) * 10000);
-      return super.finalizeSpawn(world, difficulty, reason, existing, data);
+      return super.finalizeSpawn(world, difficulty, reason, existing);
    }
 
    public void setCanStrangle(boolean canStrangle) {
@@ -917,7 +920,7 @@ public class TentacleEntity extends Monster implements IMultipartHurtable<Tentac
       }
    }
 
-   public static class UpdateAnimationMessage extends nonamecrackers2.crackerslib.common.packet.Packet {
+   public static class UpdateAnimationMessage extends nonamecrackers2.witherstormmod.common.network.Packet {
       private int id;
       private int anim;
 

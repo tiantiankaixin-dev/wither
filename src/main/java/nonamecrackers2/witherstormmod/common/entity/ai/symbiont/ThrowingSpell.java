@@ -21,13 +21,13 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
+import nonamecrackers2.witherstormmod.common.util.PotionStackUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ThrowingSpell extends SymbiontSpell {
@@ -51,9 +51,9 @@ public class ThrowingSpell extends SymbiontSpell {
             projectile.setXRot(projectile.getXRot() - -20.0F);
             MobEffectInstance potion = getPotion(randomPotion);
             ItemStack stack = new ItemStack(Items.SPLASH_POTION);
-            PotionUtils.setPotion(stack, Potions.WATER);
+            PotionStackUtil.setPotion(stack, Potions.WATER);
             if (potion != null) {
-               PotionUtils.setCustomEffects(stack, Lists.newArrayList(new MobEffectInstance[]{potion}));
+               PotionStackUtil.setCustomEffects(stack, Lists.newArrayList(new MobEffectInstance[]{potion}));
             }
 
             thrownPotion.setItem(stack);
@@ -135,8 +135,8 @@ public class ThrowingSpell extends SymbiontSpell {
       return switch (randomProjectile) {
          case 0 -> new ThrownPotion(this.entity.level(), this.entity);
          case 1 -> new Snowball(this.entity.level(), this.entity);
-         case 2 -> new Arrow(this.entity.level(), this.entity);
-         case 3 -> new SpectralArrow(this.entity.level(), this.entity);
+         case 2 -> new Arrow(this.entity.level(), this.entity, new ItemStack(Items.ARROW), null);
+         case 3 -> new SpectralArrow(this.entity.level(), this.entity, new ItemStack(Items.SPECTRAL_ARROW), null);
          default -> new ThrownTrident(this.entity.level(), this.entity, new ItemStack(Items.TRIDENT));
       };
    }

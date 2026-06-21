@@ -42,6 +42,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ChunkPos;
@@ -71,7 +72,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -486,7 +487,7 @@ public class WorldUtil {
       Set<Holder<Structure>> set, LevelReader level, StructureManager manager, boolean addReference, StructurePlacement placement, ChunkPos pos
    ) {
       for (Holder<Structure> holder : set) {
-         StructureCheckResult structurecheckresult = manager.checkStructurePresence(pos, (Structure)holder.value(), addReference);
+         StructureCheckResult structurecheckresult = manager.checkStructurePresence(pos, (Structure)holder.value(), placement, addReference);
          if (structurecheckresult != StructureCheckResult.START_NOT_PRESENT) {
             ChunkAccess chunkaccess = level.getChunk(pos.x, pos.z, ChunkStatus.STRUCTURE_STARTS);
             StructureStart structurestart = manager.getStartForStructure(SectionPos.bottomOf(chunkaccess), (Structure)holder.value(), chunkaccess);
@@ -534,7 +535,7 @@ public class WorldUtil {
       int dripStoneLengthChance = (int)(6.0 * (1.0 - Math.sqrt(rumbleIntensity)));
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.PLAYER.with(() -> player),
+            PacketDistributor.PLAYER.with(player),
             new ShakeScreenMessage(180.0F, (float)(12.0 * Math.sqrt((Double)WitherStormModConfig.SERVER.caveRumbleIntensity.get())))
          );
       player.playNotifySound(WitherStormModSoundEvents.EARTH_RUMBLE.get(), SoundSource.AMBIENT, 1.0F, 1.0F);
@@ -669,7 +670,7 @@ public class WorldUtil {
                   } else if (block instanceof ButtonBlock) {
                      ButtonBlock buttonBlock = (ButtonBlock)block;
                      if ((Boolean)WitherStormModConfig.SERVER.caveRumblesMessWithRedstone.get()) {
-                        buttonBlock.press(state, level, pos);
+                        buttonBlock.press(state, level, pos, player);
                      }
                   } else if (block instanceof PressurePlateBlock) {
                      if ((Boolean)WitherStormModConfig.SERVER.caveRumblesMessWithRedstone.get()) {
@@ -705,7 +706,7 @@ public class WorldUtil {
       if (pos != null && hasEnoughSpace(world, type.getDimensions(), pos)) {
          Mob entity = (Mob)type.create(world);
          DifficultyInstance difficulty = world.getCurrentDifficultyAt(entity.blockPosition());
-         ForgeEventFactory.onFinalizeSpawn(entity, world, difficulty, MobSpawnType.TRIGGERED, null, null);
+         ForgeEventFactory.onFinalizeSpawn(entity, world, difficulty, MobSpawnType.TRIGGERED, null);
          if (WitherSickened.CAN_WEAR_ARMOR.test(entity) && entity instanceof Monster monster) {
             EquipmentHelper.applyEquipment(monster, difficulty, advancedMobs);
          }
@@ -750,7 +751,7 @@ public class WorldUtil {
          int z = start.getZ() + random.nextInt(diameter) - diameter / 2;
          int y = level.getHeightmapPos(Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z)).getY();
          BlockPos pos = new BlockPos(x, y, z);
-         if (NaturalSpawner.isSpawnPositionOk(net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND, level, pos, type) && pos.distSqr(start) > 6.0) {
+         if (SpawnPlacements.isSpawnPositionOk(type, level, pos) && pos.distSqr(start) > 6.0) {
             return pos;
          }
       }
@@ -760,7 +761,7 @@ public class WorldUtil {
 
    private static boolean hasEnoughSpace(Level level, EntityDimensions dimensions, BlockPos spawnPos) {
       for (BlockPos pos : BlockPos.betweenClosed(
-         spawnPos, spawnPos.offset(BlockPos.containing((double)dimensions.width, (double)dimensions.height, (double)dimensions.width))
+         spawnPos, spawnPos.offset(BlockPos.containing((double)dimensions.width(), (double)dimensions.height(), (double)dimensions.width()))
       )) {
          if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
             return false;

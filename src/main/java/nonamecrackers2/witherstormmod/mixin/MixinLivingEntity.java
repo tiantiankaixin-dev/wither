@@ -121,7 +121,7 @@ implements LivingEntityAccessor {
 
     @Inject(method={"canAttack"}, at={@At(value="HEAD")}, cancellable=true)
     public void witherstormmod$preventCertainMobsFromAttackingSickenedMobs_canAttack(LivingEntity entity, CallbackInfoReturnable<Boolean> ci) {
-        if (((Object)this) instanceof WitherBoss && (entity.getType().is(WitherStormModEntityTags.SICKENED_MOBS) || entity instanceof WitherSickened || entity.getMobType() == WitherStormModMobTypes.SICKENED)) {
+        if (((Object)this) instanceof WitherBoss && (entity.getType().is(WitherStormModEntityTags.SICKENED_MOBS) || entity instanceof WitherSickened || WitherStormModMobTypes.isSickened(entity))) {
             ci.setReturnValue(false);
         }
     }

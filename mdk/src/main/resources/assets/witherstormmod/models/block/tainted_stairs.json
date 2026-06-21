@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "witherstormmod:block/tainted_planks",
-    "side": "witherstormmod:block/tainted_planks",
-    "top": "witherstormmod:block/tainted_planks"
-  }
-}

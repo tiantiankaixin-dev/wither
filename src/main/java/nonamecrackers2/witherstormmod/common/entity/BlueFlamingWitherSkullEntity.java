@@ -53,7 +53,7 @@ public class BlueFlamingWitherSkullEntity extends FlamingWitherSkullEntity {
       WitherStormModPacketHandlers.MAIN
          .send(
             PacketDistributor.NEAR
-               .with(TargetPoint.p(this.position().x, this.position().y, this.position().z, 60.0, this.level().dimension())),
+               .with(new TargetPoint(this.position().x, this.position().y, this.position().z, 60.0, this.level().dimension())),
             new ShakeScreenMessage(20.0F, 6.0F)
          );
       this.level()

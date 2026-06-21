@@ -7,12 +7,13 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.WitheredSymbiontModel;
 import nonamecrackers2.witherstormmod.client.rendertype.UtilRenderTypes;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 
 public class WitheredSymbiontTearLayer extends RenderLayer<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_tear.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/withered_symbiont/withered_symbiont_tear.png");
 
    public WitheredSymbiontTearLayer(RenderLayerParent<WitheredSymbiontEntity, WitheredSymbiontModel<WitheredSymbiontEntity>> parent) {
       super(parent);
@@ -32,6 +33,12 @@ public class WitheredSymbiontTearLayer extends RenderLayer<WitheredSymbiontEntit
    ) {
       VertexConsumer consumer = buffer.getBuffer(UtilRenderTypes.emissiveTranslucent(TEXTURE));
       ((WitheredSymbiontModel)this.getParentModel())
-         .renderToBuffer(stack, consumer, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, entity.getTearAlpha(partialTicks));
+         .renderToBuffer(
+            stack,
+            consumer,
+            15728640,
+            OverlayTexture.NO_OVERLAY,
+            FastColor.ARGB32.colorFromFloat(entity.getTearAlpha(partialTicks), 1.0F, 1.0F, 1.0F)
+         );
    }
 }

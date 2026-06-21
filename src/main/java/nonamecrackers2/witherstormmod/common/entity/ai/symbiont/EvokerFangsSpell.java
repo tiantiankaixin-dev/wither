@@ -22,6 +22,7 @@ import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 
 public class EvokerFangsSpell extends SymbiontSpell {
@@ -106,8 +107,12 @@ public class EvokerFangsSpell extends SymbiontSpell {
 
    private static void addAttributes(Mob mob) {
       Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH))
-         .addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), Operation.ADDITION));
+         .addPermanentModifier(
+            new AttributeModifier(
+               AttributeModifierUtil.id("194fec31-b36e-41fc-ad72-02a5cb891def"), -((mob.getRandom().nextDouble() + 0.5) * 2.0), Operation.ADD_VALUE
+            )
+         );
       Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED))
-         .addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, Operation.ADDITION));
+         .addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("5965c24d-8ac1-4f04-92ee-3d2724f976e8"), -0.08, Operation.ADD_VALUE));
    }
 }

@@ -1,10 +1,12 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,8 +24,15 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes
 import nonamecrackers2.witherstormmod.common.init.WitherStormModStats;
 
 public class SuperBeaconBlock extends AbstractSuperBeaconBlock {
+   public static final MapCodec<SuperBeaconBlock> CODEC = simpleCodec(SuperBeaconBlock::new);
+
    public SuperBeaconBlock(Properties properties) {
       super(properties);
+   }
+
+   @Override
+   protected MapCodec<SuperBeaconBlock> codec() {
+      return CODEC;
    }
 
    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -34,12 +43,23 @@ public class SuperBeaconBlock extends AbstractSuperBeaconBlock {
       return createBeaconTicker(level, type, (BlockEntityType<? extends AbstractSuperBeaconBlockEntity>)WitherStormModBlockEntityTypes.SUPER_BEACON.get());
    }
 
-   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+   @Override
+   protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
+      return this.interact(state, level, pos, player, ItemStack.EMPTY);
+   }
+
+   @Override
+   protected ItemInteractionResult useItemOn(ItemStack item, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+      return this.interact(state, level, pos, player, item).consumesAction()
+         ? ItemInteractionResult.sidedSuccess(level.isClientSide)
+         : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+   }
+
+   private InteractionResult interact(BlockState state, Level level, BlockPos pos, Player player, ItemStack item) {
       if (level.isClientSide) {
          return InteractionResult.SUCCESS;
       } else {
          if (level.getBlockEntity(pos) instanceof SuperBeaconBlockEntity beacon && !beacon.isDoingResummonAnimation() && beacon.canPlayerUseItems(player)) {
-            ItemStack item = player.getItemInHand(hand);
             if (!player.isShiftKeyDown() && beacon.getContainerSize() > 0 && item.isEmpty()) {
                ItemStack stack = beacon.takeItem();
                if (!stack.isEmpty()) {

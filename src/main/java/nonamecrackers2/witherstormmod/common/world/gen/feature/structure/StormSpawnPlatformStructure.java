@@ -1,6 +1,7 @@
 package nonamecrackers2.witherstormmod.common.world.gen.feature.structure;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import javax.annotation.Nullable;
@@ -34,20 +35,21 @@ import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModStructures;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModBiomeTags;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 
 public class StormSpawnPlatformStructure extends Structure {
-   public static final Codec<StormSpawnPlatformStructure> CODEC = RecordCodecBuilder.create(
+   public static final MapCodec<StormSpawnPlatformStructure> CODEC = RecordCodecBuilder.mapCodec(
       instance -> instance.group(settingsCodec(instance), BlockPos.CODEC.fieldOf("position").forGetter(structure -> structure.spawnPos))
             .apply(instance, StormSpawnPlatformStructure::new)
    );
-   private static final ResourceLocation DESERT = new ResourceLocation("witherstormmod", "desert_storm_spawn_platform");
-   private static final ResourceLocation JUNGLE = new ResourceLocation("witherstormmod", "jungle_storm_spawn_platform");
-   private static final ResourceLocation SAVANNA = new ResourceLocation("witherstormmod", "savanna_storm_spawn_platform");
-   private static final ResourceLocation TAIGA = new ResourceLocation("witherstormmod", "taiga_storm_spawn_platform");
-   private static final ResourceLocation SNOWY = new ResourceLocation("witherstormmod", "snowy_storm_spawn_platform");
-   private static final ResourceLocation RUINS = new ResourceLocation("witherstormmod", "ruins_storm_spawn_platform");
-   private static final ResourceLocation ORDER_TEMPLE = new ResourceLocation("witherstormmod", "order_temple_storm_spawn_platform");
-   private static final ResourceLocation FOREST = new ResourceLocation("witherstormmod", "forest_storm_spawn_platform");
+   private static final ResourceLocation DESERT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "desert_storm_spawn_platform");
+   private static final ResourceLocation JUNGLE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "jungle_storm_spawn_platform");
+   private static final ResourceLocation SAVANNA = ResourceLocation.fromNamespaceAndPath("witherstormmod", "savanna_storm_spawn_platform");
+   private static final ResourceLocation TAIGA = ResourceLocation.fromNamespaceAndPath("witherstormmod", "taiga_storm_spawn_platform");
+   private static final ResourceLocation SNOWY = ResourceLocation.fromNamespaceAndPath("witherstormmod", "snowy_storm_spawn_platform");
+   private static final ResourceLocation RUINS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "ruins_storm_spawn_platform");
+   private static final ResourceLocation ORDER_TEMPLE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "order_temple_storm_spawn_platform");
+   private static final ResourceLocation FOREST = ResourceLocation.fromNamespaceAndPath("witherstormmod", "forest_storm_spawn_platform");
    private static final ResourceLocation AUTO_SPAWN = WitherStormMod.id("auto_spawn_platform");
    private BlockPos spawnPos;
 
@@ -135,7 +137,7 @@ public class StormSpawnPlatformStructure extends Structure {
             }
          );
          if (nbt.contains("SpawnPos", 10)) {
-            this.spawnPos = NbtUtils.readBlockPos(nbt.getCompound("SpawnPos"));
+            this.spawnPos = WitherStormModNBTUtil.readBlockPos(nbt, "SpawnPos").orElse(null);
          }
       }
 

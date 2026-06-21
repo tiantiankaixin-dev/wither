@@ -30,6 +30,7 @@ import nonamecrackers2.witherstormmod.mixin.IMixinOverlayTexture;
 import nonamecrackers2.witherstormmod.mixin.MixinRenderSystemAccessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -129,9 +130,10 @@ public class RenderBufferer {
 
                Vector3f[] shaderLights = MixinRenderSystemAccessor.witherstormmod$getShaderLightDirections();
                Vector3f[] storedOriginalShaderLights = Arrays.copyOf(shaderLights, shaderLights.length);
+               Matrix3f inverseView = new Matrix3f(RenderSystem.getModelViewMatrix()).invert();
 
                for (int i = 0; i < shaderLights.length; i++) {
-                  shaderLights[i] = shaderLights[i].mul(RenderSystem.getInverseViewRotationMatrix(), new Vector3f());
+                  shaderLights[i] = shaderLights[i].mul(inverseView, new Vector3f());
                }
 
                buffer.drawWithShader(stack.last().pose(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());

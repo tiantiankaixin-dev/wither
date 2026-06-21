@@ -43,7 +43,7 @@ public class MixinTrackedEntity {
    )
    public void witherstormmod$copyVanillaAndSendToDistantRenderer_broadcast(Packet<?> packet, CallbackInfo ci) {
       if (this.entity instanceof WitherStormEntity storm) {
-         PacketTarget target = PacketDistributor.DIMENSION.with(storm.level()::dimension);
+         PacketTarget target = PacketDistributor.DIMENSION.with(storm.level().dimension());
          List<Integer> applicable = WorldUtil.getStormIds(storm);
          if (packet instanceof Rot rotPacket) {
             WitherStormModPacketHandlers.MAIN

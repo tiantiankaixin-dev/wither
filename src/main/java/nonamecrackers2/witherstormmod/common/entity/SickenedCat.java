@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -35,6 +34,7 @@ import net.minecraft.world.level.Level;
 import nonamecrackers2.witherstormmod.common.entity.goal.SickenedMobsAttackGoal;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModMobTypes;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class SickenedCat extends Cat implements WitherSickened, Enemy {
@@ -44,10 +44,8 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
    public SickenedCat(EntityType<? extends SickenedCat> type, Level level) {
       super(type, level);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    protected void registerGoals() {
@@ -131,9 +129,9 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -177,11 +175,11 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
    public void convertFrom(Mob mob) {
       if (mob instanceof Cat cat) {
          this.setVariant(cat.getVariant());
-         this.setCollarColor(cat.getCollarColor());
          if (cat.isTame()) {
-            this.setTame(true);
+            this.setTame(true, false);
             this.setOwnerUUID(cat.getOwnerUUID());
-            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Sickened tamed mob health benefit", 1.4, Operation.MULTIPLY_BASE));
+            this.getAttribute(Attributes.MAX_HEALTH)
+               .addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("sickened_tamed_mob_health_benefit"), 1.4, Operation.ADD_MULTIPLIED_BASE));
             this.setHealth(this.getMaxHealth());
          }
       }
@@ -191,9 +189,8 @@ public class SickenedCat extends Cat implements WitherSickened, Enemy {
    public void doExtraHandling(Mob mob) {
       if (mob instanceof Cat cat) {
          cat.setVariant(this.getVariant());
-         cat.setCollarColor(this.getCollarColor());
          if (this.isTame()) {
-            cat.setTame(true);
+            cat.setTame(true, false);
             cat.setOwnerUUID(this.getOwnerUUID());
          }
       }

@@ -1,5 +1,7 @@
 package nonamecrackers2.witherstormmod.common.init;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.advancements.criterion.ActivateSuperBeaconTrigger;
@@ -9,13 +11,29 @@ import nonamecrackers2.witherstormmod.common.advancements.criterion.SummonMobSup
 import nonamecrackers2.witherstormmod.common.advancements.criterion.WitherStormTrigger;
 
 public class WitherStormModCriteriaTriggers {
-   public static final WitherStormTrigger PLAY_DEAD_TRIGGER = new WitherStormTrigger(new ResourceLocation("witherstormmod", "wither_storm_play_dead"));
-   public static final WitherStormTrigger REVIVAL_TRIGGER = new WitherStormTrigger(new ResourceLocation("witherstormmod", "wither_storm_revival"));
-   public static final WitherStormTrigger ESCAPE_STORM = new WitherStormTrigger(new ResourceLocation("witherstormmod", "escape_wither_storm"));
-   public static final WitherStormTrigger RING_BELL_NEAR_STORM = new WitherStormTrigger(new ResourceLocation("witherstormmod", "ring_bell_near_storm"));
+   public static final WitherStormTrigger PLAY_DEAD_TRIGGER = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_play_dead"));
+   public static final WitherStormTrigger REVIVAL_TRIGGER = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_revival"));
+   public static final WitherStormTrigger ESCAPE_STORM = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "escape_wither_storm"));
+   public static final WitherStormTrigger RING_BELL_NEAR_STORM = new WitherStormTrigger(ResourceLocation.fromNamespaceAndPath("witherstormmod", "ring_bell_near_storm"));
    public static final WitherStormTrigger NEARLY_KILL_WITHER_STORM = new WitherStormTrigger(WitherStormMod.id("nearly_kill_wither_storm"));
    public static final CuredSickenedMobTrigger CURED_SICKENED_MOB = new CuredSickenedMobTrigger();
    public static final ActivateSuperBeaconTrigger ACTIVATE_SUPER_BEACON = new ActivateSuperBeaconTrigger();
    public static final SummonMobSuperBeaconTrigger SUMMON_MOB_SUPER_BEACON = new SummonMobSuperBeaconTrigger();
    public static final LinkAmuletTrigger LINK_AMULET = new LinkAmuletTrigger();
+
+   public static void register() {
+      register(PLAY_DEAD_TRIGGER.id(), PLAY_DEAD_TRIGGER);
+      register(REVIVAL_TRIGGER.id(), REVIVAL_TRIGGER);
+      register(ESCAPE_STORM.id(), ESCAPE_STORM);
+      register(CURED_SICKENED_MOB.id(), CURED_SICKENED_MOB);
+      register(ACTIVATE_SUPER_BEACON.id(), ACTIVATE_SUPER_BEACON);
+      register(RING_BELL_NEAR_STORM.id(), RING_BELL_NEAR_STORM);
+      register(SUMMON_MOB_SUPER_BEACON.id(), SUMMON_MOB_SUPER_BEACON);
+      register(LINK_AMULET.id(), LINK_AMULET);
+      register(NEARLY_KILL_WITHER_STORM.id(), NEARLY_KILL_WITHER_STORM);
+   }
+
+   private static <T extends CriterionTrigger<?>> T register(ResourceLocation id, T trigger) {
+      return CriteriaTriggers.register(id.toString(), trigger);
+   }
 }

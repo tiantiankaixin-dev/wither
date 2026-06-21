@@ -16,10 +16,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedCreeper;
 
 public class SickenedCreeperRenderer extends MobRenderer<SickenedCreeper, CreeperModel<SickenedCreeper>> {
-   private static final ResourceLocation SICKENED_CREEPER_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_creeper.png");
-   private static final ResourceLocation SICKENED_CREEPER_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_creeper_emissive.png"
-   );
+   private static final ResourceLocation SICKENED_CREEPER_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_creeper.png");
+   private static final ResourceLocation SICKENED_CREEPER_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_creeper_emissive.png");
 
    public SickenedCreeperRenderer(Context context) {
       super(context, new CreeperModel(context.bakeLayer(WitherStormModRenderers.SICKENED_CREEPER)), 0.5F);
@@ -55,7 +53,7 @@ public class SickenedCreeperRenderer extends MobRenderer<SickenedCreeper, Creepe
    }
 
    private static class ChargeLayer extends EnergySwirlLayer<SickenedCreeper, CreeperModel<SickenedCreeper>> {
-      private static final ResourceLocation POWER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+      private static final ResourceLocation POWER_LOCATION = ResourceLocation.parse("textures/entity/creeper/creeper_armor.png");
       private final CreeperModel<SickenedCreeper> model;
 
       public ChargeLayer(RenderLayerParent<SickenedCreeper, CreeperModel<SickenedCreeper>> renderer, EntityModelSet set) {

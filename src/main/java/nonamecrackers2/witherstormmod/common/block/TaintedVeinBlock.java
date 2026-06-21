@@ -1,5 +1,6 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import java.util.function.ToIntFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,12 +27,18 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
 public class TaintedVeinBlock extends MultifaceBlock implements BonemealableBlock, SimpleWaterloggedBlock {
+   public static final MapCodec<TaintedVeinBlock> CODEC = simpleCodec(TaintedVeinBlock::new);
    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
    private final MultifaceSpreader spreader = new MultifaceSpreader(this);
 
    public TaintedVeinBlock(Properties properties) {
       super(properties);
       this.registerDefaultState((BlockState)this.defaultBlockState().setValue(WATERLOGGED, false));
+   }
+
+   @Override
+   protected MapCodec<TaintedVeinBlock> codec() {
+      return CODEC;
    }
 
    public static ToIntFunction<BlockState> emission(int lightLevel) {
@@ -55,7 +62,7 @@ public class TaintedVeinBlock extends MultifaceBlock implements BonemealableBloc
       return !placeContext.getItemInHand().is(Items.GLOW_LICHEN) || super.canBeReplaced(state, placeContext);
    }
 
-   public boolean isValidBonemealTarget(LevelReader levelreader, BlockPos pos, BlockState state, boolean yeah) {
+   public boolean isValidBonemealTarget(LevelReader levelreader, BlockPos pos, BlockState state) {
       return false;
    }
 

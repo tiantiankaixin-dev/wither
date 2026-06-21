@@ -1,23 +1,19 @@
 package nonamecrackers2.witherstormmod.common.item.crafting;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeTypes;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemCraftSuperBeaconRecipe extends SuperBeaconRecipe {
    private final ItemStack result;
@@ -27,12 +23,12 @@ public class ItemCraftSuperBeaconRecipe extends SuperBeaconRecipe {
       this.result = result;
    }
 
-   public ItemStack getResultItem(RegistryAccess access) {
+   public ItemStack getResultItem(HolderLookup.Provider access) {
       return this.result;
    }
 
    public RecipeType<?> getType() {
-      return (RecipeType<?>)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get();
+      return WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get();
    }
 
    @Override
@@ -41,50 +37,69 @@ public class ItemCraftSuperBeaconRecipe extends SuperBeaconRecipe {
    }
 
    public RecipeSerializer<?> getSerializer() {
-      return (RecipeSerializer<?>)WitherStormModRecipeSerializers.ITEM_CRAFT_SUPER_BEACON.get();
+      return WitherStormModRecipeSerializers.ITEM_CRAFT_SUPER_BEACON.get();
+   }
+
+   private static ResourceLocation defaultId(ItemStack result) {
+      ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(result.getItem());
+      return itemId != null
+         ? ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), "super_beacon/" + itemId.getPath())
+         : ResourceLocation.fromNamespaceAndPath("witherstormmod", "super_beacon/unknown");
    }
 
    public static class Serializer implements RecipeSerializer<ItemCraftSuperBeaconRecipe> {
-      public ItemCraftSuperBeaconRecipe fromJson(ResourceLocation id, JsonObject object) {
-         JsonArray array = GsonHelper.getAsJsonArray(object, "ingredients");
-         NonNullList<Ingredient> ingredients = NonNullList.create();
+      private static final MapCodec<ItemCraftSuperBeaconRecipe> CODEC = RecordCodecBuilder.mapCodec(
+         instance -> instance.group(
+               Ingredient.CODEC_NONEMPTY
+                  .listOf()
+                  .xmap(SuperBeaconRecipe::toNonNullList, SuperBeaconRecipe::asList)
+                  .fieldOf("ingredients")
+                  .forGetter(SuperBeaconRecipe::getIngredients),
+               RecipeCodecs.ITEM_STACK_RESULT.fieldOf("result").forGetter(recipe -> recipe.result),
+               SuperBeaconRecipe.CONDITION_CODEC.optionalFieldOf("condition", SuperBeaconRecipe.Condition.NONE).forGetter(SuperBeaconRecipe::getCondition)
+            )
+            .apply(
+               instance,
+               (ingredients, result, condition) -> new ItemCraftSuperBeaconRecipe(ItemCraftSuperBeaconRecipe.defaultId(result), ingredients, result, condition)
+            )
+      );
+      private static final StreamCodec<RegistryFriendlyByteBuf, ItemCraftSuperBeaconRecipe> STREAM_CODEC = StreamCodec.of(
+         Serializer::toNetwork, Serializer::fromNetwork
+      );
 
-         for (int i = 0; i < array.size(); i++) {
-            ingredients.add(Ingredient.fromJson(array.get(i)));
-         }
-
-         if (!object.has("result")) {
-            throw new JsonSyntaxException("Missing result, expected to find a string or object");
-         } else {
-            ItemStack stack;
-            if (object.get("result").isJsonObject()) {
-               stack = ShapedRecipe.itemStackFromJson(object.get("result").getAsJsonObject());
-            } else {
-               String rawId = GsonHelper.getAsString(object, "result");
-               ResourceLocation itemId = new ResourceLocation(rawId);
-               Item item = (Item)ForgeRegistries.ITEMS.getValue(itemId);
-               if (item == null) {
-                  throw new JsonSyntaxException("Unknown item '" + rawId + "'");
-               }
-
-               stack = new ItemStack(item);
-            }
-
-            return new ItemCraftSuperBeaconRecipe(id, ingredients, stack, SuperBeaconRecipe.Condition.fromJson(object, "condition"));
-         }
+      @Override
+      public MapCodec<ItemCraftSuperBeaconRecipe> codec() {
+         return CODEC;
       }
 
-      @Nullable
-      public ItemCraftSuperBeaconRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-         NonNullList<Ingredient> ingredients = (NonNullList<Ingredient>)buffer.readCollection(NonNullList::createWithCapacity, b -> Ingredient.fromNetwork(b));
-         ItemStack item = buffer.readItem();
-         SuperBeaconRecipe.Condition condition = (SuperBeaconRecipe.Condition)buffer.readEnum(SuperBeaconRecipe.Condition.class);
+      @Override
+      public StreamCodec<RegistryFriendlyByteBuf, ItemCraftSuperBeaconRecipe> streamCodec() {
+         return STREAM_CODEC;
+      }
+
+      private static ItemCraftSuperBeaconRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+         ResourceLocation id = buffer.readResourceLocation();
+         NonNullList<Ingredient> ingredients = NonNullList.create();
+         int size = buffer.readVarInt();
+
+         for (int i = 0; i < size; i++) {
+            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+         }
+
+         ItemStack item = ItemStack.STREAM_CODEC.decode(buffer);
+         SuperBeaconRecipe.Condition condition = buffer.readEnum(SuperBeaconRecipe.Condition.class);
          return new ItemCraftSuperBeaconRecipe(id, ingredients, item, condition);
       }
 
-      public void toNetwork(FriendlyByteBuf buffer, ItemCraftSuperBeaconRecipe recipe) {
-         buffer.writeCollection(recipe.ingredients, (b, i) -> i.toNetwork(b));
-         buffer.writeItem(recipe.result);
+      private static void toNetwork(RegistryFriendlyByteBuf buffer, ItemCraftSuperBeaconRecipe recipe) {
+         buffer.writeResourceLocation(recipe.getId());
+         buffer.writeVarInt(recipe.getIngredients().size());
+
+         for (Ingredient ingredient : recipe.getIngredients()) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
+         }
+
+         ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
          buffer.writeEnum(recipe.getCondition());
       }
    }

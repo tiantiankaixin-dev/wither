@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,84 +22,26 @@ import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
 import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
+import nonamecrackers2.witherstormmod.common.init.WitherStormModSymbiontSpellTypes;
 import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 
 public class WitherStormModDataSerializers {
    public static final DeferredRegister<EntityDataSerializer<?>> DATA_SERIALIZERS = DeferredRegister.create(Keys.ENTITY_DATA_SERIALIZERS, "witherstormmod");
-   public static final EntityDataSerializer<Map<BlockPos, BlockState>> BLOCK_STATE_POS_MAP = new EntityDataSerializer<Map<BlockPos, BlockState>>() {
-      public void write(FriendlyByteBuf buffer, Map<BlockPos, BlockState> map) {
-         buffer.writeMap(map, (buf, pos) -> buf.writeBlockPos(pos), (buf, state) -> buf.writeVarInt(Block.getId(state)));
-      }
-
-      public Map<BlockPos, BlockState> read(FriendlyByteBuf buffer) {
-         return buffer.readMap(buf -> buf.readBlockPos(), buf -> Block.stateById(buf.readVarInt()));
-      }
-
-      public Map<BlockPos, BlockState> copy(Map<BlockPos, BlockState> map) {
-         return new HashMap<>(map);
-      }
-   };
-   public static final EntityDataSerializer<List<CompoundTag>> COMPOUND_LIST = new EntityDataSerializer<List<CompoundTag>>() {
-      public void write(FriendlyByteBuf buffer, List<CompoundTag> list) {
-         CompoundTag compound = new CompoundTag();
-         compound.put("List", WitherStormModNBTUtil.writeCompoundList(list));
-         buffer.writeNbt(compound);
-      }
-
-      public List<CompoundTag> read(FriendlyByteBuf buffer) {
-         CompoundTag compound = buffer.readNbt();
-         return WitherStormModNBTUtil.readCompoundList(compound.getList("List", 10));
-      }
-
-      public List<CompoundTag> copy(List<CompoundTag> list) {
-         return new ArrayList<>(list);
-      }
-   };
-   public static final EntityDataSerializer<Vec2> VECTOR_2F = new EntityDataSerializer<Vec2>() {
-      public void write(FriendlyByteBuf buffer, Vec2 vector) {
-         buffer.writeFloat(vector.x);
-         buffer.writeFloat(vector.y);
-      }
-
-      public Vec2 read(FriendlyByteBuf buffer) {
-         return new Vec2(buffer.readFloat(), buffer.readFloat());
-      }
-
-      public Vec2 copy(Vec2 vector) {
-         return new Vec2(vector.x, vector.y);
-      }
-   };
-   public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VECTOR_3D = new EntityDataSerializer<Optional<Vec3>>() {
-      public void write(FriendlyByteBuf buffer, Optional<Vec3> vector) {
-         buffer.writeBoolean(vector.isPresent());
-         vector.ifPresent(pos -> {
-            buffer.writeDouble(pos.x());
-            buffer.writeDouble(pos.y());
-            buffer.writeDouble(pos.z());
-         });
-      }
-
-      public Optional<Vec3> read(FriendlyByteBuf buffer) {
-         return buffer.readBoolean() ? Optional.of(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble())) : Optional.empty();
-      }
-
-      public Optional<Vec3> copy(Optional<Vec3> vector) {
-         return vector;
-      }
-   };
-   public static final EntityDataSerializer<SpellType> SPELL_TYPE = new EntityDataSerializer<SpellType>() {
-      public void write(FriendlyByteBuf buffer, SpellType type) {
-         buffer.writeRegistryId(WitherStormModRegistries.SPELL_TYPES.get(), type);
-      }
-
-      public SpellType read(FriendlyByteBuf buffer) {
-         return (SpellType)buffer.readRegistryId();
-      }
-
-      public SpellType copy(SpellType type) {
-         return type;
-      }
-   };
+   public static final EntityDataSerializer<Map<BlockPos, BlockState>> BLOCK_STATE_POS_MAP = EntityDataSerializer.forValueType(
+      StreamCodec.of(WitherStormModDataSerializers::writeBlockStatePosMap, WitherStormModDataSerializers::readBlockStatePosMap)
+   );
+   public static final EntityDataSerializer<List<CompoundTag>> COMPOUND_LIST = EntityDataSerializer.forValueType(
+      StreamCodec.of(WitherStormModDataSerializers::writeCompoundList, WitherStormModDataSerializers::readCompoundList)
+   );
+   public static final EntityDataSerializer<Vec2> VECTOR_2F = EntityDataSerializer.forValueType(
+      StreamCodec.of(WitherStormModDataSerializers::writeVec2, WitherStormModDataSerializers::readVec2)
+   );
+   public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VECTOR_3D = EntityDataSerializer.forValueType(
+      StreamCodec.of(WitherStormModDataSerializers::writeOptionalVec3, WitherStormModDataSerializers::readOptionalVec3)
+   );
+   public static final EntityDataSerializer<SpellType> SPELL_TYPE = EntityDataSerializer.forValueType(
+      StreamCodec.of(WitherStormModDataSerializers::writeSpellType, WitherStormModDataSerializers::readSpellType)
+   );
    public static final WitherStormModDataSerializers.EnumDataSerializer<CommandBlockEntity.Mode> MODE_ENUM = new WitherStormModDataSerializers.EnumDataSerializer<>(
       CommandBlockEntity.Mode.class
    );
@@ -120,21 +65,72 @@ public class WitherStormModDataSerializers {
 
    public static class EnumDataSerializer<T extends Enum<T>> implements EntityDataSerializer<T> {
       private final Class<T> enumClass;
+      private final StreamCodec<RegistryFriendlyByteBuf, T> codec;
 
       private EnumDataSerializer(Class<T> enumClass) {
          this.enumClass = enumClass;
+         this.codec = StreamCodec.of((buffer, value) -> buffer.writeEnum(value), buffer -> buffer.readEnum(this.enumClass));
       }
 
-      public void write(FriendlyByteBuf buffer, T enub) {
-         buffer.writeEnum(enub);
+      @Override
+      public StreamCodec<? super RegistryFriendlyByteBuf, T> codec() {
+         return this.codec;
       }
 
-      public T read(FriendlyByteBuf buffer) {
-         return (T)buffer.readEnum(this.enumClass);
+      @Override
+      public T copy(T value) {
+         return value;
       }
+   }
 
-      public T copy(T enub) {
-         return enub;
-      }
+   private static void writeBlockStatePosMap(RegistryFriendlyByteBuf buffer, Map<BlockPos, BlockState> map) {
+      buffer.writeMap(map, (buf, pos) -> buf.writeBlockPos(pos), (buf, state) -> buf.writeVarInt(Block.getId(state)));
+   }
+
+   private static Map<BlockPos, BlockState> readBlockStatePosMap(RegistryFriendlyByteBuf buffer) {
+      return buffer.readMap(HashMap::new, buf -> buf.readBlockPos(), buf -> Block.stateById(buf.readVarInt()));
+   }
+
+   private static void writeCompoundList(RegistryFriendlyByteBuf buffer, List<CompoundTag> list) {
+      CompoundTag compound = new CompoundTag();
+      compound.put("List", WitherStormModNBTUtil.writeCompoundList(list));
+      buffer.writeNbt(compound);
+   }
+
+   private static List<CompoundTag> readCompoundList(RegistryFriendlyByteBuf buffer) {
+      CompoundTag compound = buffer.readNbt();
+      return compound != null ? WitherStormModNBTUtil.readCompoundList(compound.getList("List", 10)) : new ArrayList<>();
+   }
+
+   private static void writeVec2(RegistryFriendlyByteBuf buffer, Vec2 vector) {
+      buffer.writeFloat(vector.x);
+      buffer.writeFloat(vector.y);
+   }
+
+   private static Vec2 readVec2(RegistryFriendlyByteBuf buffer) {
+      return new Vec2(buffer.readFloat(), buffer.readFloat());
+   }
+
+   private static void writeOptionalVec3(RegistryFriendlyByteBuf buffer, Optional<Vec3> vector) {
+      buffer.writeBoolean(vector.isPresent());
+      vector.ifPresent(pos -> {
+         buffer.writeDouble(pos.x());
+         buffer.writeDouble(pos.y());
+         buffer.writeDouble(pos.z());
+      });
+   }
+
+   private static Optional<Vec3> readOptionalVec3(RegistryFriendlyByteBuf buffer) {
+      return buffer.readBoolean() ? Optional.of(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble())) : Optional.empty();
+   }
+
+   private static void writeSpellType(RegistryFriendlyByteBuf buffer, SpellType type) {
+      ResourceLocation id = Objects.requireNonNull(WitherStormModRegistries.SPELL_TYPES.get().getKey(type), "Unregistered symbiont spell type");
+      buffer.writeResourceLocation(id);
+   }
+
+   private static SpellType readSpellType(RegistryFriendlyByteBuf buffer) {
+      SpellType type = WitherStormModRegistries.SPELL_TYPES.get().getValue(buffer.readResourceLocation());
+      return type != null ? type : WitherStormModSymbiontSpellTypes.EMPTY.get();
    }
 }

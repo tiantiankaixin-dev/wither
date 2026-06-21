@@ -18,8 +18,10 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.level.Level;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class FormidiBladeItem extends CommandBlockSwordItem {
    public static final int DEFAULT_RELEASE_TIME = 40;
@@ -32,7 +34,7 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
    }
 
    public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
-      CompoundTag tag = stack.getTag();
+      CompoundTag tag = ItemStackDataUtil.getTag(stack);
       if (tag != null && tag.contains("IsCharged", 1) && !tag.getBoolean("IsCharged")) {
          float power = tag.getFloat("Power");
          if (power > 0.2F) {
@@ -47,7 +49,7 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
       ItemStack stack = player.getItemInHand(hand);
       if (!player.getCooldowns().isOnCooldown(this)) {
-         CompoundTag tag = stack.getTag();
+         CompoundTag tag = ItemStackDataUtil.getTag(stack);
          if (tag == null || !tag.contains("Power", 10) || tag.getFloat("Power") < 1.0F) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(stack);
@@ -57,22 +59,26 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
       return InteractionResultHolder.fail(stack);
    }
 
-   public int getUseDuration(ItemStack stack) {
+   @Override
+   public int getUseDuration(ItemStack stack, LivingEntity entity) {
       return 72000;
    }
 
+   @Override
    public UseAnim getUseAnimation(ItemStack stack) {
       return UseAnim.NONE;
    }
 
+   @Override
    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
       float power = (float)entity.getTicksUsingItem() / 40.0F;
-      CompoundTag tag = stack.getOrCreateTag();
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       tag.putFloat("Power", Math.min(1.0F, power));
       tag.putBoolean("IsCharged", true);
    }
 
-   public void appendHoverText(ItemStack stack, Level level, List<Component> text, TooltipFlag flag) {
+   @Override
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
       text.add(Component.translatable("item.witherstormmod.formidi_blade.author").withStyle(ChatFormatting.DARK_GRAY));
       text.add(Component.translatable("item.witherstormmod.formidi_blade.use").withStyle(ChatFormatting.DARK_GRAY));
    }
@@ -82,7 +88,7 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
    }
 
    public static float getPower(@Nullable LivingEntity entity, ItemStack stack, boolean useItemTime) {
-      CompoundTag tag = stack.getTag();
+      CompoundTag tag = ItemStackDataUtil.getTag(stack);
       float chargingPower;
       if (useItemTime && entity != null) {
          chargingPower = Math.min((float)entity.getTicksUsingItem() / 40.0F, 1.0F);
@@ -96,7 +102,7 @@ public class FormidiBladeItem extends CommandBlockSwordItem {
    public static void registerItemProperty() {
       ItemProperties.register(
          (Item)WitherStormModItems.FORMIDI_BLADE.get(),
-         new ResourceLocation("witherstormmod", "anim"),
+         ResourceLocation.fromNamespaceAndPath("witherstormmod", "anim"),
          (stack, world, entity, i) -> entity == null
                ? 0.0F
                : getPower(entity, stack, entity.getItemInHand(InteractionHand.OFF_HAND) == stack || entity.getItemInHand(InteractionHand.MAIN_HAND) == stack)

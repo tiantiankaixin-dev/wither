@@ -10,6 +10,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
@@ -37,7 +39,7 @@ public class ArrowsSpell extends SymbiontSpell {
       int timer = this.entity.shouldIncreaseDifficulty() ? 10 : 20;
       if (this.entity.tickCount % 4 == 0) {
          for (int i = 0; i < count; i++) {
-            Arrow arrow = new Arrow(this.entity.level(), this.entity);
+            Arrow arrow = new Arrow(this.entity.level(), this.entity, new ItemStack(Items.ARROW), null);
             arrow.setNoGravity(true);
             double deltaX = this.entity.getRandom().nextGaussian() * 0.55;
             double deltaY = this.entity.getRandom().nextDouble() * 0.75;

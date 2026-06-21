@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
@@ -63,20 +64,16 @@ import org.joml.Vector3f;
 public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M extends AbstractWitherStormModel<T>> extends EntityRenderer<T> {
    private static final Color MAIN_HEAD_COLOR = new Color(1.0F, 0.6F, 0.0F);
    private static final Color EXTRA_HEAD_COLOR = new Color(1.0F, 1.0F, 0.0F);
-   public static final ResourceLocation WITHER_STORM_INVULNERABLE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_storm/wither_storm_invulnerable.png"
-   );
-   public static final ResourceLocation WITHER_STORM_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm.png");
-   public static final ResourceLocation WITHER_STORM_EXPLODING_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_storm/wither_storm_exploding.png"
-   );
-   public static final ResourceLocation EMISSIVE_DECAL = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_emissive_decal.png");
-   public static final ResourceLocation HURT_OVERLAY = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_hurt_overlay.png");
-   public static final ResourceLocation PULSE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/wither_storm_pulse.png");
-   public static final ResourceLocation DEBRIS_RING = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/debris.png");
-   public static final ResourceLocation SHINE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm/shine.png");
-   public static final ResourceLocation PINK_WITHER_STORM_LOCATION = new ResourceLocation("witherstormmod", "textures/misc/pink_wither_storm.png");
-   public static final ResourceLocation WITHER_ARMOR_LOCATION = new ResourceLocation("textures/entity/wither/wither_armor.png");
+   public static final ResourceLocation WITHER_STORM_INVULNERABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_invulnerable.png");
+   public static final ResourceLocation WITHER_STORM_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm.png");
+   public static final ResourceLocation WITHER_STORM_EXPLODING_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_exploding.png");
+   public static final ResourceLocation EMISSIVE_DECAL = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_emissive_decal.png");
+   public static final ResourceLocation HURT_OVERLAY = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_hurt_overlay.png");
+   public static final ResourceLocation PULSE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/wither_storm_pulse.png");
+   public static final ResourceLocation DEBRIS_RING = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/debris.png");
+   public static final ResourceLocation SHINE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm/shine.png");
+   public static final ResourceLocation PINK_WITHER_STORM_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/pink_wither_storm.png");
+   public static final ResourceLocation WITHER_ARMOR_LOCATION = ResourceLocation.parse("textures/entity/wither/wither_armor.png");
    protected final SantaHatModel santaHat;
    @Nullable
    protected final SpecialDay specialDay;
@@ -192,7 +189,13 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             model.scale(stack);
             model.root().translateAndRotate(stack);
             this.santaHat
-               .renderToBuffer(stack, bufferSource.getBuffer(this.santaHat.renderType(SantaHatModel.TEXTURE)), packedLight, overlayTexture, 1.0F, 1.0F, 1.0F, 1.0F);
+               .renderToBuffer(
+                  stack,
+                  bufferSource.getBuffer(this.santaHat.renderType(SantaHatModel.TEXTURE)),
+                  packedLight,
+                  overlayTexture,
+                  FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F)
+               );
             stack.popPose();
          }
       }
@@ -236,7 +239,7 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             this.model.scaleMass(stack);
             float fade = 1.0F - tick % 20.0F * 0.1F / 2.0F;
             int overlayCoords = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
-            mirror.render(stack, builder, packedLight, overlayCoords, 1.0F, 1.0F, 1.0F, fade);
+            mirror.render(stack, builder, packedLight, overlayCoords, FastColor.ARGB32.colorFromFloat(fade, 1.0F, 1.0F, 1.0F));
             stack.popPose();
          }
       }
@@ -314,11 +317,11 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
       int k = tickCount % allDyeColors;
       int l = (tickCount + 1) % allDyeColors;
       float f3 = ((float)(entity.tickCount % 25) + partialTicks) / 25.0F;
-      float[] afloat1 = Sheep.getColorArray(DyeColor.byId(k));
-      float[] afloat2 = Sheep.getColorArray(DyeColor.byId(l));
-      float r = afloat1[0] * (1.0F - f3) + afloat2[0] * f3;
-      float g = afloat1[1] * (1.0F - f3) + afloat2[1] * f3;
-      float b = afloat1[2] * (1.0F - f3) + afloat2[2] * f3;
+      int color1 = Sheep.getColor(DyeColor.byId(k));
+      int color2 = Sheep.getColor(DyeColor.byId(l));
+      float r = (float)FastColor.ARGB32.red(color1) / 255.0F * (1.0F - f3) + (float)FastColor.ARGB32.red(color2) / 255.0F * f3;
+      float g = (float)FastColor.ARGB32.green(color1) / 255.0F * (1.0F - f3) + (float)FastColor.ARGB32.green(color2) / 255.0F * f3;
+      float b = (float)FastColor.ARGB32.blue(color1) / 255.0F * (1.0F - f3) + (float)FastColor.ARGB32.blue(color2) / 255.0F * f3;
       return new float[]{r, g, b};
    }
 
@@ -397,62 +400,62 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
                float angle2 = theta * (float)(i + 1) + tickCount;
                float x2 = Mth.cos(angle2);
                float z2 = Mth.sin(angle2);
-               debrisBuilder.vertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * topRadius, height, z * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(uMax, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * topRadius, height, z * topRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, v)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
-               debrisBuilder.vertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
-                  .color(1.0F, 1.0F, 1.0F, alpha)
-                  .uv(u, vMax)
-                  .overlayCoords(OverlayTexture.NO_OVERLAY)
-                  .uv2(packedLightIn)
-                  .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-                  .endVertex();
+               debrisBuilder.addVertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x * topRadius, height, z * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x2 * bottomRadius, y, z2 * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x2 * topRadius, height, z2 * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(uMax, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x * topRadius, height, z * topRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, v)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
+               debrisBuilder.addVertex(matrix4f, x * bottomRadius, y, z * bottomRadius)
+                  .setColor(1.0F, 1.0F, 1.0F, alpha)
+                  .setUv(u, vMax)
+                  .setOverlay(OverlayTexture.NO_OVERLAY)
+                  .setLight(packedLightIn)
+                  .setNormal(0.0F, -1.0F, 0.0F)
+;
             }
 
             stack.popPose();
@@ -560,174 +563,174 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          Matrix3f matrix3f = bstack.last().normal();
          float startSize = piece.size();
          float endSize = -piece.size();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, startSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, startSize)
-            .color(br, bg, bb, ba)
-            .uv(u, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, endSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, vMax)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
-         consumer.vertex(matrix4f, startSize, endSize, endSize)
-            .color(br, bg, bb, ba)
-            .uv(uMax, v)
-            .overlayCoords(boverlayTexture)
-            .uv2(bpackedLight)
-            .normal(matrix3f, 0.0F, -1.0F, 0.0F)
-            .endVertex();
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, startSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, startSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(u, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, endSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, vMax)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
+         consumer.addVertex(matrix4f, startSize, endSize, endSize)
+            .setColor(br, bg, bb, ba)
+            .setUv(uMax, v)
+            .setOverlay(boverlayTexture)
+            .setLight(bpackedLight)
+            .setNormal(0.0F, -1.0F, 0.0F)
+;
          bstack.popPose();
       }
    }
@@ -818,34 +821,34 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
          float xStretch = scale * (storm.getPhase() > 5 ? 1.5F : 1.0F);
          stack.translate(-xStretch / 2.0F, storm.getUnmodifiedHeight() / 2.0F - scale / 2.0F, scale / 2.0F);
          stack.scale(xStretch, scale, 1.0F);
-         consumer.vertex(matrix, 0.0F, 0.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(0.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 0.0F, 1.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(0.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 1.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(1.0F, 1.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
-         consumer.vertex(matrix, 1.0F, 0.0F, 0.0F)
-            .color(color[0], color[1], color[2], color[3])
-            .uv(1.0F, 0.0F)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(15728880)
-            .normal(0.0F, 1.0F, 1.0F)
-            .endVertex();
+         consumer.addVertex(matrix, 0.0F, 0.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(0.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+;
+         consumer.addVertex(matrix, 0.0F, 1.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(0.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+;
+         consumer.addVertex(matrix, 1.0F, 1.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(1.0F, 1.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+;
+         consumer.addVertex(matrix, 1.0F, 0.0F, 0.0F)
+            .setColor(color[0], color[1], color[2], color[3])
+            .setUv(1.0F, 0.0F)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(15728880)
+            .setNormal(0.0F, 1.0F, 1.0F)
+;
       }
    }
 
@@ -900,19 +903,19 @@ public abstract class AbstractWitherStormRenderer<T extends WitherStormEntity, M
             Vec3 eyePos = head.getHeadPos();
             Matrix4f matrix4f = stack.last().pose();
             Matrix3f matrix3f = stack.last().normal();
-            consumer.vertex(matrix4f, (float)eyePos.x, (float)eyePos.y, (float)eyePos.z)
-               .color(0, 0, 255, 255)
-               .normal(matrix3f, (float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
-               .endVertex();
-            consumer.vertex(
+            consumer.addVertex(matrix4f, (float)eyePos.x, (float)eyePos.y, (float)eyePos.z)
+               .setColor(0, 0, 255, 255)
+               .setNormal((float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
+;
+            consumer.addVertex(
                   matrix4f,
                   (float)eyePos.x + (float)viewVector.x,
                   (float)eyePos.y + (float)viewVector.y,
                   (float)eyePos.z + (float)viewVector.z
                )
-               .color(0, 0, 255, 255)
-               .normal(matrix3f, (float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
-               .endVertex();
+               .setColor(0, 0, 255, 255)
+               .setNormal((float)viewVector.x, (float)viewVector.y, (float)viewVector.z)
+;
          }
 
          if (storm.getPhase() > 4 && storm.partsEnabled) {

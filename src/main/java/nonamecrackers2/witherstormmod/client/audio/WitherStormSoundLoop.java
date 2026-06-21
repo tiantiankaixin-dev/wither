@@ -64,7 +64,7 @@ public class WitherStormSoundLoop extends FadingSoundLoop implements IForceStopp
             dampenAmount = 15.0F;
          }
 
-         BlockHitResult ray = player.level().clip(new ClipContext(this.pos, player.position(), Block.COLLIDER, Fluid.ANY, null));
+         BlockHitResult ray = player.level().clip(new ClipContext(this.pos, player.position(), Block.COLLIDER, Fluid.ANY, player));
          if (ray.getType() == Type.BLOCK && this.dampen < dampenAmount) {
             this.dampen++;
          } else if (ray.getType() == Type.BLOCK && this.dampen > dampenAmount) {

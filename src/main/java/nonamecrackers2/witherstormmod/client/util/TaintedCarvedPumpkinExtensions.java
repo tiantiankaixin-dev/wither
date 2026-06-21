@@ -10,7 +10,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class TaintedCarvedPumpkinExtensions implements IClientItemExtensions {
    public static final TaintedCarvedPumpkinExtensions INSTANCE = new TaintedCarvedPumpkinExtensions();
-   private static final ResourceLocation TAINTED_PUMPKIN_BLUR = new ResourceLocation("witherstormmod", "textures/misc/tainted_pumpkin_blur.png");
+   private static final ResourceLocation TAINTED_PUMPKIN_BLUR = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/tainted_pumpkin_blur.png");
 
    private TaintedCarvedPumpkinExtensions() {
    }

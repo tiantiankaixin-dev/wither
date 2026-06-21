@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.DragonFireball;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
@@ -40,9 +41,9 @@ public class MixinDragonFireball extends AbstractHurtingProjectile implements Dr
       throw new UnsupportedOperationException();
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CREATED_FROM_SYMBIONT, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CREATED_FROM_SYMBIONT, false);
    }
 
    @Inject(
@@ -56,7 +57,9 @@ public class MixinDragonFireball extends AbstractHurtingProjectile implements Dr
    )
    public void witherstormmod$addMobEffects_onHit(HitResult result, CallbackInfo ci, List<LivingEntity> list, AreaEffectCloud areaEffectCloud, Entity entity) {
       if (this.createdBySymbiont()) {
-         ((MixinAreaEffectCloud)areaEffectCloud).witherstormmod$getEffects().clear();
+         MixinAreaEffectCloud cloudAccess = (MixinAreaEffectCloud)areaEffectCloud;
+         PotionContents contents = cloudAccess.witherstormmod$getPotionContents();
+         cloudAccess.witherstormmod$setPotionContents(new PotionContents(contents.potion(), contents.customColor(), List.of()));
          areaEffectCloud.setParticle(ParticleTypes.SMOKE);
          areaEffectCloud.setRadius(2.5F);
          areaEffectCloud.setDuration(120);

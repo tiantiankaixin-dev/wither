@@ -1,27 +1,26 @@
 package nonamecrackers2.witherstormmod.common.advancements.criterion;
 
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger.SimpleInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public class SummonMobSuperBeaconTrigger extends SimpleCriterionTrigger<SummonMobSuperBeaconTrigger.Instance> {
-   private static final ResourceLocation ID = new ResourceLocation("witherstormmod", "summon_mob_withered_beacon");
+   private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("witherstormmod", "summon_mob_withered_beacon");
 
-   public ResourceLocation getId() {
+   public ResourceLocation id() {
       return ID;
    }
 
-   protected SummonMobSuperBeaconTrigger.Instance createInstance(JsonObject object, ContextAwarePredicate player, DeserializationContext context) {
-      ContextAwarePredicate summoned = EntityPredicate.fromJson(object, "resummoned", context);
-      return new SummonMobSuperBeaconTrigger.Instance(player, summoned);
+   public Codec<SummonMobSuperBeaconTrigger.Instance> codec() {
+      return SummonMobSuperBeaconTrigger.Instance.CODEC;
    }
 
    public void trigger(ServerPlayer player, Entity summoned) {
@@ -29,22 +28,17 @@ public class SummonMobSuperBeaconTrigger extends SimpleCriterionTrigger<SummonMo
       this.trigger(player, instance -> instance.matches(context));
    }
 
-   public static class Instance extends AbstractCriterionTriggerInstance {
-      private final ContextAwarePredicate summoned;
-
-      public Instance(ContextAwarePredicate player, ContextAwarePredicate summoned) {
-         super(SummonMobSuperBeaconTrigger.ID, player);
-         this.summoned = summoned;
-      }
+   public record Instance(Optional<ContextAwarePredicate> player, Optional<ContextAwarePredicate> resummoned) implements SimpleInstance {
+      public static final Codec<SummonMobSuperBeaconTrigger.Instance> CODEC = RecordCodecBuilder.create(
+         instance -> instance.group(
+                  EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SummonMobSuperBeaconTrigger.Instance::player),
+                  EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("resummoned").forGetter(SummonMobSuperBeaconTrigger.Instance::resummoned)
+               )
+               .apply(instance, SummonMobSuperBeaconTrigger.Instance::new)
+      );
 
       public boolean matches(LootContext context) {
-         return this.summoned.matches(context);
-      }
-
-      public JsonObject serializeToJson(SerializationContext context) {
-         JsonObject obj = super.serializeToJson(context);
-         obj.add("summoned", this.summoned.toJson(context));
-         return obj;
+         return this.resummoned.isEmpty() || this.resummoned.get().matches(context);
       }
    }
 }

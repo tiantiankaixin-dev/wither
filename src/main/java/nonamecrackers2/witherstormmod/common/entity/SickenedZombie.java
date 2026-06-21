@@ -21,7 +21,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
@@ -51,10 +50,8 @@ public class SickenedZombie extends Zombie implements WitherSickened, RangedAtta
    public SickenedZombie(EntityType<? extends SickenedZombie> type, Level world) {
       super(type, world);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    public static Builder createAttributes() {
@@ -119,9 +116,9 @@ public class SickenedZombie extends Zombie implements WitherSickened, RangedAtta
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    protected ItemStack getSkull() {
@@ -190,11 +187,11 @@ public class SickenedZombie extends Zombie implements WitherSickened, RangedAtta
       return this.sickenedInfect(entity);
    }
 
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag tag) {
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData) {
       ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
       this.setCanBreakDoors(this.supportsBreakDoorGoal());
       this.populateDefaultEquipmentSlots(this.random, difficulty);
-      this.populateDefaultEquipmentEnchantments(this.random, difficulty);
+      this.populateDefaultEquipmentEnchantments(level, this.random, difficulty);
       if (head.is(Items.JACK_O_LANTERN)) {
          this.setItemSlot(EquipmentSlot.HEAD, new ItemStack((ItemLike)WitherStormModBlocks.TAINTED_JACK_O_LANTERN.get()));
       } else if (head.is(Items.CARVED_PUMPKIN)) {
@@ -214,7 +211,7 @@ public class SickenedZombie extends Zombie implements WitherSickened, RangedAtta
             SickenedChicken sickenedChicken = (SickenedChicken)(WitherStormModEntityTypes.SICKENED_CHICKEN.get()).create(this.level());
             if (sickenedChicken != null) {
                sickenedChicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
-               sickenedChicken.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null, null);
+               sickenedChicken.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null);
                sickenedChicken.setChickenJockey(true);
                this.startRiding(sickenedChicken);
                level.addFreshEntity(sickenedChicken);

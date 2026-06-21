@@ -4,8 +4,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class UpdateDamagingProjectileMessage extends Packet {
@@ -17,9 +17,9 @@ public class UpdateDamagingProjectileMessage extends Packet {
    public UpdateDamagingProjectileMessage(AbstractHurtingProjectile entity) {
       super(true);
       this.entityId = entity.getId();
-      this.xPower = entity.xPower;
-      this.yPower = entity.yPower;
-      this.zPower = entity.zPower;
+      this.xPower = entity.getDeltaMovement().x;
+      this.yPower = entity.getDeltaMovement().y;
+      this.zPower = entity.getDeltaMovement().z;
    }
 
    public int getEntityId() {

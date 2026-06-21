@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.FastColor;
 import nonamecrackers2.witherstormmod.client.renderer.entity.WitherStormHeadRenderer;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.WitherStormHeadModel;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormHeadEntity;
@@ -41,7 +42,8 @@ public class WitherStormHeadEyesLayer extends EyesLayer<WitherStormHeadEntity, W
          builder = buffer.getBuffer(EYES);
       }
 
-      ((WitherStormHeadModel)this.getParentModel()).renderToBuffer(stack, builder, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+      ((WitherStormHeadModel)this.getParentModel())
+         .renderToBuffer(stack, builder, 15728640, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
    }
 
    public RenderType renderType() {

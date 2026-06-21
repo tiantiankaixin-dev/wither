@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.fml.ModList;
@@ -18,9 +19,7 @@ import nonamecrackers2.witherstormmod.client.util.TiledTextureGenerator;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 
 public class WitherSicknessLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-   private static final ResourceLocation WITHER_SICKNESS_LAYER_64 = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_sickness_layer/wither_sickness_layer.png"
-   );
+   private static final ResourceLocation WITHER_SICKNESS_LAYER_64 = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_sickness_layer/wither_sickness_layer.png");
    private final M model;
 
    public WitherSicknessLayer(RenderLayerParent<T, M> renderer) {
@@ -68,7 +67,8 @@ public class WitherSicknessLayer<T extends LivingEntity, M extends EntityModel<T
                      alpha = ((float)tracker.getCureDelay() - (float)tracker.getCureDelayTicks()) / (float)tracker.getCureDelay() * 0.5F * alpha * 2.0F;
                   }
 
-                  this.getModel().renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, alpha);
+                  this.getModel()
+                     .renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
                   if (model instanceof VillagerHeadModel m) {
                      m.hatVisible(true);
                   }

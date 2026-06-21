@@ -9,13 +9,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.TentacleSpikeModel;
 import nonamecrackers2.witherstormmod.common.entity.TentacleSpike;
 
 public class TentacleSpikeRenderer extends EntityRenderer<TentacleSpike> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle_spike/tentacle_spike_emissive.png");
    private final TentacleSpikeModel<TentacleSpike> model;
 
    public TentacleSpikeRenderer(Context context) {
@@ -43,9 +44,9 @@ public class TentacleSpikeRenderer extends EntityRenderer<TentacleSpike> {
          stack.scale(-horzScale, -vertScale, horzScale);
          this.model.setupAnim(fang, animProg, 0.0F, 0.0F, fang.getYRot(), fang.getXRot());
          VertexConsumer consumer = buffers.getBuffer(this.model.renderType(this.getTextureLocation(fang)));
-         this.model.renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, consumer, packedLight, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
          VertexConsumer emissive = buffers.getBuffer(RenderType.eyes(EMISSIVE));
-         this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, emissive, packedLight, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
          stack.popPose();
          super.render(fang, p_114486_, partialTicks, stack, buffers, packedLight);
       }

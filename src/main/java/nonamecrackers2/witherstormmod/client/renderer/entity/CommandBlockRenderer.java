@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,7 @@ import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import org.joml.Matrix4f;
 
 public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
-   private static final ResourceLocation RIBCAGE_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/command_block/ribcage.png");
+   private static final ResourceLocation RIBCAGE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/command_block/ribcage.png");
    private final RibcageModel ribcage;
    @Nullable
    private EntityModel<CommandBlockEntity> model;
@@ -51,7 +52,7 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
          stack.mulPose(Axis.YN.rotationDegrees(-Mth.lerp(partialTicks, entity.yBodyRotO, entity.yBodyRot) + 90.0F));
          VertexConsumer builder = buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
          this.model.setupAnim(entity, entity.getModeAnim(partialTicks), partialTicks, 0.0F, entity.getYRot(), entity.getXRot());
-         this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+         this.model.renderToBuffer(stack, builder, packedLight, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
          stack.popPose();
       }
 
@@ -67,7 +68,7 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
       Pose entry = stack.last();
       if (health < 5 && health > 0) {
          RenderType type = (RenderType)ModelBakery.DESTROY_TYPES.get(health * 2);
-         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry.pose(), entry.normal(), 1.0F);
+         VertexConsumer blockBreakingBuilder = new SheetedDecalTextureGenerator(buffer.getBuffer(type), entry, 1.0F);
          blockRenderer.getModelRenderer()
             .renderModel(
                entry,
@@ -112,18 +113,18 @@ public class CommandBlockRenderer extends EntityRenderer<CommandBlockEntity> {
             float f4 = (random.nextFloat() + 0.2F) * 0.05F * f1;
             Matrix4f matrix4f = stack.last().pose();
             float sqrt = (float)(Math.sqrt(3.0) / 2.0);
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, 1.0F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(1.0F, 1.0F, 1.0F, k).endVertex();
-            builder.vertex(matrix4f, 0.0F, f3, 1.0F * f4).color(255, 123, 0, 0).endVertex();
-            builder.vertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).color(255, 123, 0, 0).endVertex();
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, f3, 1.0F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, k);
+            builder.addVertex(matrix4f, 0.0F, f3, 1.0F * f4).setColor(255, 123, 0, 0);
+            builder.addVertex(matrix4f, -sqrt * f4, f3, -0.5F * f4).setColor(255, 123, 0, 0);
          }
 
          stack.popPose();

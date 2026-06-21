@@ -213,7 +213,7 @@ public abstract class WitherStormHead {
          float x = this.getHeadXRot();
          float y = this.getHeadYRot();
          Vec3 end = this.headPos.add(this.storm.getViewVector(x, y, 250.0F));
-         BlockHitResult hitResult = this.storm.level().clip(new ClipContext(this.headPos, end, Block.COLLIDER, Fluid.NONE, null));
+         BlockHitResult hitResult = this.storm.level().clip(new ClipContext(this.headPos, end, Block.COLLIDER, Fluid.NONE, (Entity)null));
          if (hitResult.getType() == Type.BLOCK) {
             this.tractorBeamCutoffDistance = this.headPos.distanceTo(hitResult.getLocation());
          } else {
@@ -622,7 +622,7 @@ public abstract class WitherStormHead {
          this.headHits = 0;
          NotifyHeadInjuryMessage message = new NotifyHeadInjuryMessage(this.storm, this.headIndex);
          ResourceKey<Level> dimension = this.storm.level().dimension();
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(dimension), message);
          if (entity instanceof ServerPlayer player && this.storm.alreadyATarget(entity, true)) {
             entity.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA)
                .ifPresent(data -> data.makeInvulnerable((Integer)WitherStormModConfig.SERVER.headEscapeTime.get() * 20 + player.getRandom().nextInt(80)));
@@ -634,7 +634,7 @@ public abstract class WitherStormHead {
    public boolean checkAndCountAttack() {
       if ((Boolean)WitherStormModConfig.SERVER.canAttackHeads.get()) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.TRACKING_ENTITY.with(() -> this.storm), new OnHeadAttackedMessage(this.storm.getId(), this.headIndex));
+            .send(PacketDistributor.TRACKING_ENTITY.with(this.storm), new OnHeadAttackedMessage(this.storm.getId(), this.headIndex));
          this.headHits++;
          if (this.headHits >= this.requiredHits) {
             return true;

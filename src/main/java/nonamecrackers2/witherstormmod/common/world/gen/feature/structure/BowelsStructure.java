@@ -2,6 +2,7 @@ package nonamecrackers2.witherstormmod.common.world.gen.feature.structure;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,8 @@ import net.minecraft.world.level.levelgen.structure.Structure.StructureSettings;
 import net.minecraft.world.level.levelgen.structure.pools.EmptyPoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -36,7 +39,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModStructures;
 import nonamecrackers2.witherstormmod.mixin.IMixinJigsawPlacement;
 
 public class BowelsStructure extends Structure {
-   public static final Codec<BowelsStructure> CODEC = RecordCodecBuilder.create(
+   public static final MapCodec<BowelsStructure> CODEC = RecordCodecBuilder.mapCodec(
       builder -> builder.group(
                settingsCodec(builder),
                StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
@@ -70,7 +73,7 @@ public class BowelsStructure extends Structure {
          int i = this.startHeight.sample(random, new WorldGenerationContext(generator, heightAccessor));
          BlockPos pos = new BlockPos(chunk.getMinBlockX(), i, chunk.getMinBlockZ());
          PoolElementStructurePiece startPiece = new PoolElementStructurePiece(
-            manager, start, pos, start.getGroundLevelDelta(), rotation, start.getBoundingBox(manager, pos, rotation)
+            manager, start, pos, start.getGroundLevelDelta(), rotation, start.getBoundingBox(manager, pos, rotation), LiquidSettings.IGNORE_WATERLOGGING
          );
          BoundingBox box = startPiece.getBoundingBox();
          int x = pos.getX() + box.getXSpan() / 2;
@@ -89,7 +92,19 @@ public class BowelsStructure extends Structure {
                   );
                   VoxelShape shape = Shapes.join(Shapes.create(maxDistBox), Shapes.create(AABB.of(box)), BooleanOp.ONLY_FIRST);
                   IMixinJigsawPlacement.invokeAddPieces(
-                     context.randomState(), 8, false, generator, manager, heightAccessor, random, registry, startPiece, pieces, shape
+                     context.randomState(),
+                     8,
+                     false,
+                     generator,
+                     manager,
+                     heightAccessor,
+                     random,
+                     registry,
+                     startPiece,
+                     pieces,
+                     shape,
+                     PoolAliasLookup.EMPTY,
+                     LiquidSettings.IGNORE_WATERLOGGING
                   );
                   pieces.forEach(piece -> {
                      piece.move(box.getXSpan() / -2, 0, box.getZSpan() / -2);

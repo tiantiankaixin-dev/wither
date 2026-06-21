@@ -5,6 +5,7 @@ import java.time.temporal.ChronoField;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -87,7 +89,7 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 public class WitherStormMod {
    public static final Logger LOGGER = LogManager.getLogger();
    public static final String MOD_ID = "witherstormmod";
-   private static final ResourceLocation BOWELS = new ResourceLocation("witherstormmod", "bowels");
+   private static final ResourceLocation BOWELS = ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels");
    public static final LocalDate DATE = LocalDate.now();
    private static ArtifactVersion version;
    private static boolean isAprilFools;
@@ -133,11 +135,12 @@ public class WitherStormMod {
       forgeBus.addGenericListener(Level.class, WitherStormModCapabilities::attachWorldCapabilities);
       forgeBus.addGenericListener(Entity.class, WitherStormModCapabilities::attachEntityCapabilities);
       forgeBus.addListener(WitherStormModDataEvents::addResourceListeners);
+      forgeBus.addListener(WitherStormModItems::registerBrewingRecipes);
       DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             modEventBus.addListener(WitherStormModRegisterBlockColors::registerBlockColors);
             modEventBus.addListener(WitherStormModClientCapabilities::registerCapabilities);
             modEventBus.addListener(ParticleEvents::registerFactories);
-            modEventBus.addListener(OverlayRenderers::registerOverlays);
+            forgeBus.addListener(OverlayRenderers::renderOverlays);
             modEventBus.addListener(WitherStormModRecipeBookTypes::registerRecipeBookCategories);
             modEventBus.addListener(BowelsEffectsManager.Events::registerSpecialEffects);
             modEventBus.addListener(WitherStormModClientConfigEvents::registerConfigScreen);
@@ -169,16 +172,7 @@ public class WitherStormMod {
       EntitySelectorManager.register("w", new WitherStormSelector());
       event.enqueueWork(
          () -> {
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.PLAY_DEAD_TRIGGER);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.REVIVAL_TRIGGER);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.ESCAPE_STORM);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.CURED_SICKENED_MOB);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.ACTIVATE_SUPER_BEACON);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.RING_BELL_NEAR_STORM);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.SUMMON_MOB_SUPER_BEACON);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.LINK_AMULET);
-            CriteriaTriggers.register(WitherStormModCriteriaTriggers.NEARLY_KILL_WITHER_STORM);
-            WitherStormModItems.registerBrewingRecipes();
+            WitherStormModCriteriaTriggers.register();
             WitherStormWorldInteractions.initialize();
             BlockEntityTypeExtender.addToBlockEntityType(
                BlockEntityType.SIGN, new Block[]{(Block)WitherStormModBlocks.TAINTED_SIGN.get(), (Block)WitherStormModBlocks.TAINTED_WALL_SIGN.get()}
@@ -197,8 +191,11 @@ public class WitherStormMod {
             manager.registerReloadListener(SoundManagersRefresher.INSTANCE);
             ItemProperties.register(
                Items.CROSSBOW,
-               new ResourceLocation("witherstormmod", "ender_pearl"),
-               (stack, world, entity, i) -> entity != null && CrossbowItem.isCharged(stack) && CrossbowItem.containsChargedProjectile(stack, Items.ENDER_PEARL) ? 1.0F : 0.0F
+               ResourceLocation.fromNamespaceAndPath("witherstormmod", "ender_pearl"),
+               (stack, world, entity, i) -> {
+                  ChargedProjectiles charged = stack.get(DataComponents.CHARGED_PROJECTILES);
+                  return entity != null && CrossbowItem.isCharged(stack) && charged != null && charged.contains(Items.ENDER_PEARL) ? 1.0F : 0.0F;
+               }
             );
             FormidiBladeItem.registerItemProperty();
          }
@@ -223,6 +220,6 @@ public class WitherStormMod {
    }
 
    public static ResourceLocation id(String path) {
-      return new ResourceLocation("witherstormmod", path);
+      return ResourceLocation.fromNamespaceAndPath("witherstormmod", path);
    }
 }

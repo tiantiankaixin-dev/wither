@@ -17,12 +17,10 @@ import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormHeadEntity;
 
 public class WitherStormHeadRenderer extends MobRenderer<WitherStormHeadEntity, WitherStormHeadModel> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head.png");
-   public static final ResourceLocation TEXTURE_HURT = new ResourceLocation("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_hurt.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_emissive.png");
-   public static final ResourceLocation EMISSIVE_HURT = new ResourceLocation(
-      "witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_emissive_hurt.png"
-   );
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head.png");
+   public static final ResourceLocation TEXTURE_HURT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_hurt.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_emissive.png");
+   public static final ResourceLocation EMISSIVE_HURT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/wither_storm_head/wither_storm_head_emissive_hurt.png");
 
    public WitherStormHeadRenderer(Context context) {
       super(context, new WitherStormHeadModel(context.bakeLayer(WitherStormModRenderers.WITHER_STORM_HEAD)), 3.5F);

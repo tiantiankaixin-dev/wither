@@ -12,6 +12,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.Target;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
@@ -36,15 +37,15 @@ public abstract class BlockTaintingRecipeProvider implements DataProvider {
       this.recipes.add(recipe);
    }
 
-   protected void add(Block from, MobEffect effect, BlockState to, Property<?>... propertiesToCopy) {
-      this.add(new SingleBlockTaintRecipe(from, effect, to, Lists.newArrayList(propertiesToCopy)));
+   protected void add(Block from, Holder<MobEffect> effect, BlockState to, Property<?>... propertiesToCopy) {
+      this.add(new SingleBlockTaintRecipe(from, effect.value(), to, Lists.newArrayList(propertiesToCopy)));
    }
 
-   protected void add(Block from, MobEffect effect, BlockState to) {
-      this.add(from, effect, to);
+   protected void add(Block from, Holder<MobEffect> effect, BlockState to) {
+      this.add(from, effect, to, new Property<?>[0]);
    }
 
-   protected void addAndCopyAllProperties(Block from, MobEffect effect, Block to) {
+   protected void addAndCopyAllProperties(Block from, Holder<MobEffect> effect, Block to) {
       BlockState state = to.defaultBlockState();
       this.add(from, effect, state, state.getProperties().toArray(Property[]::new));
    }
@@ -59,18 +60,18 @@ public abstract class BlockTaintingRecipeProvider implements DataProvider {
    }
 
    protected void add(Block from, BlockState to) {
-      this.add(from, to);
+      this.add(from, to, new Property<?>[0]);
    }
 
-   protected void add(TagKey<Block> from, MobEffect effect, BlockState to, Property<?>... propertiesToCopy) {
-      this.add(new TagBasedTaintRecipe(from, effect, to, Lists.newArrayList(propertiesToCopy)));
+   protected void add(TagKey<Block> from, Holder<MobEffect> effect, BlockState to, Property<?>... propertiesToCopy) {
+      this.add(new TagBasedTaintRecipe(from, effect.value(), to, Lists.newArrayList(propertiesToCopy)));
    }
 
-   protected void add(TagKey<Block> from, MobEffect effect, BlockState to) {
-      this.add(from, effect, to);
+   protected void add(TagKey<Block> from, Holder<MobEffect> effect, BlockState to) {
+      this.add(from, effect, to, new Property<?>[0]);
    }
 
-   protected void addAndCopyAllProperties(TagKey<Block> from, MobEffect effect, Block to) {
+   protected void addAndCopyAllProperties(TagKey<Block> from, Holder<MobEffect> effect, Block to) {
       BlockState state = to.defaultBlockState();
       this.add(from, effect, state, state.getProperties().toArray(Property[]::new));
    }
@@ -80,7 +81,7 @@ public abstract class BlockTaintingRecipeProvider implements DataProvider {
    }
 
    protected void add(TagKey<Block> from, BlockState to) {
-      this.add(from, to);
+      this.add(from, to, new Property<?>[0]);
    }
 
    protected void addAndCopyAllProperties(TagKey<Block> from, Block to) {

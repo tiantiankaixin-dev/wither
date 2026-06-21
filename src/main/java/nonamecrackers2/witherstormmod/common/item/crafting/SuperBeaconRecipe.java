@@ -1,10 +1,12 @@
 package nonamecrackers2.witherstormmod.common.item.crafting;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -20,6 +22,7 @@ import nonamecrackers2.witherstormmod.common.blockentity.SuperBeaconBlockEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 
 public abstract class SuperBeaconRecipe implements Recipe<SuperBeaconBlockEntity> {
+   public static final Codec<SuperBeaconRecipe.Condition> CONDITION_CODEC = StringRepresentable.fromEnum(SuperBeaconRecipe.Condition::values);
    protected final ResourceLocation id;
    protected final NonNullList<Ingredient> ingredients;
    protected final SuperBeaconRecipe.Condition condition;
@@ -45,7 +48,7 @@ public abstract class SuperBeaconRecipe implements Recipe<SuperBeaconBlockEntity
       return j == this.ingredients.size() && contents.canCraft(this, null);
    }
 
-   public ItemStack assemble(SuperBeaconBlockEntity entity, RegistryAccess access) {
+   public ItemStack assemble(SuperBeaconBlockEntity entity, HolderLookup.Provider access) {
       return !this.isResummonEntity() ? this.getResultItem(access).copy() : ItemStack.EMPTY;
    }
 
@@ -79,6 +82,16 @@ public abstract class SuperBeaconRecipe implements Recipe<SuperBeaconBlockEntity
 
    public SuperBeaconRecipe.Condition getCondition() {
       return this.condition;
+   }
+
+   static NonNullList<Ingredient> toNonNullList(List<Ingredient> ingredients) {
+      NonNullList<Ingredient> list = NonNullList.create();
+      list.addAll(ingredients);
+      return list;
+   }
+
+   static List<Ingredient> asList(NonNullList<Ingredient> ingredients) {
+      return List.copyOf(ingredients);
    }
 
    public static enum Condition implements StringRepresentable {

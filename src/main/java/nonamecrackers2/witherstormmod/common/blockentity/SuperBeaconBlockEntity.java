@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,7 +34,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -41,6 +42,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level.ExplosionInteraction;
@@ -71,9 +74,10 @@ import nonamecrackers2.witherstormmod.common.item.crafting.ResummonSuperBeaconRe
 import nonamecrackers2.witherstormmod.common.packet.GlobalSoundMessage;
 import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModBlockTags;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 
-public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity implements WorldlyContainer {
+public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity implements WorldlyContainer, RecipeInput {
    public static final int MAX_ITEMS = 16;
    public static final int RESUMMON_START = 60;
    public static final int RESUMMON_TIME = 372;
@@ -116,11 +120,11 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
       this.findNearbySupportBeacons();
       if (!this.level.isClientSide && !this.isDoingResummonAnimation()) {
-         List<ResummonSuperBeaconRecipe> recipes = this.level
+         List<RecipeHolder<ResummonSuperBeaconRecipe>> recipes = this.level
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.level);
+            .getRecipesFor(WitherStormModRecipeTypes.SUPER_BEACON_RESUMMON.get(), this, this.level);
          if (!recipes.isEmpty()) {
-            ResummonSuperBeaconRecipe recipe = recipes.get(0);
+            ResummonSuperBeaconRecipe recipe = recipes.get(0).value();
             if (recipe.getCondition().canCraft(this)) {
                this.resummoningEntity = recipe.getResummonEntity();
                this.resummonNbt = recipe.getResummonEntityNBT();
@@ -130,11 +134,11 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
             }
          }
 
-         List<ItemCraftSuperBeaconRecipe> craftingRecipes = this.level
+         List<RecipeHolder<ItemCraftSuperBeaconRecipe>> craftingRecipes = this.level
             .getRecipeManager()
-            .getRecipesFor((RecipeType)WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.level);
+            .getRecipesFor(WitherStormModRecipeTypes.SUPER_BEACON_ITEM.get(), this, this.level);
          if (!craftingRecipes.isEmpty()) {
-            ItemCraftSuperBeaconRecipe recipe = craftingRecipes.get(0);
+            ItemCraftSuperBeaconRecipe recipe = craftingRecipes.get(0).value();
             if (recipe.getCondition().canCraft(this)) {
                Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
                ServerLevel level = (ServerLevel)this.level;
@@ -220,7 +224,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
                      this.playSound(WitherStormModSoundEvents.BOWELS_LOUD_HURT.get(), 10.0F, 1.0F);
                      WitherStormModPacketHandlers.MAIN
                         .send(
-                           PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+                           PacketDistributor.NEAR.with(new TargetPoint(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
                            new ShakeScreenMessage(80.0F, 4.0F)
                         );
                   }
@@ -307,8 +311,8 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
                   this.level.explode(null, pos.x, pos.y, pos.z, 8.0F, ExplosionInteraction.BLOCK);
                   WitherStormEntity storm = (WitherStormEntity)(WitherStormModEntityTypes.WITHER_STORM.get()).create(this.level);
-                  storm.getAttribute((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get())
-                     .addPermanentModifier(new AttributeModifier("resummonedModifier", -0.5, Operation.ADDITION));
+                  storm.getAttribute(WitherStormModAttributes.holder(WitherStormModAttributes.EVOLUTION_SPEED))
+                     .addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("resummoned_modifier"), -0.5, Operation.ADD_VALUE));
                   storm.setPhase((Integer)WitherStormModConfig.SERVER.resummonedPhase.get());
                   storm.moveTo(pos);
                   storm.playSoundToEveryone(WitherStormModSoundEvents.WITHER_STORM_EVOLVES.get(), 1.0F, 1.0F);
@@ -338,7 +342,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
          Vec3 posx = Vec3.atCenterOf(this.getBlockPos());
          WitherStormModPacketHandlers.MAIN
             .send(
-               PacketDistributor.NEAR.with(TargetPoint.p(posx.x, posx.y, posx.z, 20.0, this.level.dimension())),
+               PacketDistributor.NEAR.with(new TargetPoint(posx.x, posx.y, posx.z, 20.0, this.level.dimension())),
                new ShakeScreenMessage(80.0F, 10.0F)
             );
       }
@@ -354,14 +358,14 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   public void load(CompoundTag tag) {
-      super.load(tag);
+   protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       NonNullList<ItemStack> items = NonNullList.create();
       ListTag list = tag.getList("ResummonItems", 10);
 
       for (int i = 0; i < list.size(); i++) {
          CompoundTag item = list.getCompound(i);
-         items.add(ItemStack.of(item));
+         items.add(ItemStack.parseOptional(registries, item));
       }
 
       this.items = items;
@@ -378,13 +382,13 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       ListTag list = new ListTag();
 
       for (ItemStack stack : this.items) {
          CompoundTag item = new CompoundTag();
-         list.add(stack.save(item));
+         list.add(stack.save(registries, item));
       }
 
       tag.put("ResummonItems", list);
@@ -541,7 +545,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
    }
 
    @Override
-   public Set<MobEffect> getValidEffects() {
+   public Set<Holder<MobEffect>> getValidEffects() {
       return VALID_EFFECTS;
    }
 
@@ -580,7 +584,7 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
       Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
       WitherStormModPacketHandlers.MAIN
          .send(
-            PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+            PacketDistributor.NEAR.with(new TargetPoint(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
             new ShakeScreenMessage(80.0F, 10.0F)
          );
    }
@@ -605,6 +609,10 @@ public class SuperBeaconBlockEntity extends AbstractSuperBeaconBlockEntity imple
 
    public int getContainerSize() {
       return this.items.size();
+   }
+
+   public int size() {
+      return this.getContainerSize();
    }
 
    public boolean isEmpty() {

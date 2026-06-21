@@ -6,13 +6,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BowlFoodItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCapabilities;
 
-public class GoldenAppleStewItem extends BowlFoodItem {
+public class GoldenAppleStewItem extends Item {
    public GoldenAppleStewItem(Properties properties) {
       super(properties);
    }

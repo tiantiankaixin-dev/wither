@@ -1,8 +1,8 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class OnHeadAttackedMessage extends Packet {

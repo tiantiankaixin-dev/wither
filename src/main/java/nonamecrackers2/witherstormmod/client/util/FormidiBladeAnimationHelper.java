@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import nonamecrackers2.witherstormmod.common.item.FormidiBladeItem;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class FormidiBladeAnimationHelper {
    public static void onRenderItemInHand(
@@ -16,7 +17,7 @@ public class FormidiBladeAnimationHelper {
    ) {
       if (item.getItem() instanceof FormidiBladeItem) {
          VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(AmuletAnimationHelper.GLARE));
-         CompoundTag tag = item.getTag();
+         CompoundTag tag = ItemStackDataUtil.getTag(item);
          float pulseIntensity = 0.0F;
          if (tag != null) {
             pulseIntensity = Math.min(1.0F, tag.getFloat("Power"));

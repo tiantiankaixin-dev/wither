@@ -14,7 +14,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -40,10 +39,8 @@ public class SickenedPhantom extends Phantom implements WitherSickened {
    public static Builder createAttributes() {
       return Monster.createMonsterAttributes().add(Attributes.ATTACK_DAMAGE, 3.0);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    protected void registerGoals() {
@@ -76,7 +73,7 @@ public class SickenedPhantom extends Phantom implements WitherSickened {
    }
 
    public boolean removeWhenFarAway(double dist) {
-      return this.goalSelector.getRunningGoals().noneMatch(entry -> entry.getGoal() instanceof PhantomOrbitWitherStormGoal);
+      return this.goalSelector.getAvailableGoals().stream().noneMatch(entry -> entry.isRunning() && entry.getGoal() instanceof PhantomOrbitWitherStormGoal);
    }
 
    public boolean addEffect(MobEffectInstance effect, Entity entity) {
@@ -101,9 +98,9 @@ public class SickenedPhantom extends Phantom implements WitherSickened {
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override

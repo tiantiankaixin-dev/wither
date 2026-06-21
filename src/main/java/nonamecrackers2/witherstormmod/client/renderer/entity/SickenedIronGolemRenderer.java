@@ -14,8 +14,8 @@ import nonamecrackers2.witherstormmod.client.renderer.entity.model.sickenedentit
 import nonamecrackers2.witherstormmod.common.entity.SickenedIronGolem;
 
 public class SickenedIronGolemRenderer extends MobRenderer<SickenedIronGolem, SickenedIronGolemModel<SickenedIronGolem>> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_iron_golem_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_iron_golem_emissive.png");
 
    public SickenedIronGolemRenderer(Context context) {
       super(context, new SickenedIronGolemModel(context.bakeLayer(WitherStormModRenderers.SICKENED_IRON_GOLEM)), 0.7F);
@@ -31,8 +31,8 @@ public class SickenedIronGolemRenderer extends MobRenderer<SickenedIronGolem, Si
       return TEXTURE;
    }
 
-   protected void setupRotations(SickenedIronGolem entity, PoseStack stack, float p_115016_, float p_115017_, float p_115018_) {
-      super.setupRotations(entity, stack, p_115016_, p_115017_, p_115018_);
+   protected void setupRotations(SickenedIronGolem entity, PoseStack stack, float p_115016_, float p_115017_, float p_115018_, float scale) {
+      super.setupRotations(entity, stack, p_115016_, p_115017_, p_115018_, scale);
       if (!((double)entity.walkAnimation.speed() < 0.01)) {
          float f1 = entity.walkAnimation.position(p_115018_) + 6.0F;
          float f2 = (Math.abs(f1 % 13.0F - 6.5F) - 3.25F) / 3.25F;

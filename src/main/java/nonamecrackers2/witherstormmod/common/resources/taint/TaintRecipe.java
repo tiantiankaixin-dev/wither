@@ -40,6 +40,6 @@ public abstract class TaintRecipe implements Comparable<TaintRecipe> {
    public abstract String getName();
 
    public boolean canConvertWithPotion(Potion potion) {
-      return this.effect == null ? false : potion.getEffects().stream().anyMatch(e -> e.getEffect() == this.effect);
+      return this.effect == null ? false : potion.getEffects().stream().anyMatch(e -> e.getEffect().value() == this.effect);
    }
 }

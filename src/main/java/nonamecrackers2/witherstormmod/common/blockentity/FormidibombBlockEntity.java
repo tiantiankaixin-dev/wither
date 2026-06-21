@@ -2,6 +2,7 @@ package nonamecrackers2.witherstormmod.common.blockentity;
 
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
@@ -28,14 +29,14 @@ public class FormidibombBlockEntity extends BlockEntity implements IFormidibomb 
       super((BlockEntityType)WitherStormModBlockEntityTypes.FORMIDIBOMB.get(), pos, state);
    }
 
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       tag.putInt("Fuse", this.getFuseLife());
       tag.putInt("StartFuse", this.getStartFuse());
    }
 
-   public void load(CompoundTag compound) {
-      super.load(compound);
+   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+      super.loadAdditional(compound, registries);
       if (compound.contains("Fuse")) {
          this.setLifeFuse(compound.getInt("Fuse"));
       }
@@ -82,8 +83,8 @@ public class FormidibombBlockEntity extends BlockEntity implements IFormidibomb 
       return ClientboundBlockEntityDataPacket.create(this);
    }
 
-   public CompoundTag getUpdateTag() {
-      return this.saveWithoutMetadata();
+   public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+      return this.saveWithoutMetadata(registries);
    }
 
    @Override

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -31,6 +33,7 @@ import nonamecrackers2.witherstormmod.common.blockentity.inventory.SuperSupportB
 import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModPacketHandlers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 import org.apache.logging.log4j.LogManager;
@@ -110,7 +113,7 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
             Vec3 pos = Vec3.atCenterOf(this.getConnectedBeacon());
             WitherStormModPacketHandlers.MAIN
                .send(
-                  PacketDistributor.NEAR.with(TargetPoint.p(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
+                  PacketDistributor.NEAR.with(new TargetPoint(pos.x, pos.y, pos.z, 20.0, this.level.dimension())),
                   new ShakeScreenMessage(80.0F, 10.0F)
                );
          }
@@ -195,8 +198,8 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    }
 
    @Override
-   public void load(CompoundTag tag) {
-      super.load(tag);
+   protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.loadAdditional(tag, registries);
       int colorIndex = tag.getInt("Color");
       if (colorIndex >= 0 && colorIndex < AbstractSuperBeaconBlockEntity.Color.values().length) {
          this.color = AbstractSuperBeaconBlockEntity.Color.values()[colorIndex];
@@ -207,15 +210,15 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
       }
 
       if (tag.contains("Connected")) {
-         this.connectedBeacon = NbtUtils.readBlockPos(tag.getCompound("Connected"));
+         this.connectedBeacon = WitherStormModNBTUtil.readBlockPos(tag, "Connected").orElse(null);
       } else {
          this.connectedBeacon = null;
       }
    }
 
    @Override
-   protected void saveAdditional(CompoundTag tag) {
-      super.saveAdditional(tag);
+   protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+      super.saveAdditional(tag, registries);
       if (this.color != null) {
          tag.putInt("Color", this.color.ordinal());
       } else {
@@ -230,8 +233,8 @@ public class SuperSupportBeaconBlockEntity extends AbstractSuperBeaconBlockEntit
    }
 
    @Override
-   public Set<MobEffect> getValidEffects() {
-      return (Set<MobEffect>)(this.color != null ? this.color.getValidEffects() : ImmutableSet.of());
+   public Set<Holder<MobEffect>> getValidEffects() {
+      return this.color != null ? this.color.getValidEffects() : ImmutableSet.of();
    }
 
    @Override

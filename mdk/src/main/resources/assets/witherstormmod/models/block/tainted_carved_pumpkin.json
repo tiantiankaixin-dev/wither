@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "witherstormmod:block/tainted_carved_pumpkin",
-    "side": "witherstormmod:block/tainted_pumpkin_side",
-    "top": "witherstormmod:block/tainted_pumpkin_top"
-  }
-}

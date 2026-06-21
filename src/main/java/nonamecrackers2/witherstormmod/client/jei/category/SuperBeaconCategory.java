@@ -20,7 +20,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 
 public abstract class SuperBeaconCategory<T extends SuperBeaconRecipe> implements IRecipeCategory<T> {
-   protected static final ResourceLocation SLOT = new ResourceLocation("witherstormmod", "textures/gui/jei/slot.png");
+   protected static final ResourceLocation SLOT = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/gui/jei/slot.png");
    private final IDrawable background;
 
    protected SuperBeaconCategory(IGuiHelper helper) {

@@ -47,7 +47,7 @@ public class WitherStormModBlockTaintingRecipeProvider extends BlockTaintingReci
       this.addAndCopyAllProperties(BlockTags.WOODEN_SLABS, (Block)WitherStormModBlocks.TAINTED_SLAB.get());
       this.addAndCopyAllProperties(BlockTags.WOODEN_FENCES, (Block)WitherStormModBlocks.TAINTED_FENCE.get());
       this.addAndCopyAllProperties(BlockTags.FENCE_GATES, (Block)WitherStormModBlocks.TAINTED_FENCE_GATE.get());
-      this.addAndCopyAllProperties(net.minecraftforge.common.Tags.Blocks.SANDSTONE, (Block)WitherStormModBlocks.TAINTED_SANDSTONE.get());
+      this.addAndCopyAllProperties(Blocks.SANDSTONE, (Block)WitherStormModBlocks.TAINTED_SANDSTONE.get());
       this.addAndCopyAllProperties(Blocks.SANDSTONE_SLAB, (Block)WitherStormModBlocks.TAINTED_SANDSTONE_SLAB.get());
       this.addAndCopyAllProperties(Blocks.SANDSTONE_STAIRS, (Block)WitherStormModBlocks.TAINTED_SANDSTONE_STAIRS.get());
       this.addAndCopyAllProperties(Blocks.SANDSTONE_WALL, (Block)WitherStormModBlocks.TAINTED_SANDSTONE_WALL.get());

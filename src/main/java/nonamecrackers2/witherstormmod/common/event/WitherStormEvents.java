@@ -85,7 +85,7 @@ public class WitherStormEvents {
                         int y = level.getHeight(Types.MOTION_BLOCKING_NO_LEAVES, x, z);
                         BlockPos pos = new BlockPos(x, y, z);
                         if (Level.isInSpawnableBounds(pos)) {
-                           Vec3 vec = (Vec3)Player.findRespawnPositionAndUseSpawnBlock(level, pos, 0.0F, true, true).orElse(null);
+                           Vec3 vec = Vec3.atBottomCenterOf(pos);
                            if (vec != null) {
                               player.lookAt(Anchor.EYES, vec);
                               player.moveTo(vec.x, vec.y, vec.z);
@@ -105,7 +105,7 @@ public class WitherStormEvents {
    public static void onExplosionDetonate(Detonate event) {
       Level world = event.getLevel();
       if (!world.isClientSide) {
-         Entity source = event.getExplosion().getExploder();
+         Entity source = event.getExplosion().getDirectSourceEntity();
          if (source != null && !(source instanceof WitherStormEntity)) {
             for (Entity entity : world.getNearbyEntities(WitherStormEntity.class, TargetingConditions.DEFAULT, null, source.getBoundingBox().inflate(100.0))) {
                if (entity instanceof WitherStormEntity) {
@@ -122,7 +122,7 @@ public class WitherStormEvents {
                            }
                         }
 
-                        Entity exploder = event.getExplosion().getExploder();
+                        Entity exploder = event.getExplosion().getDirectSourceEntity();
                         if (exploder != null && exploder instanceof Projectile) {
                            Projectile projectile = (Projectile)exploder;
                            if (projectile.getOwner() == storm) {
@@ -131,7 +131,7 @@ public class WitherStormEvents {
                         }
 
                         Vec3 headPos = head.getHeadPos();
-                        if (event.getExplosion().getPosition().distanceTo(headPos) < (storm.getPhase() < 4 ? 5.0 : 12.0)
+                        if (event.getExplosion().center().distanceTo(headPos) < (storm.getPhase() < 4 ? 5.0 : 12.0)
                            && !storm.isDeadOrPlayingDead()
                            && !head.isHeadInjured()
                            && head.checkAndCountAttack()) {

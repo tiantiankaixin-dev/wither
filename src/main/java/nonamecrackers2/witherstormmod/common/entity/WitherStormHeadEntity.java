@@ -22,7 +22,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -95,12 +94,12 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
       return new EmptyBodyController(this);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(IS_ACTIVE, true);
-      this.entityData.define(IS_ROARING, false);
-      this.entityData.define(IS_BITING, false);
-      this.entityData.define(IS_HURT, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(IS_ACTIVE, true);
+      builder.define(IS_ROARING, false);
+      builder.define(IS_BITING, false);
+      builder.define(IS_HURT, false);
    }
 
    protected void registerGoals() {
@@ -371,7 +370,7 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
             }
 
             if (target instanceof Player) {
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)target), new PlayerMotionMessage(delta));
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)target), new PlayerMotionMessage(delta));
             }
 
             if (this.getBoundingBox().intersects(target.getBoundingBox())) {
@@ -476,13 +475,11 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
    public boolean addEffect(@NotNull MobEffectInstance effect, @Nullable Entity entity) {
       return false;
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
-   public boolean canChangeDimensions() {
+   public boolean canChangeDimensions(Level currentLevel, Level destinationLevel) {
       return false;
    }
 
@@ -494,8 +491,10 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
       return !this.isPlayingDead();
    }
 
-   protected float getStandingEyeHeight(@NotNull Pose pose, EntityDimensions size) {
-      return size.height / 1.5F;
+   @Override
+   protected EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+      EntityDimensions size = super.getDefaultDimensions(pose);
+      return size.withEyeHeight(size.height() / 1.5F);
    }
 
    public void startSleeping(@NotNull BlockPos pos) {
@@ -682,7 +681,7 @@ public class WitherStormHeadEntity extends Monster implements WitherStormBase, R
       LivingEntity entity = this.getTarget();
       if (entity != null) {
          Vec3 direction = entity.position().subtract(this.position()).normalize();
-         WitherSkull witherSkull = new WitherSkull(this.level(), this, direction.x, direction.y, direction.z);
+         WitherSkull witherSkull = new WitherSkull(this.level(), this, direction);
          this.level().addFreshEntity(witherSkull);
          if (this.getRandom().nextInt(16) == 1) {
             witherSkull.setDangerous(true);

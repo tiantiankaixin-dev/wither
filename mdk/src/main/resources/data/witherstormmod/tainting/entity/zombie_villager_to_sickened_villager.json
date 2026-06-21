@@ -1,5 +1,0 @@
-{
-  "convert_from_sickness": true,
-  "from": "minecraft:zombie_villager",
-  "to": "witherstormmod:sickened_villager"
-}

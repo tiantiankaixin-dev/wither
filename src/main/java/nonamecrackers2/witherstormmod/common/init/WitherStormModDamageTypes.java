@@ -25,7 +25,7 @@ public class WitherStormModDamageTypes {
    public static final ResourceKey<DamageType> IRON_PIERCING = create("iron_pierce");
 
    private static ResourceKey<DamageType> create(String id) {
-      return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("witherstormmod", id));
+      return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("witherstormmod", id));
    }
 
    public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> key) {

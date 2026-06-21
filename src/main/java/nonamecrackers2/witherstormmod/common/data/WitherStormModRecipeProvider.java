@@ -1,10 +1,11 @@
 package nonamecrackers2.witherstormmod.common.data;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -25,6 +26,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
+import nonamecrackers2.witherstormmod.common.item.crafting.LockAmuletRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.SuperBeaconRecipe;
 import nonamecrackers2.witherstormmod.common.item.crafting.builder.AnvilRecipeBuilder;
 import nonamecrackers2.witherstormmod.common.item.crafting.builder.SuperBeaconRecipeBuilder;
@@ -32,12 +34,12 @@ import nonamecrackers2.witherstormmod.common.tags.WitherStormModItemTags;
 import org.jetbrains.annotations.NotNull;
 
 public class WitherStormModRecipeProvider extends RecipeProvider {
-   public WitherStormModRecipeProvider(PackOutput output) {
-      super(output);
+   public WitherStormModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+      super(output, lookupProvider);
    }
 
-   protected void buildRecipes(@NotNull Consumer<FinishedRecipe> result) {
-      SpecialRecipeBuilder.special((RecipeSerializer)WitherStormModRecipeSerializers.LOCK_AMULET.get()).save(result, "witherstormmod:amulet_lock");
+   protected void buildRecipes(@NotNull RecipeOutput result) {
+      SpecialRecipeBuilder.special(LockAmuletRecipe::new).save(result, "witherstormmod:amulet_lock");
       unlockedByItems(
             ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, (ItemLike)WitherStormModItems.AMULET.get())
                .define('G', Items.GOLD_INGOT)
@@ -310,7 +312,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             2
          )
          .unlockedBy("has_tainted_cobblestone", has((ItemLike)WitherStormModItems.TAINTED_COBBLESTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_SLAB.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_SLAB.getId().getPath() + "_stonecutting"));
       slab(
          result,
          RecipeCategory.DECORATIONS,
@@ -323,7 +325,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             (ItemLike)WitherStormModBlocks.TAINTED_COBBLESTONE_STAIRS.get()
          )
          .unlockedBy("has_tainted_cobblestone", has((ItemLike)WitherStormModItems.TAINTED_COBBLESTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_STAIRS.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_STAIRS.getId().getPath() + "_stonecutting"));
       stairBuilder(
             (ItemLike)WitherStormModItems.TAINTED_COBBLESTONE_STAIRS.get(),
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModItems.TAINTED_COBBLESTONE.get()})
@@ -336,7 +338,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             (ItemLike)WitherStormModBlocks.TAINTED_COBBLESTONE_WALL.get()
          )
          .unlockedBy("has_tainted_cobblestone", has((ItemLike)WitherStormModItems.TAINTED_COBBLESTONE_WALL.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_WALL.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModBlocks.TAINTED_COBBLESTONE_WALL.getId().getPath() + "_stonecutting"));
       wall(
          result,
          RecipeCategory.DECORATIONS,
@@ -434,21 +436,21 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             2
          )
          .unlockedBy("has_tainted_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
       SingleItemRecipeBuilder.stonecutting(
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModItems.TAINTED_SANDSTONE.get()}),
             RecipeCategory.BUILDING_BLOCKS,
             (ItemLike)WitherStormModItems.TAINTED_SANDSTONE_STAIRS.get()
          )
          .unlockedBy("has_tainted_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_SANDSTONE_STAIRS.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_SANDSTONE_STAIRS.getId().getPath() + "_stonecutting"));
       SingleItemRecipeBuilder.stonecutting(
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModBlocks.TAINTED_SANDSTONE.get()}),
             RecipeCategory.DECORATIONS,
             (ItemLike)WitherStormModBlocks.TAINTED_SANDSTONE_WALL.get()
          )
          .unlockedBy("has_tainted_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModBlocks.TAINTED_SANDSTONE_WALL.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModBlocks.TAINTED_SANDSTONE_WALL.getId().getPath() + "_stonecutting"));
       wall(
          result, RecipeCategory.DECORATIONS, (ItemLike)WitherStormModItems.TAINTED_SANDSTONE_WALL.get(), (ItemLike)WitherStormModItems.TAINTED_SANDSTONE.get()
       );
@@ -471,7 +473,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             2
          )
          .unlockedBy("has_tainted_cut_sandstone", has((ItemLike)WitherStormModItems.TAINTED_CUT_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_CUT_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_CUT_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
       ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, (ItemLike)WitherStormModItems.TAINTED_CHISELED_SANDSTONE.get())
          .define('#', (ItemLike)WitherStormModItems.TAINTED_SANDSTONE_SLAB.get())
          .pattern("#")
@@ -506,21 +508,21 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             2
          )
          .unlockedBy("has_tainted_smooth_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SMOOTH_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_SMOOTH_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_SMOOTH_SANDSTONE_SLAB.getId().getPath() + "_stonecutting"));
       SingleItemRecipeBuilder.stonecutting(
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModItems.TAINTED_SMOOTH_SANDSTONE.get()}),
             RecipeCategory.BUILDING_BLOCKS,
             (ItemLike)WitherStormModItems.TAINTED_SMOOTH_SANDSTONE_STAIRS.get()
          )
          .unlockedBy("has_tainted_smooth_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SMOOTH_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_SMOOTH_SANDSTONE_STAIRS.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_SMOOTH_SANDSTONE_STAIRS.getId().getPath() + "_stonecutting"));
       SingleItemRecipeBuilder.stonecutting(
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModBlocks.TAINTED_SMOOTH_SANDSTONE.get()}),
             RecipeCategory.DECORATIONS,
             (ItemLike)WitherStormModBlocks.TAINTED_SMOOTH_SANDSTONE_WALL.get()
          )
          .unlockedBy("has_tainted_smooth_sandstone", has((ItemLike)WitherStormModItems.TAINTED_SMOOTH_SANDSTONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModBlocks.TAINTED_SMOOTH_SANDSTONE_WALL.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModBlocks.TAINTED_SMOOTH_SANDSTONE_WALL.getId().getPath() + "_stonecutting"));
       wall(
          result,
          RecipeCategory.DECORATIONS,
@@ -544,7 +546,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             2
          )
          .unlockedBy("has_tainted_stone", has((ItemLike)WitherStormModItems.TAINTED_STONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_STONE_SLAB.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_STONE_SLAB.getId().getPath() + "_stonecutting"));
       slab(result, RecipeCategory.DECORATIONS, (ItemLike)WitherStormModItems.TAINTED_STONE_SLAB.get(), (ItemLike)WitherStormModItems.TAINTED_STONE.get());
       SingleItemRecipeBuilder.stonecutting(
             Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModItems.TAINTED_STONE.get()}),
@@ -552,7 +554,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
             (ItemLike)WitherStormModItems.TAINTED_STONE_STAIRS.get()
          )
          .unlockedBy("has_tainted_stone", has((ItemLike)WitherStormModItems.TAINTED_STONE.get()))
-         .save(result, new ResourceLocation("witherstormmod", WitherStormModItems.TAINTED_STONE_STAIRS.getId().getPath() + "_stonecutting"));
+         .save(result, ResourceLocation.fromNamespaceAndPath("witherstormmod", WitherStormModItems.TAINTED_STONE_STAIRS.getId().getPath() + "_stonecutting"));
       stairBuilder(
             (ItemLike)WitherStormModItems.TAINTED_STONE_STAIRS.get(), Ingredient.of(new ItemLike[]{(ItemLike)WitherStormModItems.TAINTED_STONE.get()})
          )
@@ -674,7 +676,7 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
       return builder;
    }
 
-   private static void reubenPig(Consumer<FinishedRecipe> consumer) {
+   private static void reubenPig(RecipeOutput consumer) {
       CompoundTag pigTag = new CompoundTag();
       pigTag.putInt("Age", -1200);
       CompoundTag name = new CompoundTag();
@@ -682,10 +684,10 @@ public class WitherStormModRecipeProvider extends RecipeProvider {
       pigTag.put("CustomName", name);
       SuperBeaconRecipeBuilder.entity(SuperBeaconRecipe.Condition.NONE, RecipeCategory.MISC, EntityType.PIG, pigTag)
          .requires(Items.PORKCHOP, 16)
-         .save(consumer, new ResourceLocation("witherstormmod", "summon_pig"));
+         .save(consumer, ResourceLocation.fromNamespaceAndPath("witherstormmod", "summon_pig"));
    }
 
-   private static void cmdTool(Consumer<FinishedRecipe> result, Item required, RecipeCategory category, Item output) {
+   private static void cmdTool(RecipeOutput result, Item required, RecipeCategory category, Item output) {
       AnvilRecipeBuilder.commandBlockTool(required, output).save(result, WitherStormMod.id(getItemName(output) + "_anvil"));
    }
 }

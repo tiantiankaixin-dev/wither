@@ -12,11 +12,11 @@ import net.minecraft.world.phys.Vec3;
 import nonamecrackers2.witherstormmod.api.common.entity.WitherStormBase;
 
 public class TractorBeamHelper {
-   public static <T extends LivingEntity & WitherStormBase> Pair<Boolean, Integer> isInsideTractorBeam(Entity target, T entity, double radius) {
+   public static Pair<Boolean, Integer> isInsideTractorBeam(Entity target, WitherStormBase entity, double radius) {
       return isInsideTractorBeam(target.position(), entity, radius);
    }
 
-   public static <T extends LivingEntity & WitherStormBase> Pair<Boolean, Integer> isInsideTractorBeam(Vec3 target, T entity, double radius) {
+   public static Pair<Boolean, Integer> isInsideTractorBeam(Vec3 target, WitherStormBase entity, double radius) {
       for (int i = 0; i < entity.getTotalHeads(); i++) {
          if (isInsideTractorBeam(target, entity, radius, i)) {
             return Pair.of(true, i);
@@ -26,11 +26,11 @@ public class TractorBeamHelper {
       return Pair.of(false, -1);
    }
 
-   public static <T extends LivingEntity & WitherStormBase> boolean isInsideTractorBeam(Entity target, T entity, double radius, int head) {
+   public static boolean isInsideTractorBeam(Entity target, WitherStormBase entity, double radius, int head) {
       return isInsideTractorBeam(target.position(), entity, radius, head);
    }
 
-   public static <T extends LivingEntity & WitherStormBase> boolean isInsideTractorBeam(Vec3 target, T entity, double radius, int head) {
+   public static boolean isInsideTractorBeam(Vec3 target, WitherStormBase entity, double radius, int head) {
       if (entity.tractorBeamActive(head)) {
          Vec3 pos = calculateClosestPoint(target, entity, head);
          double distance = Math.sqrt(target.distanceToSqr(pos));
@@ -43,11 +43,11 @@ public class TractorBeamHelper {
       return false;
    }
 
-   public static <T extends LivingEntity & WitherStormBase> Vec3 calculateClosestPoint(Vec3 target, T entity, int head) {
+   public static Vec3 calculateClosestPoint(Vec3 target, WitherStormBase entity, int head) {
       return calculateClosestPoint(target, entity, head, 0.0);
    }
 
-   public static <T extends LivingEntity & WitherStormBase> Vec3 calculateClosestPoint(Vec3 target, T entity, int head, double distanceOffset) {
+   public static Vec3 calculateClosestPoint(Vec3 target, WitherStormBase entity, int head, double distanceOffset) {
       float x = entity.getHeadXRot(head);
       float y = entity.getHeadYRot(head);
       Vec3 headPos = entity.getHeadPos(head);
@@ -64,7 +64,7 @@ public class TractorBeamHelper {
       Vec3 headPos = entity.getEyePosition();
       float distanceToHead = (float)headPos.distanceTo(target.position());
       Vec3 closest = headPos.add(getViewVector(entity).scale((double)distanceToHead));
-      BlockHitResult ray = target.level().clip(new ClipContext(headPos, closest, Block.COLLIDER, Fluid.NONE, null));
+      BlockHitResult ray = target.level().clip(new ClipContext(headPos, closest, Block.COLLIDER, Fluid.NONE, target));
       return ray.getLocation();
    }
 

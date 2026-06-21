@@ -1,11 +1,14 @@
 package nonamecrackers2.witherstormmod.common.util;
 
 import java.util.function.Supplier;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModItems;
 
 public enum WitherStormModItemTier implements Tier {
@@ -55,5 +58,16 @@ public enum WitherStormModItemTier implements Tier {
 
    public Ingredient getRepairIngredient() {
       return this.repairIngredient.get();
+   }
+
+   public TagKey<Block> getIncorrectBlocksForDrops() {
+      return switch (this.level) {
+         case 0 -> BlockTags.INCORRECT_FOR_WOODEN_TOOL;
+         case 1 -> BlockTags.INCORRECT_FOR_GOLD_TOOL;
+         case 2 -> BlockTags.INCORRECT_FOR_STONE_TOOL;
+         case 3 -> BlockTags.INCORRECT_FOR_IRON_TOOL;
+         case 4 -> BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
+         default -> BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+      };
    }
 }

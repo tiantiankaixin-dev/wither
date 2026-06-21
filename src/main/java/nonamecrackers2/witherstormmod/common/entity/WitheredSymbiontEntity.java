@@ -89,7 +89,7 @@
  *  net.minecraftforge.api.distmarker.Dist
  *  net.minecraftforge.common.util.LogicalSidedProvider
  *  net.minecraftforge.fml.DistExecutor
- *  net.minecraftforge.network.NetworkEvent$Context
+ *  nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent$Context
  *  net.minecraftforge.network.PacketDistributor
  *  net.minecraftforge.registries.IForgeRegistry
  *  nonamecrackers2.crackerslib.common.packet.Packet
@@ -146,6 +146,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -164,7 +165,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -196,6 +196,7 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -210,10 +211,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.IForgeRegistry;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SpellType;
 import nonamecrackers2.witherstormmod.api.common.ai.symbiont.SymbiontSpell;
 import nonamecrackers2.witherstormmod.api.common.registry.WitherStormModRegistries;
@@ -235,6 +236,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSymbiontSpellTypes;
 import nonamecrackers2.witherstormmod.common.serializer.WitherStormModDataSerializers;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import nonamecrackers2.witherstormmod.common.util.ConditionalLookController;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 import nonamecrackers2.witherstormmod.common.world.tainting.WorldTainting;
@@ -294,13 +296,13 @@ implements BossThemeEntity {
         return 1.0f;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BOSSFIGHT_STAGE, BossfightStage.ATTACKING);
-        this.entityData.define(SPELL_TYPE, ((SpellType)WitherStormModSymbiontSpellTypes.EMPTY.get()));
-        this.entityData.define(NON_BOSS_MODE, false);
-        this.entityData.define(RUSH_MODE, false);
-        this.entityData.define(SHOULD_NOT_GO_OVER_HALF, true);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BOSSFIGHT_STAGE, BossfightStage.ATTACKING);
+        builder.define(SPELL_TYPE, ((SpellType)WitherStormModSymbiontSpellTypes.EMPTY.get()));
+        builder.define(NON_BOSS_MODE, false);
+        builder.define(RUSH_MODE, false);
+        builder.define(SHOULD_NOT_GO_OVER_HALF, true);
     }
 
     protected void registerGoals() {
@@ -349,9 +351,7 @@ implements BossThemeEntity {
             ListTag dropItems = new ListTag();
             for (ItemStack stack : this.dropItems) {
                 if (stack.isEmpty()) continue;
-                CompoundTag tag = new CompoundTag();
-                stack.save(tag);
-                dropItems.add(tag);
+                dropItems.add(stack.saveOptional(this.registryAccess()));
             }
             compound.put("DropItems", (Tag)dropItems);
         }
@@ -394,7 +394,7 @@ implements BossThemeEntity {
         if (compound.contains("DropItems")) {
             ListTag dropItems = compound.getList("DropItems", 10);
             for (int i = 0; i < dropItems.size(); ++i) {
-                this.dropItems.add(ItemStack.of((CompoundTag)dropItems.getCompound(i)));
+                this.dropItems.add(ItemStack.parseOptional(this.registryAccess(), dropItems.getCompound(i)));
             }
         }
         if (compound.contains("ShouldNotGoOverHalf")) {
@@ -529,16 +529,19 @@ implements BossThemeEntity {
         }
     }
 
-    public boolean doHurtTarget(Entity entity) {
-        float f = this.getAttackDamage();
-        float f1 = (int)f > 0 ? f / 2.0f + (float)this.random.nextInt((int)f) : f;
-        boolean flag = entity.hurt(this.damageSources().mobAttack((LivingEntity)this), f1);
-        if (flag) {
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.8, 0.0));
-            this.doEnchantDamageEffects((LivingEntity)this, entity);
-        }
-        return flag;
-    }
+   public boolean doHurtTarget(Entity entity) {
+      float f = this.getAttackDamage();
+      float f1 = (int)f > 0 ? f / 2.0f + (float)this.random.nextInt((int)f) : f;
+      DamageSource source = this.damageSources().mobAttack(this);
+      boolean flag = entity.hurt(source, f1);
+      if (flag) {
+         entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, 0.8, 0.0));
+         if (this.level() instanceof ServerLevel serverLevel) {
+            EnchantmentHelper.doPostAttackEffects(serverLevel, entity, source);
+         }
+      }
+      return flag;
+   }
 
     private float getAttackDamage() {
         return (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
@@ -600,11 +603,9 @@ implements BossThemeEntity {
     public boolean causeFallDamage(float p_225503_1_, float p_225503_2_, @NotNull DamageSource source) {
         return false;
     }
-
-    @NotNull
-    public MobType getMobType() {
-        return WitherStormModMobTypes.SICKENED;
-    }
+   public boolean isInvertedHealAndHarm() {
+      return true;
+   }
 
     @NotNull
     public AABB getBoundingBoxForCulling() {
@@ -727,7 +728,7 @@ implements BossThemeEntity {
         if (!this.level().isClientSide() && this.spellInstance != null) {
             this.spellInstance.start(this.getTarget());
             this.spellCastingTime = this.getSpell().spellTime();
-            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new SetSpellTimeMessage(this.getId(), this.spellCastingTime));
+            WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(this), new SetSpellTimeMessage(this.getId(), this.spellCastingTime));
         }
     }
 
@@ -992,10 +993,11 @@ implements BossThemeEntity {
         this.entityData.set(RUSH_MODE, mode);
     }
 
-    protected void dropFromLootTable(@NotNull DamageSource source, boolean player) {
-        ResourceLocation id = this.getLootTable();
-        LootTable table = this.level().getServer().getLootData().getLootTable(id);
-        LootParams.Builder builder = new LootParams.Builder((ServerLevel)this.level()).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, source).withOptionalParameter(LootContextParams.KILLER_ENTITY, source.getEntity()).withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, source.getDirectEntity());
+   protected void dropFromLootTable(@NotNull DamageSource source, boolean player) {
+        ServerLevel serverLevel = (ServerLevel)this.level();
+        ResourceKey<LootTable> id = this.getLootTable();
+        LootTable table = serverLevel.getServer().reloadableRegistries().getLootTable(id);
+        LootParams.Builder builder = new LootParams.Builder(serverLevel).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, source).withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity()).withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity());
         if (player && this.lastHurtByPlayer != null) {
             builder = builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer).withLuck(this.lastHurtByPlayer.getLuck());
         }
@@ -1015,14 +1017,15 @@ implements BossThemeEntity {
         return Mth.lerp((float)partialTicks, (float)this.tearAlphaO, (float)this.tearAlpha);
     }
 
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag tag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, SpawnGroupData groupData) {
         double healthAddition;
         List nearbyPlayers = level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(150.0), e -> e.isAlive() && !e.isSpectator());
         if (nearbyPlayers.size() > 1 && (healthAddition = (double)nearbyPlayers.size() * (Double)WitherStormModConfig.SERVER.healthScalePerPlayer.get()) > 0.0) {
-            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("Health scaling", healthAddition, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH))
+               .addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("withered_symbiont_health_scaling"), healthAddition, AttributeModifier.Operation.ADD_VALUE));
             this.setHealth(this.getMaxHealth());
         }
-        return super.finalizeSpawn(level, difficulty, spawnType, groupData, tag);
+        return super.finalizeSpawn(level, difficulty, spawnType, groupData);
     }
 
     public LivingEntity getRandomNearbyTargetOrFallback(LivingEntity entity, Predicate<LivingEntity> selector) {
@@ -1195,7 +1198,7 @@ implements BossThemeEntity {
             buffer.writeInt(this.time);
         }
 
-        public Runnable getProcessor(NetworkEvent.Context context) {
+        public Runnable getProcessor(LegacyNetworkEvent.Context context) {
             return () -> DistExecutor.unsafeRunWhenOn((Dist)Dist.CLIENT, () -> () -> {
                 Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
                 optional.ifPresent(world -> {

@@ -7,12 +7,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.client.renderer.entity.model.TentacleModel;
 import nonamecrackers2.witherstormmod.common.entity.TentacleEntity;
 
 public class TentacleRenderer extends EntityRenderer<TentacleEntity> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/tentacle/tentacle.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/tentacle/tentacle.png");
    private final TentacleModel model;
 
    public TentacleRenderer(Context context) {
@@ -29,7 +30,7 @@ public class TentacleRenderer extends EntityRenderer<TentacleEntity> {
       VertexConsumer builder = buffer.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
       this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
       int i = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
-      this.model.renderToBuffer(stack, builder, packedLight, i, 1.0F, 1.0F, 1.0F, 1.0F);
+      this.model.renderToBuffer(stack, builder, packedLight, i, FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
       stack.popPose();
    }
 

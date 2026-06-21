@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
@@ -170,7 +172,7 @@ public interface WitherSickened {
    }
 
    default boolean sickenedAddEffect(MobEffectInstance effect, @Nullable Entity entity) {
-      return effect.getEffect() != WitherStormModEffects.WITHER_SICKNESS.get() && effect.getEffect() != MobEffects.WITHER;
+      return effect.getEffect() != WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS) && effect.getEffect() != MobEffects.WITHER;
    }
 
    default float sickenedGetVoicePitch() {
@@ -224,7 +226,8 @@ public interface WitherSickened {
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                ItemStack stack = cast.getItemBySlot(slot);
                if (!stack.isEmpty()) {
-                  if (EnchantmentHelper.hasBindingCurse(stack)) {
+                  var bindingCurse = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.BINDING_CURSE);
+                  if (EnchantmentHelper.getEnchantmentsForCrafting(stack).getLevel(bindingCurse) > 0) {
                      entity.getSlot(slot.getIndex() + 300).set(stack);
                   } else {
                      double d0 = (double)this.getSickenedEquipmentDropChance(slot);

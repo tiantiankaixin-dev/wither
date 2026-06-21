@@ -13,10 +13,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedSpider;
 
 public class SickenedSpiderRenderer extends SpiderRenderer<SickenedSpider> {
-   private static final ResourceLocation SICKENED_SPIDER_LOCATION = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_spider.png");
-   private static final ResourceLocation SICKENED_SPIDER_EMISSIVE_LOCATION = new ResourceLocation(
-      "witherstormmod", "textures/entity/sickened/sickened_spider_emissive.png"
-   );
+   private static final ResourceLocation SICKENED_SPIDER_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_spider.png");
+   private static final ResourceLocation SICKENED_SPIDER_EMISSIVE_LOCATION = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_spider_emissive.png");
 
    public SickenedSpiderRenderer(Context context) {
       super(context, WitherStormModRenderers.SICKENED_SPIDER);

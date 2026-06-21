@@ -11,8 +11,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedBee;
 
 public class SickenedBeeRenderer extends MobRenderer<SickenedBee, BeeModel<SickenedBee>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_bee.png");
-   private static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_bee_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_bee.png");
+   private static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_bee_emissive.png");
 
    public SickenedBeeRenderer(Context context) {
       super(context, new BeeModel(context.bakeLayer(WitherStormModRenderers.SICKENED_BEE)), 0.4F);

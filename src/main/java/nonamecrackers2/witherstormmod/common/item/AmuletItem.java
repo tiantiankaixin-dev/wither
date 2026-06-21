@@ -25,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
@@ -32,6 +33,7 @@ import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormSegmentEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModCriteriaTriggers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModSoundEvents;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 
 public class AmuletItem extends Item {
@@ -53,7 +55,7 @@ public class AmuletItem extends Item {
 
    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
       if (level instanceof ServerLevel serverLevel && entity instanceof Player player) {
-         CompoundTag tag = stack.getOrCreateTag();
+         CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
          if (tag.getInt("SelectedIndex") <= 0) {
             tag.putInt("SelectedIndex", 1);
          }
@@ -95,7 +97,7 @@ public class AmuletItem extends Item {
    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
       ItemStack stack = player.getItemInHand(hand);
       if (!level.isClientSide && player.isShiftKeyDown() && stack.getItem() instanceof AmuletItem) {
-         CompoundTag tag = stack.getOrCreateTag();
+         CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
          int index = tag.getInt("SelectedIndex");
          if (++index < TRACKING.length) {
             tag.putInt("SelectedIndex", index);
@@ -113,7 +115,7 @@ public class AmuletItem extends Item {
       if (BINDABLE.test(entity) && !(entity instanceof WitherStormEntity) && !player.isShiftKeyDown()) {
          ItemStack item = player.getItemInHand(hand);
          if (item.getItem() instanceof AmuletItem) {
-            CompoundTag tag = item.getOrCreateTag();
+            CompoundTag tag = ItemStackDataUtil.getOrCreateTag(item);
             if (!tag.getBoolean("Locked")) {
                int index = tag.getInt("SelectedIndex");
                if (index >= 1 && index < TRACKING.length) {
@@ -148,7 +150,7 @@ public class AmuletItem extends Item {
    private void saveDistFor(ServerLevel level, CompoundTag tag, Player player, UUID uuid, String id) {
       Entity tracking = null;
       if (tag.getBoolean("TrackEntityTypes")) {
-         EntityType<?> type = (EntityType<?>)ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(tag.getString(id + "Type")));
+         EntityType<?> type = (EntityType<?>)ForgeRegistries.ENTITY_TYPES.getValue(ResourceLocation.parse(tag.getString(id + "Type")));
          List<Entity> entities = level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(500.0), e -> e.getType().equals(type) && e != player);
          tracking = WorldUtil.getNearest(entities, player.position(), Entity::position);
       } else if (tag.contains(id)) {
@@ -164,9 +166,10 @@ public class AmuletItem extends Item {
       }
    }
 
-   public void appendHoverText(ItemStack stack, Level level, List<Component> text, TooltipFlag flag) {
-      super.appendHoverText(stack, level, text, flag);
-      CompoundTag tag = stack.getOrCreateTag();
+   @Override
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> text, TooltipFlag flag) {
+      super.appendHoverText(stack, context, text, flag);
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       boolean locked = tag.getBoolean("Locked");
       if ((Boolean)WitherStormModConfig.SERVER.amuletOverride.get()) {
          text.add(Component.translatable("description.amulet.mainUse").withStyle(ChatFormatting.DARK_GRAY));
@@ -229,7 +232,7 @@ public class AmuletItem extends Item {
    }
 
    public int getTotalUniqueLinked(ItemStack stack) {
-      CompoundTag tag = stack.getOrCreateTag();
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(stack);
       List<UUID> ids = Lists.newArrayList();
 
       for (int i = 0; i < TRACKING.length; i++) {

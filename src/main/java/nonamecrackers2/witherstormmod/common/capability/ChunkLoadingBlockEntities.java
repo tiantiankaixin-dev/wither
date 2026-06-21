@@ -7,9 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 
 public class ChunkLoadingBlockEntities {
    private final ServerLevel level;
@@ -52,11 +54,12 @@ public class ChunkLoadingBlockEntities {
    }
 
    public void read(CompoundTag tag) {
-      ListTag list = tag.getList("LoadedEntities", 10);
       List<BlockPos> loadingEntities = Lists.newArrayList();
-
-      for (int i = 0; i < list.size(); i++) {
-         loadingEntities.add(NbtUtils.readBlockPos(list.getCompound(i)));
+      Tag loadedEntities = tag.get("LoadedEntities");
+      if (loadedEntities instanceof ListTag list) {
+         for (int i = 0; i < list.size(); i++) {
+            WitherStormModNBTUtil.readBlockPos(list.get(i)).ifPresent(loadingEntities::add);
+         }
       }
 
       this.loadingEntities = loadingEntities;

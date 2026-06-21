@@ -1,25 +1,23 @@
 package nonamecrackers2.witherstormmod.common.item.crafting;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeSerializers;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModRecipeTypes;
-import org.jetbrains.annotations.Nullable;
 
 public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
    private final ResourceLocation id;
@@ -40,28 +38,28 @@ public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
       return this.left.test(contents.left) && this.right.test(contents.right);
    }
 
-   public ItemStack assemble(AnvilRecipe.AnvilContents contents, RegistryAccess access) {
+   public ItemStack assemble(AnvilRecipe.AnvilContents contents, HolderLookup.Provider access) {
       return this.getResultItem(access).copy();
    }
 
    public boolean canCraftInDimensions(int width, int height) {
-      return width == 1 && width == 2;
+      return width * height >= 2;
    }
 
    public ResourceLocation getId() {
       return this.id;
    }
 
-   public ItemStack getResultItem(RegistryAccess access) {
+   public ItemStack getResultItem(HolderLookup.Provider access) {
       return this.result;
    }
 
    public RecipeSerializer<?> getSerializer() {
-      return (RecipeSerializer<?>)WitherStormModRecipeSerializers.ANVIL_RECIPE.get();
+      return WitherStormModRecipeSerializers.ANVIL_RECIPE.get();
    }
 
    public RecipeType<?> getType() {
-      return (RecipeType<?>)WitherStormModRecipeTypes.ANVIL.get();
+      return WitherStormModRecipeTypes.ANVIL.get();
    }
 
    public int getCost() {
@@ -80,7 +78,14 @@ public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
       return this.result;
    }
 
-   public static class AnvilContents implements Container {
+   private static ResourceLocation defaultId(ItemStack result) {
+      ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(result.getItem());
+      return itemId != null
+         ? ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), "anvil/" + itemId.getPath())
+         : ResourceLocation.fromNamespaceAndPath("witherstormmod", "anvil/unknown");
+   }
+
+   public static class AnvilContents implements Container, RecipeInput {
       private final ItemStack left;
       private final ItemStack right;
 
@@ -96,19 +101,20 @@ public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
          return 2;
       }
 
+      public int size() {
+         return this.getContainerSize();
+      }
+
       public boolean isEmpty() {
          return this.left.isEmpty() && this.right.isEmpty();
       }
 
       public ItemStack getItem(int slot) {
-         switch (slot) {
-            case 0:
-               return this.left;
-            case 1:
-               return this.right;
-            default:
-               return ItemStack.EMPTY;
-         }
+         return switch (slot) {
+            case 0 -> this.left;
+            case 1 -> this.right;
+            default -> ItemStack.EMPTY;
+         };
       }
 
       public ItemStack removeItem(int slot, int amount) {
@@ -131,40 +137,41 @@ public class AnvilRecipe implements Recipe<AnvilRecipe.AnvilContents> {
    }
 
    public static class Serializer implements RecipeSerializer<AnvilRecipe> {
-      public AnvilRecipe fromJson(ResourceLocation id, JsonObject object) {
-         Ingredient left = Ingredient.fromJson(object.get("left"));
-         Ingredient right = Ingredient.fromJson(object.get("right"));
-         ItemStack stack;
-         if (object.get("result").isJsonObject()) {
-            stack = ShapedRecipe.itemStackFromJson(object.get("result").getAsJsonObject());
-         } else {
-            String rawId = GsonHelper.getAsString(object, "result");
-            ResourceLocation itemId = new ResourceLocation(rawId);
-            Item item = (Item)ForgeRegistries.ITEMS.getValue(itemId);
-            if (item == null) {
-               throw new JsonSyntaxException("Unknown item '" + rawId + "'");
-            }
+      private static final MapCodec<AnvilRecipe> CODEC = RecordCodecBuilder.mapCodec(
+         instance -> instance.group(
+               Ingredient.CODEC_NONEMPTY.fieldOf("left").forGetter(recipe -> recipe.left),
+               Ingredient.CODEC_NONEMPTY.fieldOf("right").forGetter(recipe -> recipe.right),
+               RecipeCodecs.ITEM_STACK_RESULT.fieldOf("result").forGetter(recipe -> recipe.result),
+               com.mojang.serialization.Codec.INT.fieldOf("cost").forGetter(recipe -> recipe.cost)
+            )
+            .apply(instance, (left, right, result, cost) -> new AnvilRecipe(AnvilRecipe.defaultId(result), left, right, result, cost))
+      );
+      private static final StreamCodec<RegistryFriendlyByteBuf, AnvilRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
-            stack = new ItemStack(item);
-         }
-
-         int cost = GsonHelper.getAsInt(object, "cost");
-         return new AnvilRecipe(id, left, right, stack, cost);
+      @Override
+      public MapCodec<AnvilRecipe> codec() {
+         return CODEC;
       }
 
-      @Nullable
-      public AnvilRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-         Ingredient left = Ingredient.fromNetwork(buffer);
-         Ingredient right = Ingredient.fromNetwork(buffer);
-         ItemStack item = buffer.readItem();
+      @Override
+      public StreamCodec<RegistryFriendlyByteBuf, AnvilRecipe> streamCodec() {
+         return STREAM_CODEC;
+      }
+
+      private static AnvilRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+         ResourceLocation id = buffer.readResourceLocation();
+         Ingredient left = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+         Ingredient right = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+         ItemStack item = ItemStack.STREAM_CODEC.decode(buffer);
          int cost = buffer.readVarInt();
          return new AnvilRecipe(id, left, right, item, cost);
       }
 
-      public void toNetwork(FriendlyByteBuf buffer, AnvilRecipe recipe) {
-         recipe.left.toNetwork(buffer);
-         recipe.right.toNetwork(buffer);
-         buffer.writeItem(recipe.result);
+      private static void toNetwork(RegistryFriendlyByteBuf buffer, AnvilRecipe recipe) {
+         buffer.writeResourceLocation(recipe.getId());
+         Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.left);
+         Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.right);
+         ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
          buffer.writeVarInt(recipe.cost);
       }
    }

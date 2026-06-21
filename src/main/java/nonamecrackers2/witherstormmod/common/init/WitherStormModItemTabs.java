@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class WitherStormModItemTabs {
    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "witherstormmod");
@@ -20,11 +21,11 @@ public class WitherStormModItemTabs {
                ItemStack phasometer = new ItemStack((ItemLike)WitherStormModItems.PHASOMETER.get());
                CompoundTag phasoNbt = new CompoundTag();
                phasoNbt.putBoolean("IsUpgraded", true);
-               phasometer.setTag(phasoNbt);
+               ItemStackDataUtil.setTag(phasometer, phasoNbt);
                ItemStack amulet = new ItemStack((ItemLike)WitherStormModItems.AMULET.get());
                CompoundTag amuletNbt = new CompoundTag();
                amuletNbt.putBoolean("TrackEntityTypes", true);
-               amulet.setTag(amuletNbt);
+               ItemStackDataUtil.setTag(amulet, amuletNbt);
                output.accept((ItemLike)WitherStormModItems.WITHERED_BONE.get());
                output.accept((ItemLike)WitherStormModItems.WITHERED_FLESH.get());
                output.accept((ItemLike)WitherStormModItems.TAINTED_DUST.get());

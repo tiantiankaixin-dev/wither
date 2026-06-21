@@ -3,6 +3,7 @@ package nonamecrackers2.witherstormmod.common.blockentity.inventory;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.effect.MobEffect;
@@ -20,7 +21,7 @@ public class SuperSupportBeaconMenu extends AbstractSuperBeaconMenu {
    }
 
    public SuperSupportBeaconMenu(
-      int id, Container container, ContainerData data, ContainerLevelAccess access, @Nullable Consumer<ServerPlayer> powerUp, Set<MobEffect> validEffects
+      int id, Container container, ContainerData data, ContainerLevelAccess access, @Nullable Consumer<ServerPlayer> powerUp, Set<Holder<MobEffect>> validEffects
    ) {
       super((MenuType<? extends AbstractSuperBeaconMenu>)WitherStormModMenuTypes.SUPER_SUPPORT_BEACON.get(), id, container, data, access, powerUp, validEffects);
    }

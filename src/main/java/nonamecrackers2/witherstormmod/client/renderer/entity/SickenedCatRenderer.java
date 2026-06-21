@@ -11,8 +11,8 @@ import net.minecraft.world.entity.animal.Cat;
 import nonamecrackers2.witherstormmod.common.entity.WitherSickened;
 
 public class SickenedCatRenderer extends CatRenderer {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_cat.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_cat_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_cat.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_cat_emissive.png");
 
    public SickenedCatRenderer(Context context) {
       super(context);

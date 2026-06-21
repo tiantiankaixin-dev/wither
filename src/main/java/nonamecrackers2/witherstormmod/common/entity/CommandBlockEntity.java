@@ -70,7 +70,7 @@
  *  net.minecraftforge.common.util.LogicalSidedProvider
  *  net.minecraftforge.event.ForgeEventFactory
  *  net.minecraftforge.fml.DistExecutor
- *  net.minecraftforge.network.NetworkEvent$Context
+ *  nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent$Context
  *  net.minecraftforge.network.PacketDistributor
  *  nonamecrackers2.crackerslib.common.packet.Packet
  *  nonamecrackers2.witherstormmod.WitherStormMod
@@ -123,6 +123,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -175,9 +176,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.BlockClusterEntity;
@@ -200,6 +201,7 @@ import nonamecrackers2.witherstormmod.common.packet.ShakeScreenMessage;
 import nonamecrackers2.witherstormmod.common.serializer.WitherStormModDataSerializers;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModBlockTags;
 import nonamecrackers2.witherstormmod.common.tags.WitherStormModItemTags;
+import nonamecrackers2.witherstormmod.common.util.AttributeModifierUtil;
 import nonamecrackers2.witherstormmod.common.util.EntitySyncableData;
 import nonamecrackers2.witherstormmod.common.util.StructureAnimationHelper;
 import nonamecrackers2.witherstormmod.common.util.TentacleOffsets;
@@ -320,12 +322,12 @@ BossThemeEntity {
         }
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STATE, State.IDLE);
-        this.entityData.define(MODE, Mode.NONE);
-        this.entityData.define(OWNER_UUID, Optional.empty());
-        this.entityData.define(PHASE_KEY, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STATE, State.IDLE);
+        builder.define(MODE, Mode.NONE);
+        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(PHASE_KEY, 0);
     }
 
     public void addAdditionalSaveData(@NotNull CompoundTag compound) {
@@ -425,7 +427,8 @@ BossThemeEntity {
         return (BlockState)Blocks.COMMAND_BLOCK.defaultBlockState().setValue((Property)BlockStateProperties.FACING, (Comparable)this.getDirection());
     }
 
-    public int getExperienceReward() {
+    @Override
+    protected int getBaseExperienceReward() {
         return 10;
     }
 
@@ -551,8 +554,9 @@ BossThemeEntity {
     public void push(double x, double y, double z) {
     }
 
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return 0.5f;
+    @Override
+    protected EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return super.getDefaultDimensions(pose).withEyeHeight(0.5f);
     }
 
     public float getModeAnim(float partialTicks) {
@@ -692,9 +696,9 @@ BossThemeEntity {
     }
 
     @NotNull
-    public net.minecraft.network.protocol.Packet<ClientGamePacketListener> getAddEntityPacket() {
-        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new ModeAnimationMessage(this.getId(), this.modeAnim));
-        return super.getAddEntityPacket();
+    public net.minecraft.network.protocol.Packet<ClientGamePacketListener> getAddEntityPacket(net.minecraft.server.level.ServerEntity serverEntity) {
+        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(this), new ModeAnimationMessage(this.getId(), this.modeAnim));
+        return super.getAddEntityPacket(serverEntity);
     }
 
     public void onAddedToWorld() {
@@ -867,7 +871,7 @@ BossThemeEntity {
             BlockPos randomPos = this.getRandomPosAroundPlayer(entity.getType(), playerPos, minRadius, maxRadius, 10);
             if (randomPos == null || !this.hasEnoughSpace((Entity)entity, randomPos)) continue;
             entity.setPos((double)randomPos.getX() + 0.5, (double)(randomPos.getY() + 1), (double)randomPos.getZ() + 0.5);
-            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(randomPos), (MobSpawnType)MobSpawnType.EVENT, null, null);
+            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(randomPos), (MobSpawnType)MobSpawnType.EVENT, null);
             if (entity instanceof Monster || entity instanceof AbstractGolem) {
                 this.addSpeedAttribute(entity);
             }
@@ -894,7 +898,7 @@ BossThemeEntity {
             for (int i = 0; i < 30 && this.level().getBlockState(pos.below()).is(Blocks.AIR); ++i) {
                 pos = pos.below();
             }
-            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacements.Type)SpawnPlacements.Type.ON_GROUND, (LevelReader)this.level(), (BlockPos)pos, type) || !(Math.sqrt(playerPos.distSqr((Vec3i)pos)) > 6.0)) continue;
+            if (!SpawnPlacements.isSpawnPositionOk(type, (LevelReader)this.level(), (BlockPos)pos) || !(Math.sqrt(playerPos.distSqr((Vec3i)pos)) > 6.0)) continue;
             return pos;
         }
         return null;
@@ -907,7 +911,7 @@ BossThemeEntity {
         BlockPos pos = this.getRandomNearbyPos(entity.getType(), diameter, 5);
         if (pos != null && this.hasEnoughSpace((Entity)entity, pos)) {
             entity.setPos((double)pos.getX() + 0.5, (double)(pos.getY() + 1), (double)pos.getZ() + 0.5);
-            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(pos), (MobSpawnType)MobSpawnType.EVENT, null, null);
+            ForgeEventFactory.onFinalizeSpawn((Mob)entity, (ServerLevelAccessor)world, (DifficultyInstance)world.getCurrentDifficultyAt(pos), (MobSpawnType)MobSpawnType.EVENT, null);
             if (entity instanceof Monster || entity instanceof AbstractGolem) {
                 this.addSpeedAttribute(entity);
             }
@@ -935,7 +939,7 @@ BossThemeEntity {
             for (int j = 0; j < 30 && this.level().getBlockState(currentPos.below()).is(Blocks.AIR); ++j) {
                 currentPos = currentPos.below();
             }
-            if (!NaturalSpawner.isSpawnPositionOk((SpawnPlacements.Type)SpawnPlacements.Type.ON_GROUND, (LevelReader)this.level(), (BlockPos)currentPos, type) || !(Math.sqrt(this.blockPosition().distSqr((Vec3i)currentPos)) > 6.0)) continue;
+            if (!SpawnPlacements.isSpawnPositionOk(type, (LevelReader)this.level(), (BlockPos)currentPos) || !(Math.sqrt(this.blockPosition().distSqr((Vec3i)currentPos)) > 6.0)) continue;
             pos = currentPos;
             break;
         }
@@ -943,14 +947,14 @@ BossThemeEntity {
     }
 
     private void addHealthAttribute(Mob mob) {
-        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("194fec31-b36e-41fc-ad72-02a5cb891def", -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADDITION));
+        Objects.requireNonNull(mob.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("194fec31-b36e-41fc-ad72-02a5cb891def"), -((mob.getRandom().nextDouble() + 0.5) * 2.0), AttributeModifier.Operation.ADD_VALUE));
     }
 
     private void addSpeedAttribute(Mob mob) {
         if (mob instanceof SickenedVindicator || mob instanceof SickenedIronGolem) {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.08, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("5965c24d-8ac1-4f04-92ee-3d2724f976e8"), -0.08, AttributeModifier.Operation.ADD_VALUE));
         } else {
-            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier("5965c24d-8ac1-4f04-92ee-3d2724f976e8", -0.06, AttributeModifier.Operation.ADDITION));
+            Objects.requireNonNull(mob.getAttribute(Attributes.MOVEMENT_SPEED)).addPermanentModifier(new AttributeModifier(AttributeModifierUtil.id("5965c24d-8ac1-4f04-92ee-3d2724f976e8"), -0.06, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 
@@ -1020,7 +1024,7 @@ BossThemeEntity {
     }
 
     public static class TentacleManager {
-        private static final UUID KNOCKBACK_MODIFIER = UUID.fromString("72aeccbe-cdfe-41c9-9d21-261f29f6da60");
+        private static final ResourceLocation KNOCKBACK_MODIFIER = AttributeModifierUtil.id("72aeccbe-cdfe-41c9-9d21-261f29f6da60");
         private final CommandBlockEntity entity;
         public final int tentacles;
         public TentacleEntity[] tentacleStructure;
@@ -1052,7 +1056,7 @@ BossThemeEntity {
                 tentacle.setNoGravity(true);
                 tentacle.setAnimationOffset(this.entity.random.nextInt(35) * 10000);
                 tentacle.setCanStrangle(false);
-                Objects.requireNonNull(tentacle.getAttribute(Attributes.ATTACK_KNOCKBACK)).addPermanentModifier(new AttributeModifier(KNOCKBACK_MODIFIER, "Command block's tentacles knockback modifier", 5.0, AttributeModifier.Operation.ADDITION));
+                Objects.requireNonNull(tentacle.getAttribute(Attributes.ATTACK_KNOCKBACK)).addPermanentModifier(new AttributeModifier(KNOCKBACK_MODIFIER, 5.0, AttributeModifier.Operation.ADD_VALUE));
                 this.tentacleStructure[index] = tentacle;
             }
         }
@@ -1195,7 +1199,7 @@ BossThemeEntity {
                         double speed = 0.025;
                         Vec3 motion = entity.position().subtract(player.position()).normalize().multiply(speed, speed, speed);
                         player.setDeltaMovement(motion.x, player.getDeltaMovement().y, motion.z);
-                        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new PlayerMotionMessage(new Vec3(motion.x, player.getDeltaMovement().y, motion.z)));
+                        WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)player), new PlayerMotionMessage(new Vec3(motion.x, player.getDeltaMovement().y, motion.z)));
                         if ((double)player.distanceTo((Entity)entity) < 3.0) {
                             entity.setLuringPlayer(null);
                             entity.nextState();
@@ -1220,7 +1224,7 @@ BossThemeEntity {
                 entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.TREMBLE.get(), SoundSource.AMBIENT, 10.0f, 1.0f);
                 if (!entity.level().isClientSide) {
                     ShakeScreenMessage message = new ShakeScreenMessage(40.0f, 5.0f);
-                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(entity), message);
                 }
                 for (int i = 0; i < 10; ++i) {
                     entity.level().addParticle((ParticleOptions)WitherStormModParticleTypes.COMMAND_BLOCK.get(), entity.getX(), entity.getEyeY(), entity.getZ(), entity.random.nextGaussian() * 0.5, entity.random.nextGaussian() * 0.5, entity.random.nextGaussian() * 0.5);
@@ -1257,7 +1261,7 @@ BossThemeEntity {
                 super.init(entity);
                 if (!entity.level().isClientSide) {
                     ShakeScreenMessage message = new ShakeScreenMessage(120.0f, 5.0f);
-                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+                    WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(entity), message);
                 }
                 entity.level().playSound(null, entity.blockPosition(), WitherStormModSoundEvents.TREMBLE.get(), SoundSource.AMBIENT, 10.0f, 1.0f);
             }
@@ -1404,7 +1408,7 @@ BossThemeEntity {
         public void tick(CommandBlockEntity entity, State state) {
             ++entity.modeAnim;
             if (!entity.level().isClientSide && entity.tickCount % 120 == 0) {
-                WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new ModeAnimationMessage(entity.getId(), entity.modeAnim));
+                WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(entity), new ModeAnimationMessage(entity.getId(), entity.modeAnim));
             }
         }
 
@@ -1461,7 +1465,7 @@ BossThemeEntity {
             this.anim = buffer.readInt();
         }
 
-        public Runnable getProcessor(NetworkEvent.Context context) {
+        public Runnable getProcessor(LegacyNetworkEvent.Context context) {
             return () -> DistExecutor.unsafeRunWhenOn((Dist)Dist.CLIENT, () -> () -> {
                 Optional<Level> optional = (Optional<Level>)LogicalSidedProvider.CLIENTWORLD.get(context.getDirection().getReceptionSide());
                 optional.ifPresent(world -> {

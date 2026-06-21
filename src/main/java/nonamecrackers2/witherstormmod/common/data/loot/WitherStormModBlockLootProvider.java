@@ -4,8 +4,12 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
+import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate.Builder;
+import net.minecraft.advancements.critereon.ItemSubPredicates;
 import net.minecraft.advancements.critereon.MinMaxBounds.Ints;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -31,8 +35,8 @@ public class WitherStormModBlockLootProvider extends BlockLootSubProvider {
       (Item)WitherStormModItems.SUPER_TNT.get()
    );
 
-   public WitherStormModBlockLootProvider() {
-      super(EXPLOSION_RESISTANT, FeatureFlags.REGISTRY.allFlags());
+   public WitherStormModBlockLootProvider(HolderLookup.Provider registries) {
+      super(EXPLOSION_RESISTANT, FeatureFlags.REGISTRY.allFlags(), registries);
    }
 
    protected void generate() {
@@ -57,7 +61,23 @@ public class WitherStormModBlockLootProvider extends BlockLootSubProvider {
       this.dropSelf((Block)WitherStormModBlocks.TAINTED_FENCE.get());
       this.add(
          (Block)WitherStormModBlocks.TAINTED_FLESH_VEINS.get(),
-         b -> this.createMultifaceBlockDrops(b, MatchTool.toolMatches(Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, Ints.atLeast(1)))))
+         b -> this.createMultifaceBlockDrops(
+               b,
+               MatchTool.toolMatches(
+                  Builder.item()
+                     .withSubPredicate(
+                        ItemSubPredicates.ENCHANTMENTS,
+                        ItemEnchantmentsPredicate.enchantments(
+                           List.of(
+                              new EnchantmentPredicate(
+                                 this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH),
+                                 Ints.atLeast(1)
+                              )
+                           )
+                        )
+                     )
+               )
+            )
       );
       this.dropSelf((Block)WitherStormModBlocks.TAINTED_FLESH_BLOCK.get());
       this.dropWhenSilkTouch((Block)WitherStormModBlocks.TAINTED_GLASS_PANE.get());

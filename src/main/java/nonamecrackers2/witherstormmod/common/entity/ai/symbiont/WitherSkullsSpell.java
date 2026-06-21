@@ -41,7 +41,7 @@ public class WitherSkullsSpell extends SymbiontSpell {
          double z = zOffset + rawZ + this.entity.getZ();
          Vec3 skullPose = new Vec3(x, y, z);
          Vec3 delta = skullPose.subtract(target.getEyePosition(1.0F)).normalize().scale(-2.5);
-         WitherSkull skull = new WitherSkull(this.entity.level(), this.entity, delta.x(), delta.y(), delta.z());
+         WitherSkull skull = new WitherSkull(this.entity.level(), this.entity, delta);
          skull.setPos(x, y, z);
          if (this.entity.getRandom().nextInt(11) == 1) {
             skull.setDangerous(true);

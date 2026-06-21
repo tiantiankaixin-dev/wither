@@ -1,9 +1,13 @@
 package nonamecrackers2.witherstormmod.client.event;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
@@ -19,7 +23,7 @@ import nonamecrackers2.crackerslib.client.event.impl.ConfigMenuButtonEvent;
 import nonamecrackers2.crackerslib.client.event.impl.OnConfigScreenOpened;
 import nonamecrackers2.crackerslib.client.event.impl.RegisterConfigScreensEvent;
 import nonamecrackers2.crackerslib.client.gui.ConfigHomeScreen;
-import nonamecrackers2.crackerslib.client.gui.title.ImageTitle;
+import nonamecrackers2.crackerslib.client.gui.title.TextTitle;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 import nonamecrackers2.witherstormmod.WitherStormMod;
 import nonamecrackers2.witherstormmod.client.gui.WitherStormModConfigHomeScreen;
@@ -29,7 +33,7 @@ import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 public class WitherStormModClientConfigEvents {
    public static void registerConfigScreen(RegisterConfigScreensEvent event) {
       event.builder(
-            ConfigHomeScreen.builder(ImageTitle.ofMod("witherstormmod", 256, 128, 1.0F))
+            ConfigHomeScreen.builder(TextTitle.ofModDisplayName("witherstormmod"))
                .crackersDefault("https://github.com/nonamecrackers2/crackers-wither-storm-mod/issues")
                .addLinkButton(
                   Component.translatable("gui.witherstormmod.screen.wsmoptions.nazaKofi").withStyle(ChatFormatting.GREEN),
@@ -75,13 +79,31 @@ public class WitherStormModClientConfigEvents {
    public static void addPackFindersEvent(AddPackFindersEvent event) {
       if (event.getPackType() == PackType.CLIENT_RESOURCES) {
          event.addRepositorySource(
-            consumer -> consumer.accept(
-                  Pack.readMetaAndCreate("witherstormmod:programmer_art", Component.translatable("witherstormmod.resourcepacks.programmer_art"), false, id -> {
-                     IModFile modFile = ModList.get().getModFileById("witherstormmod").getFile();
-                     Path resourcePath = modFile.findResource(new String[]{"resourcepacks/programmer_art"});
-                     return new PathPackResources(modFile.getFileName() + ":" + resourcePath, resourcePath, true);
-                  }, event.getPackType(), Position.TOP, PackSource.BUILT_IN)
-               )
+            consumer -> {
+               PackLocationInfo location = new PackLocationInfo(
+                  "witherstormmod:programmer_art",
+                  Component.translatable("witherstormmod.resourcepacks.programmer_art"),
+                  PackSource.BUILT_IN,
+                  Optional.empty()
+               );
+               consumer.accept(
+                  Pack.readMetaAndCreate(location, new Pack.ResourcesSupplier() {
+                     private PackResources open(PackLocationInfo info) {
+                        IModFile modFile = ModList.get().getModFileById("witherstormmod").getFile();
+                        Path resourcePath = modFile.findResource(new String[]{"resourcepacks/programmer_art"});
+                        return new PathPackResources(info, resourcePath);
+                     }
+
+                     public PackResources openPrimary(PackLocationInfo info) {
+                        return this.open(info);
+                     }
+
+                     public PackResources openFull(PackLocationInfo info, Pack.Metadata metadata) {
+                        return this.open(info);
+                     }
+                  }, event.getPackType(), new PackSelectionConfig(false, Position.TOP, false))
+               );
+            }
          );
       }
    }

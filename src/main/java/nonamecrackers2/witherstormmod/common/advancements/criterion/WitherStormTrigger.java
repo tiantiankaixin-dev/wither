@@ -1,12 +1,12 @@
 package nonamecrackers2.witherstormmod.common.advancements.criterion;
 
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger.SimpleInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -19,8 +19,12 @@ public class WitherStormTrigger extends SimpleCriterionTrigger<WitherStormTrigge
       this.id = id;
    }
 
-   public ResourceLocation getId() {
+   public ResourceLocation id() {
       return this.id;
+   }
+
+   public Codec<WitherStormTrigger.Instance> codec() {
+      return WitherStormTrigger.Instance.CODEC;
    }
 
    public void trigger(ServerPlayer player, WitherStormEntity entity) {
@@ -28,27 +32,17 @@ public class WitherStormTrigger extends SimpleCriterionTrigger<WitherStormTrigge
       this.trigger(player, instance -> instance.matches(context));
    }
 
-   protected WitherStormTrigger.Instance createInstance(JsonObject object, ContextAwarePredicate player, DeserializationContext parser) {
-      ContextAwarePredicate entity = EntityPredicate.fromJson(object, "entity", parser);
-      return new WitherStormTrigger.Instance(this.id, player, entity);
-   }
-
-   public static class Instance extends AbstractCriterionTriggerInstance {
-      private final ContextAwarePredicate entity;
-
-      public Instance(ResourceLocation id, ContextAwarePredicate player, ContextAwarePredicate entity) {
-         super(id, player);
-         this.entity = entity;
-      }
+   public record Instance(Optional<ContextAwarePredicate> player, Optional<ContextAwarePredicate> entity) implements SimpleInstance {
+      public static final Codec<WitherStormTrigger.Instance> CODEC = RecordCodecBuilder.create(
+         instance -> instance.group(
+                  EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(WitherStormTrigger.Instance::player),
+                  EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("entity").forGetter(WitherStormTrigger.Instance::entity)
+               )
+               .apply(instance, WitherStormTrigger.Instance::new)
+      );
 
       public boolean matches(LootContext context) {
-         return this.entity.matches(context);
-      }
-
-      public JsonObject serializeToJson(SerializationContext serializer) {
-         JsonObject object = super.serializeToJson(serializer);
-         object.add("entity", this.entity.toJson(serializer));
-         return object;
+         return this.entity.isEmpty() || this.entity.get().matches(context);
       }
    }
 }

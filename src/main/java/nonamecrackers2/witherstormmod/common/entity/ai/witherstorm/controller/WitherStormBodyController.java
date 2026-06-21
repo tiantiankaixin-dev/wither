@@ -11,8 +11,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.NetworkEvent.Context;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.init.WitherStormModClientCapabilities;
 import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.FormidibombEntity;
@@ -111,7 +111,7 @@ public class WitherStormBodyController extends BodyRotationControl {
 
          WitherStormBodyController.UpdateBodyRotMessage message = new WitherStormBodyController.UpdateBodyRotMessage(this.storm);
          ResourceKey<Level> dimension = this.storm.level().dimension();
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(() -> dimension), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.DIMENSION.with(dimension), message);
       }
    }
 

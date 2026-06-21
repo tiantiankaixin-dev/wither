@@ -15,8 +15,8 @@ import nonamecrackers2.witherstormmod.common.entity.SickenedVindicator;
 import org.jetbrains.annotations.NotNull;
 
 public class SickenedVindicatorRenderer extends IllagerRenderer<SickenedVindicator> {
-   public static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_vindicator.png");
-   public static final ResourceLocation EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_vindicator_emissive.png");
+   public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_vindicator.png");
+   public static final ResourceLocation EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_vindicator_emissive.png");
 
    public SickenedVindicatorRenderer(Context context) {
       super(context, new IllagerModel(context.bakeLayer(WitherStormModRenderers.SICKENED_VINDICATOR)), 0.5F);

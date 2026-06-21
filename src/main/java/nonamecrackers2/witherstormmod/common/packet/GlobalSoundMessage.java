@@ -5,9 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import net.minecraftforge.registries.ForgeRegistries;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 
 public class GlobalSoundMessage extends Packet {
@@ -45,7 +45,7 @@ public class GlobalSoundMessage extends Packet {
    }
 
    public void decode(FriendlyByteBuf buffer) {
-      this.event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(buffer.readUtf()));
+      this.event = ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse(buffer.readUtf()));
       this.pitch = buffer.readFloat();
       this.volume = buffer.readFloat();
    }

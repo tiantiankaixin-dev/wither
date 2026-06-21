@@ -87,12 +87,9 @@ public class FireballSpell extends SymbiontSpell {
                }
 
                this.projectiles.remove(i);
-               damaging.setDeltaMovement(Vec3.ZERO);
-               damaging.xPower = targetDelta.x();
-               damaging.yPower = targetDelta.y();
-               damaging.zPower = targetDelta.z();
+               damaging.setDeltaMovement(targetDelta);
                UpdateDamagingProjectileMessage message = new UpdateDamagingProjectileMessage(damaging);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(() -> damaging), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.TRACKING_ENTITY.with(damaging), message);
             } else {
                damaging.setDeltaMovement(delta);
                ((ServerChunkCache)this.entity.getCommandSenderWorld().getChunkSource()).broadcast(damaging, new ClientboundSetEntityMotionPacket(damaging));

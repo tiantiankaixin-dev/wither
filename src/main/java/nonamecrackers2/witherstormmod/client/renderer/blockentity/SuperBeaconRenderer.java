@@ -30,7 +30,7 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class SuperBeaconRenderer extends AbstractSuperBeaconRenderer<SuperBeaconBlockEntity> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "block/tainted_dust_block");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "block/tainted_dust_block");
    private final TextureAtlas atlas;
    private final TextureAtlasSprite texture;
    private final ItemRenderer itemRenderer;
@@ -140,8 +140,8 @@ public class SuperBeaconRenderer extends AbstractSuperBeaconRenderer<SuperBeacon
       stack.translate((double)xOffset, 0.0, 0.0);
       Matrix4f pose = stack.last().pose();
       Matrix3f normal = stack.last().normal();
-      consumer.vertex(pose, 0.0F, 0.0F, zOffset).color(r, g, b, 255).normal(normal, 0.0F, 0.0F, 1.0F).endVertex();
-      consumer.vertex(pose, 0.0F, 0.0F, zOffset + distance).color(r, g, b, 255).normal(normal, 0.0F, 0.0F, 1.0F).endVertex();
+      consumer.addVertex(pose, 0.0F, 0.0F, zOffset).setColor(r, g, b, 255).setNormal(0.0F, 0.0F, 1.0F);
+      consumer.addVertex(pose, 0.0F, 0.0F, zOffset + distance).setColor(r, g, b, 255).setNormal(0.0F, 0.0F, 1.0F);
       stack.popPose();
    }
 

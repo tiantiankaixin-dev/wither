@@ -53,6 +53,7 @@
 package nonamecrackers2.witherstormmod.common.init;
 
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -64,19 +65,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SignItem;
-import net.minecraft.world.item.SimpleFoiledItem;
 import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.brewing.BrewingRecipe;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
+import net.minecraftforge.event.brewing.BrewingRecipeRegisterEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -98,20 +96,26 @@ import nonamecrackers2.witherstormmod.common.item.PhasometerItem;
 import nonamecrackers2.witherstormmod.common.item.SourceTestFireballItem;
 import nonamecrackers2.witherstormmod.common.item.TaintedCarvedPumpkinItem;
 import nonamecrackers2.witherstormmod.common.item.WitheredNetherStarItem;
+import nonamecrackers2.witherstormmod.common.util.PotionStackUtil;
 import nonamecrackers2.witherstormmod.common.util.WitherStormModItemTier;
 
 public class WitherStormModItems {
-    public static final FoodProperties GOLDEN_APPLE_STEW_FOOD = new FoodProperties.Builder().nutrition(5).saturationMod(1.0f).effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 2600, 0), 1.0f).effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 200, 0), 1.0f).alwaysEat().build();
-    public static final FoodProperties WITHERED_FLESH_FOOD = new FoodProperties.Builder().nutrition(4).saturationMod(0.1f).effect(() -> new MobEffectInstance(MobEffects.HUNGER, 800, 0), 0.8f).effect(() -> new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).meat().build();
-    public static final FoodProperties WITHERED_SPIDER_EYE_FOOD = new FoodProperties.Builder().nutrition(2).saturationMod(0.8f).effect(() -> new MobEffectInstance(MobEffects.POISON, 200, 0), 1.0f).effect(() -> new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).build();
+    public static final FoodProperties GOLDEN_APPLE_STEW_FOOD = new FoodProperties.Builder().nutrition(5).saturationModifier(1.0f).effect(new MobEffectInstance(MobEffects.ABSORPTION, 2600, 0), 1.0f).effect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0), 1.0f).alwaysEdible().build();
+    public static final FoodProperties WITHERED_FLESH_FOOD = new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).effect(new MobEffectInstance(MobEffects.HUNGER, 800, 0), 0.8f).effect(new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).build();
+    public static final FoodProperties WITHERED_SPIDER_EYE_FOOD = new FoodProperties.Builder().nutrition(2).saturationModifier(0.8f).effect(new MobEffectInstance(MobEffects.POISON, 200, 0), 1.0f).effect(new MobEffectInstance(MobEffects.WITHER, 400, 0), 1.0f).build();
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create((IForgeRegistry)ForgeRegistries.ITEMS, (String)"witherstormmod");
     public static final RegistryObject<Item> WITHERED_BONE = ITEMS.register("withered_bone", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> WITHERED_FLESH = ITEMS.register("withered_flesh", () -> new Item(new Item.Properties().food(WITHERED_FLESH_FOOD).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> TAINTED_DUST = ITEMS.register("tainted_dust", () -> new ItemNameBlockItem((Block)WitherStormModBlocks.TAINTED_DUST.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> WITHERED_SPIDER_EYE = ITEMS.register("withered_spider_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).food(WITHERED_SPIDER_EYE_FOOD)));
-    public static final RegistryObject<Item> GOLDEN_APPLE_STEW = ITEMS.register("golden_apple_stew", () -> new GoldenAppleStewItem(new Item.Properties().rarity(Rarity.RARE).food(GOLDEN_APPLE_STEW_FOOD).stacksTo(1)));
+    public static final RegistryObject<Item> GOLDEN_APPLE_STEW = ITEMS.register("golden_apple_stew", () -> new GoldenAppleStewItem(new Item.Properties().rarity(Rarity.RARE).food(GOLDEN_APPLE_STEW_FOOD).stacksTo(1).craftRemainder(Items.BOWL)));
     public static final RegistryObject<Item> AMULET = ITEMS.register("amulet", () -> new AmuletItem(new Item.Properties().stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> COMMAND_BLOCK_BOOK = ITEMS.register("command_block_book", () -> new SimpleFoiledItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
+    public static final RegistryObject<Item> COMMAND_BLOCK_BOOK = ITEMS.register("command_block_book", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()) {
+        @Override
+        public boolean isFoil(ItemStack stack) {
+            return true;
+        }
+    });
     public static final RegistryObject<Item> WITHERED_NETHER_STAR = ITEMS.register("withered_nether_star", () -> new WitheredNetherStarItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
     public static final RegistryObject<Item> SICKENED_CREEPER_SPAWN_EGG = ITEMS.register("sickened_creeper_spawn_egg", () -> new ForgeSpawnEggItem((Supplier)WitherStormModEntityTypes.SICKENED_CREEPER, 9851315, 3278099, new Item.Properties()));
     public static final RegistryObject<Item> SICKENED_SKELETON_SPAWN_EGG = ITEMS.register("sickened_skeleton_spawn_egg", () -> new ForgeSpawnEggItem((Supplier)WitherStormModEntityTypes.SICKENED_SKELETON, 13606575, 3612758, new Item.Properties()));
@@ -224,26 +228,33 @@ public class WitherStormModItems {
     public static final RegistryObject<Item> TAINTED_JACK_O_LANTERN = ITEMS.register("tainted_jack_o_lantern", () -> new BlockItem((Block)WitherStormModBlocks.TAINTED_JACK_O_LANTERN.get(), new Item.Properties()));
     public static final RegistryObject<Item> TAINTED_DUST_BLOCK = ITEMS.register("tainted_dust_block", () -> new BlockItem((Block)WitherStormModBlocks.TAINTED_DUST_BLOCK.get(), new Item.Properties()));
 
-    public static void registerBrewingRecipes() {
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.STRONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.STRONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), (Potion)WitherStormModPotions.STRONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.REDSTONE, (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.GLOWSTONE_DUST, (Potion)WitherStormModPotions.STRONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.REDSTONE, (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.GLOWSTONE_DUST, (Potion)WitherStormModPotions.STRONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.REDSTONE, (Potion)WitherStormModPotions.LONG_WITHER.get()));
-        BrewingRecipeRegistry.addRecipe((IBrewingRecipe)WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, (Potion)WitherStormModPotions.WITHER.get(), Items.GLOWSTONE_DUST, (Potion)WitherStormModPotions.STRONG_WITHER.get()));
+    public static void registerBrewingRecipes(BrewingRecipeRegisterEvent event) {
+        Holder<Potion> wither = WitherStormModPotions.WITHER.getHolder().orElseThrow();
+        Holder<Potion> longWither = WitherStormModPotions.LONG_WITHER.getHolder().orElseThrow();
+        Holder<Potion> strongWither = WitherStormModPotions.STRONG_WITHER.getHolder().orElseThrow();
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), wither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), strongWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), wither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), strongWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.POISON, (Item)WITHERED_SPIDER_EYE.get(), wither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.LONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, Potions.STRONG_POISON, (Item)WITHERED_SPIDER_EYE.get(), strongWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.POTION, wither, Items.REDSTONE, longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.POTION, wither, Items.GLOWSTONE_DUST, strongWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, wither, Items.REDSTONE, longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.SPLASH_POTION, wither, Items.GLOWSTONE_DUST, strongWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, wither, Items.REDSTONE, longWither));
+        event.addRecipe(WitherStormModItems.createBrewingRecipe(Items.LINGERING_POTION, wither, Items.GLOWSTONE_DUST, strongWither));
     }
 
-    public static BrewingRecipe createBrewingRecipe(Item potionType, Potion potion, Item ingredient, Potion output) {
-        return new BrewingRecipe(Ingredient.of((ItemStack[])new ItemStack[]{PotionUtils.setPotion((ItemStack)new ItemStack((ItemLike)potionType), (Potion)potion)}), Ingredient.of((ItemLike[])new ItemLike[]{ingredient}), PotionUtils.setPotion((ItemStack)new ItemStack((ItemLike)potionType), (Potion)output));
+    public static BrewingRecipe createBrewingRecipe(Item potionType, Holder<Potion> potion, Item ingredient, Holder<Potion> output) {
+        return new BrewingRecipe(
+            Ingredient.of(new ItemStack[]{PotionStackUtil.setPotion(new ItemStack((ItemLike)potionType), potion)}),
+            Ingredient.of(new ItemLike[]{ingredient}),
+            PotionStackUtil.setPotion(new ItemStack((ItemLike)potionType), output)
+        );
     }
 }
 

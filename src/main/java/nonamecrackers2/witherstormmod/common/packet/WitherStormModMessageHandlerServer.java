@@ -1,13 +1,13 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import nonamecrackers2.witherstormmod.common.blockentity.inventory.AbstractSuperBeaconMenu;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.entity.ai.witherstorm.head.WitherStormHead;
@@ -20,7 +20,7 @@ public class WitherStormModMessageHandlerServer {
 
    public static void processInjureHeadMessage(InjureHeadMessage message, ServerPlayer player) {
       ServerLevel world = player.serverLevel();
-      double pickRange = player.getAttribute((Attribute)ForgeMod.BLOCK_REACH.get()).getValue();
+      double pickRange = player.blockInteractionRange();
       Vec3 pos = player.getEyePosition(1.0F);
       Vec3 eye = player.getViewVector(1.0F);
       Vec3 reach = pos.add(eye.x * pickRange, eye.y * pickRange, eye.z * pickRange);
@@ -47,7 +47,7 @@ public class WitherStormModMessageHandlerServer {
 
    public static void processSuperBeaconSetEffectMessage(SuperBeaconSetEffectMessage message, ServerPlayer player) {
       if (player.containerMenu instanceof AbstractSuperBeaconMenu menu) {
-         MobEffect effect = MobEffect.byId(message.getEffectId());
+         Holder<MobEffect> effect = BuiltInRegistries.MOB_EFFECT.getHolder(message.getEffectId()).orElse(null);
          if (menu.getCooldown() == 0 || effect == null) {
             if (effect != null && effect != menu.getPrimaryEffect()) {
                menu.doPowerUp(player);

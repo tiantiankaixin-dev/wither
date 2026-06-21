@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.effect.MobEffect;
@@ -20,7 +22,7 @@ public abstract class AbstractSuperBeaconMenu extends AbstractContainerMenu {
    private final ContainerData data;
    @Nullable
    private final Consumer<ServerPlayer> powerUp;
-   private final Set<MobEffect> validEffects;
+   private final Set<Holder<MobEffect>> validEffects;
 
    public AbstractSuperBeaconMenu(MenuType<? extends AbstractSuperBeaconMenu> type, int id, Container container) {
       this(type, id, container, new SimpleContainerData(4), ContainerLevelAccess.NULL, null, ImmutableSet.of());
@@ -33,7 +35,7 @@ public abstract class AbstractSuperBeaconMenu extends AbstractContainerMenu {
       ContainerData data,
       ContainerLevelAccess access,
       @Nullable Consumer<ServerPlayer> powerUp,
-      Set<MobEffect> validEffects
+      Set<Holder<MobEffect>> validEffects
    ) {
       super(type, id);
       this.access = access;
@@ -53,8 +55,8 @@ public abstract class AbstractSuperBeaconMenu extends AbstractContainerMenu {
    }
 
    @Nullable
-   public MobEffect getPrimaryEffect() {
-      return MobEffect.byId(this.data.get(1));
+   public Holder<MobEffect> getPrimaryEffect() {
+      return BuiltInRegistries.MOB_EFFECT.getHolder(this.data.get(1)).orElse(null);
    }
 
    public void updateEffects(int effectId) {
@@ -83,7 +85,7 @@ public abstract class AbstractSuperBeaconMenu extends AbstractContainerMenu {
       }
    }
 
-   public Set<MobEffect> getValidEffects() {
+   public Set<Holder<MobEffect>> getValidEffects() {
       return this.validEffects;
    }
 

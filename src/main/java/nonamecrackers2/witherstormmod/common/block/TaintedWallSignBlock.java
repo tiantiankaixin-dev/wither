@@ -6,6 +6,6 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 
 public class TaintedWallSignBlock extends WallSignBlock {
    public TaintedWallSignBlock(Properties properties, WoodType type) {
-      super(properties, type);
+      super(type, properties);
    }
 }

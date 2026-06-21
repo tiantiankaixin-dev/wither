@@ -26,7 +26,7 @@ public class WitherStormModDataEvents {
       PackOutput output = generator.getPackOutput();
       ExistingFileHelper exFileHelper = event.getExistingFileHelper();
       generator.addProvider(event.includeClient(), new WitherStormModLangProvider(output));
-      generator.addProvider(event.includeServer(), new WitherStormModRecipeProvider(output));
+      generator.addProvider(event.includeServer(), new WitherStormModRecipeProvider(output, event.getLookupProvider()));
       generator.addProvider(event.includeClient(), new WitherStormModBlockStatesProvider(output, exFileHelper));
       generator.addProvider(event.includeClient(), new WitherStormModItemModelProvider(output, exFileHelper));
       generator.addProvider(
@@ -37,7 +37,8 @@ public class WitherStormModDataEvents {
             List.of(
                new SubProviderEntry(WitherStormModBlockLootProvider::new, LootContextParamSets.BLOCK),
                new SubProviderEntry(WitherStormModEntityLootProvider::new, LootContextParamSets.ENTITY)
-            )
+            ),
+            event.getLookupProvider()
          )
       );
       generator.addProvider(event.includeServer(), new WitherStormModBlockTaintingRecipeProvider(output));

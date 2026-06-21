@@ -11,7 +11,6 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModAttributes;
 
@@ -42,7 +41,7 @@ public class SetEvolutionAttributeCommand {
       if (entity != null) {
          if (entity instanceof WitherStormEntity storm) {
             phase = storm.getPhase();
-            storm.getAttribute((Attribute)WitherStormModAttributes.EVOLUTION_SPEED.get()).setBaseValue(value);
+            storm.getAttribute(WitherStormModAttributes.holder(WitherStormModAttributes.EVOLUTION_SPEED)).setBaseValue(value);
             storm.setPhase(storm.getPhase());
             MutableComponent component = Component.translatable("commands.witherstormmod.setevolution.success", new Object[]{value, storm.getDisplayName()});
             source.sendSuccess(() -> component, true);

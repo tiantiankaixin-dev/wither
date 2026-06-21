@@ -87,7 +87,7 @@ public class WitherSicknessEvents {
             player.getCapability(WitherStormModCapabilities.WITHER_SICKNESS_TRACKER).ifPresent(tracker -> {
                tracker.copyFrom(oldTracker);
                if ((Boolean)WitherStormModConfig.SERVER.keepSicknessAfterRespawn.get()) {
-                  MobEffectInstance effect = original.getEffect((MobEffect)WitherStormModEffects.WITHER_SICKNESS.get());
+                  MobEffectInstance effect = original.getEffect(WitherStormModEffects.holder(WitherStormModEffects.WITHER_SICKNESS));
                   if (effect != null) {
                      player.addEffect(effect);
                   }
@@ -124,25 +124,25 @@ public class WitherSicknessEvents {
    @SubscribeEvent
    public static void onPlayerJoin(PlayerLoggedInEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerChangedDimensions(PlayerLoggedInEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerRespawn(PlayerRespawnEvent event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getEntity());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent
    public static void onPlayerStartTracking(StartTracking event) {
       UpdateWitherSicknessTrackerMessage message = new UpdateWitherSicknessTrackerMessage(event.getTarget());
-      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), message);
+      WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)event.getEntity()), message);
    }
 
    @SubscribeEvent

@@ -20,16 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({Gui.class})
 public class MixinGui {
    @Unique
-   private static final ResourceLocation PHASOMETER_SCOPE_TEXTURE = new ResourceLocation("witherstormmod", "textures/misc/phasometer_scope.png");
+   private static final ResourceLocation PHASOMETER_SCOPE_TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/misc/phasometer_scope.png");
    @Final
    @Shadow
-   protected Minecraft minecraft;
+   private Minecraft minecraft;
    @Shadow
-   protected int screenWidth;
-   @Shadow
-   protected int screenHeight;
-   @Shadow
-   protected int tickCount;
+   private int tickCount;
    @Unique
    private String dotDotDot = "";
 
@@ -51,7 +47,7 @@ public class MixinGui {
    public void renderSpyglassOverlayTail(GuiGraphics stack, float partialTicks, CallbackInfo ci) {
       ItemStack item = this.minecraft.player.getUseItem();
       if (item.is((Item)WitherStormModItems.PHASOMETER.get())) {
-         PhasometerRenderHelper.renderPhasometerOverlay(item, stack, partialTicks, this.screenWidth, this.screenHeight, this.dotDotDot);
+         PhasometerRenderHelper.renderPhasometerOverlay(item, stack, partialTicks, stack.guiWidth(), stack.guiHeight(), this.dotDotDot);
       }
    }
 

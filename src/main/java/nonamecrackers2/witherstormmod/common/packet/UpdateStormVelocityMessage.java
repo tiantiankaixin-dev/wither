@@ -7,7 +7,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
@@ -30,12 +30,12 @@ public class UpdateStormVelocityMessage extends DistantRendererMessage {
       this.z = (int)(z * 8000.0);
    }
 
-   public UpdateStormVelocityMessage(List<Integer> applicable, int entityId, int xa, int ya, int za) {
+   public UpdateStormVelocityMessage(List<Integer> applicable, int entityId, double xa, double ya, double za) {
       super(true, applicable);
       this.entityId = entityId;
-      this.x = xa;
-      this.y = ya;
-      this.z = za;
+      this.x = (int)(Mth.clamp(xa, -3.9, 3.9) * 8000.0);
+      this.y = (int)(Mth.clamp(ya, -3.9, 3.9) * 8000.0);
+      this.z = (int)(Mth.clamp(za, -3.9, 3.9) * 8000.0);
    }
 
    public UpdateStormVelocityMessage() {

@@ -8,10 +8,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import nonamecrackers2.witherstormmod.common.item.PhasometerItem;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 
 public class PhasometerRenderHelper {
    public static void renderPhasometerOverlay(ItemStack item, GuiGraphics stack, float partialTicks, int width, int height, String dotDotDot) {
-      CompoundTag tag = item.getOrCreateTag();
+      CompoundTag tag = ItemStackDataUtil.getOrCreateTag(item);
       Minecraft mc = Minecraft.getInstance();
       if (tag.contains(PhasometerItem.DataEntry.PHASE.tagName)) {
          List<PhasometerItem.DataEntry> entries = PhasometerItem.getEntries(tag);

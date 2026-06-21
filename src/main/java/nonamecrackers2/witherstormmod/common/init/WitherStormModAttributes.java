@@ -1,5 +1,6 @@
 package nonamecrackers2.witherstormmod.common.init;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.registries.DeferredRegister;
@@ -21,4 +22,8 @@ public class WitherStormModAttributes {
    public static final RegistryObject<Attribute> HUNCHBACK_FOLLOW_RANGE = ATTRIBUTES.register(
       "hunchback_follow_range", () -> new RangedAttribute("attribute.witherstormmod.name.hunchback_follow_range", 32.0, 0.0, 2048.0).setSyncable(true)
    );
+
+   public static Holder<Attribute> holder(RegistryObject<Attribute> attribute) {
+      return attribute.getHolder().orElseThrow(() -> new IllegalStateException("Missing attribute holder: " + attribute.getId()));
+   }
 }

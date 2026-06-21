@@ -20,7 +20,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -31,10 +30,11 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.AbstractGolem;
-import net.minecraft.world.entity.animal.IronGolem.Crackiness;
+import net.minecraft.world.entity.Crackiness;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -52,12 +52,9 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
 
    public SickenedIronGolem(EntityType<? extends SickenedIronGolem> type, Level level) {
       super(type, level);
-      this.setMaxUpStep(1.0F);
    }
-
-   @NotNull
-   public MobType getMobType() {
-      return WitherStormModMobTypes.SICKENED;
+   public boolean isInvertedHealAndHarm() {
+      return true;
    }
 
    public static Builder createAttributes() {
@@ -66,7 +63,8 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
          .add(Attributes.FOLLOW_RANGE, 48.0)
          .add(Attributes.MOVEMENT_SPEED, 0.25)
          .add(Attributes.ATTACK_DAMAGE, 10.0)
-         .add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
+         .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+         .add(Attributes.STEP_HEIGHT, 1.0);
    }
 
    protected void registerGoals() {
@@ -146,9 +144,9 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       this.sickenedRead(tag);
    }
 
-   protected void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(CONVERTING, false);
+   protected void defineSynchedData(SynchedEntityData.Builder builder) {
+      super.defineSynchedData(builder);
+      builder.define(CONVERTING, false);
    }
 
    @Override
@@ -215,7 +213,8 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       this.level().broadcastEntityEvent(this, (byte)4);
       float damage = (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
       float damageModified = (int)damage > 0 ? damage / 2.0F + (float)this.random.nextInt((int)damage) : damage;
-      boolean flag = target.hurt(this.damageSources().mobAttack(this), damageModified);
+      DamageSource source = this.damageSources().mobAttack(this);
+      boolean flag = target.hurt(source, damageModified);
       if (flag) {
          double d2;
          if (target instanceof LivingEntity living) {
@@ -226,7 +225,9 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
 
          double d1 = Math.max(0.0, 1.0 - d2);
          target.setDeltaMovement(target.getDeltaMovement().add(0.0, 0.4 * d1, 0.0));
-         this.doEnchantDamageEffects(this, target);
+         if (this.level() instanceof ServerLevel serverLevel) {
+            EnchantmentHelper.doPostAttackEffects(serverLevel, target, source);
+         }
          this.addWitherToTarget(target);
       }
 
@@ -238,7 +239,7 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       if (!this.sickenedCanBeHurt(source, amount)) {
          return false;
       } else {
-         Crackiness crackiness = this.getCrackiness();
+         Crackiness.Level crackiness = this.getCrackiness();
          boolean flag = super.hurt(source, amount);
          if (flag && this.getCrackiness() != crackiness) {
             this.playSound(SoundEvents.IRON_GOLEM_DAMAGE);
@@ -248,8 +249,8 @@ public class SickenedIronGolem extends AbstractGolem implements WitherSickened, 
       }
    }
 
-   public Crackiness getCrackiness() {
-      return Crackiness.byFraction(this.getHealth() / this.getMaxHealth());
+   public Crackiness.Level getCrackiness() {
+      return Crackiness.GOLEM.byFraction(this.getHealth() / this.getMaxHealth());
    }
 
    public void handleEntityEvent(byte event) {

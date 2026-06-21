@@ -105,77 +105,77 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlocks;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 
 public class WitherStormModRenderers {
-   public static final ModelLayerLocation WITHER_STORM_0 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase0");
-   public static final ModelLayerLocation WITHER_STORM_1 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase1");
-   public static final ModelLayerLocation WITHER_STORM_1_1 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase1_1");
-   public static final ModelLayerLocation WITHER_STORM_1_2 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase1_2");
-   public static final ModelLayerLocation WITHER_STORM_2 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase2");
-   public static final ModelLayerLocation WITHER_STORM_2_1 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase2_1");
-   public static final ModelLayerLocation WITHER_STORM_3 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase3");
-   public static final ModelLayerLocation WITHER_STORM_3_1 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase3_1");
-   public static final ModelLayerLocation WITHER_STORM_3_2 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase3_2");
-   public static final ModelLayerLocation WITHER_STORM_4 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase4");
-   public static final ModelLayerLocation WITHER_STORM_4_5 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase4_5");
-   public static final ModelLayerLocation WITHER_STORM_5 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase5");
-   public static final ModelLayerLocation WITHER_STORM_5_5 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase5_5");
-   public static final ModelLayerLocation WITHER_STORM_6 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase6");
-   public static final ModelLayerLocation WITHER_STORM_6_5 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase6_5");
-   public static final ModelLayerLocation WITHER_STORM_7 = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "phase7");
-   public static final ModelLayerLocation WITHER_STORM_DISMANTLED = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "dismantled");
-   public static final ModelLayerLocation WITHER_STORM_TORN = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "torn");
-   public static final ModelLayerLocation WITHER_STORM_ARMOR = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm"), "armor");
-   public static final ModelLayerLocation WITHER_STORM_SEGMENT = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm_segment"), "main");
-   public static final ModelLayerLocation FLAMING_WITHER_SKULL = new ModelLayerLocation(new ResourceLocation("witherstormmod", "flaming_wither_skull"), "main");
-   public static final ModelLayerLocation SICKENED_ZOMBIE = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_zombie"), "main");
+   public static final ModelLayerLocation WITHER_STORM_0 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase0");
+   public static final ModelLayerLocation WITHER_STORM_1 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase1");
+   public static final ModelLayerLocation WITHER_STORM_1_1 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase1_1");
+   public static final ModelLayerLocation WITHER_STORM_1_2 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase1_2");
+   public static final ModelLayerLocation WITHER_STORM_2 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase2");
+   public static final ModelLayerLocation WITHER_STORM_2_1 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase2_1");
+   public static final ModelLayerLocation WITHER_STORM_3 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase3");
+   public static final ModelLayerLocation WITHER_STORM_3_1 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase3_1");
+   public static final ModelLayerLocation WITHER_STORM_3_2 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase3_2");
+   public static final ModelLayerLocation WITHER_STORM_4 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase4");
+   public static final ModelLayerLocation WITHER_STORM_4_5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase4_5");
+   public static final ModelLayerLocation WITHER_STORM_5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase5");
+   public static final ModelLayerLocation WITHER_STORM_5_5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase5_5");
+   public static final ModelLayerLocation WITHER_STORM_6 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase6");
+   public static final ModelLayerLocation WITHER_STORM_6_5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase6_5");
+   public static final ModelLayerLocation WITHER_STORM_7 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "phase7");
+   public static final ModelLayerLocation WITHER_STORM_DISMANTLED = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "dismantled");
+   public static final ModelLayerLocation WITHER_STORM_TORN = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "torn");
+   public static final ModelLayerLocation WITHER_STORM_ARMOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm"), "armor");
+   public static final ModelLayerLocation WITHER_STORM_SEGMENT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_segment"), "main");
+   public static final ModelLayerLocation FLAMING_WITHER_SKULL = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "flaming_wither_skull"), "main");
+   public static final ModelLayerLocation SICKENED_ZOMBIE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_zombie"), "main");
    public static final ModelLayerLocation SICKENED_ZOMBIE_INNER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_zombie"), "inner_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_zombie"), "inner_armor"
    );
    public static final ModelLayerLocation SICKENED_ZOMBIE_OUTER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_zombie"), "outer_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_zombie"), "outer_armor"
    );
-   public static final ModelLayerLocation SICKENED_SKELETON = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_skeleton"), "main");
+   public static final ModelLayerLocation SICKENED_SKELETON = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_skeleton"), "main");
    public static final ModelLayerLocation SICKENED_SKELETON_INNER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_skeleton"), "inner_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_skeleton"), "inner_armor"
    );
    public static final ModelLayerLocation SICKENED_SKELETON_OUTER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_skeleton"), "outer_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_skeleton"), "outer_armor"
    );
-   public static final ModelLayerLocation SICKENED_SPIDER = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_spider"), "main");
-   public static final ModelLayerLocation SICKENED_CREEPER = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_creeper"), "main");
-   public static final ModelLayerLocation SICKENED_CREEPER_ARMOR = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_creeper"), "armor");
-   public static final ModelLayerLocation SICKENED_VILLAGER = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_villager"), "main");
+   public static final ModelLayerLocation SICKENED_SPIDER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_spider"), "main");
+   public static final ModelLayerLocation SICKENED_CREEPER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_creeper"), "main");
+   public static final ModelLayerLocation SICKENED_CREEPER_ARMOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_creeper"), "armor");
+   public static final ModelLayerLocation SICKENED_VILLAGER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_villager"), "main");
    public static final ModelLayerLocation SICKENED_VILLAGER_INNER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_villager"), "inner_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_villager"), "inner_armor"
    );
    public static final ModelLayerLocation SICKENED_VILLAGER_OUTER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_villager"), "outer_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_villager"), "outer_armor"
    );
-   public static final ModelLayerLocation SICKENED_PHANTOM = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_phantom"), "main");
-   public static final ModelLayerLocation SICKENED_CHICKEN = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_chicken"), "main");
-   public static final ModelLayerLocation SICKENED_PARROT = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_parrot"), "main");
-   public static final ModelLayerLocation SICKENED_COW = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_cow"), "main");
-   public static final ModelLayerLocation SICKENED_PIG = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_pig"), "main");
-   public static final ModelLayerLocation SICKENED_BEE = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_bee"), "main");
+   public static final ModelLayerLocation SICKENED_PHANTOM = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_phantom"), "main");
+   public static final ModelLayerLocation SICKENED_CHICKEN = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_chicken"), "main");
+   public static final ModelLayerLocation SICKENED_PARROT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_parrot"), "main");
+   public static final ModelLayerLocation SICKENED_COW = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_cow"), "main");
+   public static final ModelLayerLocation SICKENED_PIG = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_pig"), "main");
+   public static final ModelLayerLocation SICKENED_BEE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_bee"), "main");
    public static final ModelLayerLocation SICKENED_MUSHROOM_COW = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "sickened_mushroom_cow"), "main"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_mushroom_cow"), "main"
    );
-   public static final ModelLayerLocation SICKENED_PILLAGER = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_pillager"), "main");
-   public static final ModelLayerLocation SICKENED_VINDICATOR = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_vindicator"), "main");
-   public static final ModelLayerLocation SICKENED_IRON_GOLEM = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_iron_golem"), "main");
-   public static final ModelLayerLocation SICKENED_SNOW_GOLEM = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_snow_golem"), "main");
-   public static final ModelLayerLocation SICKENED_GOAT = new ModelLayerLocation(new ResourceLocation("witherstormmod", "sickened_goat"), "main");
-   public static final ModelLayerLocation WITHERED_SYMBIONT = new ModelLayerLocation(new ResourceLocation("witherstormmod", "withered_symbiont"), "main");
+   public static final ModelLayerLocation SICKENED_PILLAGER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_pillager"), "main");
+   public static final ModelLayerLocation SICKENED_VINDICATOR = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_vindicator"), "main");
+   public static final ModelLayerLocation SICKENED_IRON_GOLEM = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_iron_golem"), "main");
+   public static final ModelLayerLocation SICKENED_SNOW_GOLEM = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_snow_golem"), "main");
+   public static final ModelLayerLocation SICKENED_GOAT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "sickened_goat"), "main");
+   public static final ModelLayerLocation WITHERED_SYMBIONT = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "withered_symbiont"), "main");
    public static final ModelLayerLocation SYMBIONT_INNER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "withered_symbiont"), "inner_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "withered_symbiont"), "inner_armor"
    );
    public static final ModelLayerLocation SYMBIONT_OUTER_ARMOR = new ModelLayerLocation(
-      new ResourceLocation("witherstormmod", "withered_symbiont"), "outer_armor"
+      ResourceLocation.fromNamespaceAndPath("witherstormmod", "withered_symbiont"), "outer_armor"
    );
-   public static final ModelLayerLocation WITHER_STORM_HEAD = new ModelLayerLocation(new ResourceLocation("witherstormmod", "wither_storm_head"), "main");
-   public static final ModelLayerLocation TENTACLE = new ModelLayerLocation(new ResourceLocation("witherstormmod", "tentacle"), "main");
-   public static final ModelLayerLocation RIBCAGE = new ModelLayerLocation(new ResourceLocation("witherstormmod", "ribcage"), "main");
-   public static final ModelLayerLocation TAINTED_SLIME = new ModelLayerLocation(new ResourceLocation("witherstormmod", "tainted_slime"), "main");
-   public static final ModelLayerLocation TENTACLE_SPIKE = new ModelLayerLocation(new ResourceLocation("witherstormmod", "tentacle_spike"), "main");
+   public static final ModelLayerLocation WITHER_STORM_HEAD = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "wither_storm_head"), "main");
+   public static final ModelLayerLocation TENTACLE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "tentacle"), "main");
+   public static final ModelLayerLocation RIBCAGE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "ribcage"), "main");
+   public static final ModelLayerLocation TAINTED_SLIME = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "tainted_slime"), "main");
+   public static final ModelLayerLocation TENTACLE_SPIKE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("witherstormmod", "tentacle_spike"), "main");
    public static final ModelLayerLocation SANTA_HAT = new ModelLayerLocation(WitherStormMod.id("santa_hat"), "main");
    public static final ModelLayerLocation TAINTED_SIGN = ModelLayers.createSignModelName(WitherStormModBlocks.TAINTED);
    public static final ModelLayerLocation TAINTED_HANGING_SIGN = ModelLayers.createHangingSignModelName(WitherStormModBlocks.TAINTED);

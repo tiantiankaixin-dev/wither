@@ -34,7 +34,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements.Type;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.NaturalSpawner;
@@ -43,7 +44,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
@@ -67,6 +68,7 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModEntityTypes;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModFeatures;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModStructures;
 import nonamecrackers2.witherstormmod.common.util.BowelsTeleporter;
+import nonamecrackers2.witherstormmod.common.util.WitherStormModNBTUtil;
 import nonamecrackers2.witherstormmod.common.util.WorldUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -184,7 +186,7 @@ public class WitherStormBowelsManager {
                         int finalX = sectionX + i * x;
                         int finalZ = sectionZ + i * z;
                         ChunkPos potential = placement.getPotentialStructureChunk(this.world.getSeed(), finalX, finalZ);
-                        StructureCheckResult result = manager.checkStructurePresence(potential, (Structure)holder.value(), false);
+                        StructureCheckResult result = manager.checkStructurePresence(potential, (Structure)holder.value(), placement, false);
                         if (result != StructureCheckResult.START_NOT_PRESENT) {
                            ChunkAccess chunk = this.world.getChunk(potential.x, potential.z, ChunkStatus.STRUCTURE_STARTS);
                            StructureStart start = manager.getStartForStructure(SectionPos.bottomOf(chunk), (Structure)holder.value(), chunk);
@@ -266,7 +268,7 @@ public class WitherStormBowelsManager {
                      currentPos = currentPos.below();
                   }
 
-                  if (NaturalSpawner.isSpawnPositionOk(Type.ON_GROUND, this.world, currentPos, EntityType.PLAYER)) {
+                  if (SpawnPlacements.isSpawnPositionOk(EntityType.PLAYER, this.world, currentPos)) {
                      int scanRadius = 10;
                      int totalAir = 0;
 
@@ -400,7 +402,7 @@ public class WitherStormBowelsManager {
          }
 
          List<TentacleEntity> nearbyTentacles = this.world.getEntitiesOfClass(TentacleEntity.class, new AABB(currentPos).inflate(10.0));
-         if (NaturalSpawner.isSpawnPositionOk(Type.ON_GROUND, this.world, currentPos, WitherStormModEntityTypes.TENTACLE.get())
+         if (SpawnPlacements.isSpawnPositionOk(WitherStormModEntityTypes.TENTACLE.get(), this.world, currentPos)
             && nearbyTentacles.isEmpty()
             && Math.sqrt(currentPos.distSqr(center)) > 10.0) {
             pos = currentPos;
@@ -410,7 +412,7 @@ public class WitherStormBowelsManager {
 
       if (pos != null) {
          TentacleEntity tentacle = (TentacleEntity)(WitherStormModEntityTypes.TENTACLE.get())
-            .create(this.world, null, null, pos, MobSpawnType.EVENT, false, false);
+            .create(this.world, null, pos, MobSpawnType.EVENT, false, false);
          if (tentacle != null && this.hasEnoughSpace(tentacle, pos)) {
             tentacle.setDormant(true);
             tentacle.lerpCurlTo(0.1F, 0.05F * (float)tentacle.getRandom().nextGaussian(), 8);
@@ -437,7 +439,7 @@ public class WitherStormBowelsManager {
          offset = offset.rotate(rotation);
          BlockPos pos = structurePos.offset(offset);
          WitherStormHeadEntity head = (WitherStormHeadEntity)(WitherStormModEntityTypes.WITHER_STORM_HEAD.get())
-            .create(this.world, null, null, pos, MobSpawnType.EVENT, false, false);
+            .create(this.world, null, pos, MobSpawnType.EVENT, false, false);
          float rot = rotate(rotation) + (i == 0 ? 180.0F : 0.0F);
          head.setYRot(rot);
          head.setXRot(60.0F);
@@ -485,8 +487,8 @@ public class WitherStormBowelsManager {
 
    public static WitherStormBowelsManager.BowelsEnterStatus enter(ServerLevel world, WitherStormEntity storm, Entity entity) {
       WitherStormBowelsManager.BowelsEnterStatus flag = WitherStormBowelsManager.BowelsEnterStatus.ENTITY_CANNOT_CHANGE;
-      if (entity.isAddedToWorld() && entity.canChangeDimensions() && !entity.isPassenger() && !entity.isVehicle()) {
-         ServerLevel bowels = WitherStormMod.bowels(world);
+      ServerLevel bowels = WitherStormMod.bowels(world);
+      if (entity.isAddedToWorld() && entity.canChangeDimensions(world, bowels) && !entity.isPassenger() && !entity.isVehicle()) {
          WitherStormBowelsManager manager = (WitherStormBowelsManager)bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).orElse(null);
          if (manager != null) {
             if (storm.isAlive()) {
@@ -496,7 +498,7 @@ public class WitherStormBowelsManager {
                   instance.setup(bowels);
                   manager.prepareArena(instance, storm);
                   BlockPos pos = manager.calculateEntrancePos(instance);
-                  entity.changeDimension(bowels, new BowelsTeleporter(pos));
+                  entity.changeDimension(BowelsTeleporter.transition(bowels, entity, pos));
                   LOGGER.info("{} is entering the bowels of {}", entity, storm);
                   flag = WitherStormBowelsManager.BowelsEnterStatus.SUCCESS;
                } else {
@@ -513,7 +515,7 @@ public class WitherStormBowelsManager {
    }
 
    public static void leave(ServerLevel world, Entity entity, @Nullable WitherStormBowelsManager.BowelsInstance instance) {
-      if (entity.isAddedToWorld() && entity.canChangeDimensions() && !entity.isPassenger() && !entity.isVehicle()) {
+      if (entity.isAddedToWorld() && !entity.isPassenger() && !entity.isVehicle()) {
          world.getCapability(WitherStormModCapabilities.BOWELS_MANAGER)
             .ifPresent(
                manager -> {
@@ -527,17 +529,23 @@ public class WitherStormBowelsManager {
                      if (storm != null) {
                         BlockPos pos = storm.blockPosition().below(5);
                         entity.getCapability(WitherStormModCapabilities.PLAYER_WITHER_STORM_DATA).ifPresent(data -> data.makeInvulnerable(2400));
-                        if (entity.changeDimension((ServerLevel)storm.level(), new BowelsTeleporter(pos)) instanceof LivingEntity living
+                        ServerLevel stormLevel = (ServerLevel)storm.level();
+                        if (entity.canChangeDimensions(world, stormLevel)
+                           && entity.changeDimension(BowelsTeleporter.transition(stormLevel, entity, pos)) instanceof LivingEntity living
                            && (Boolean)WitherStormModConfig.SERVER.bowelsFallResistance.get()) {
                            living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 120, 255, false, false, false));
                         }
                      } else {
                         ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
-                        entity.changeDimension(overworld, new BowelsTeleporter(overworld.getSharedSpawnPos()));
+                        if (entity.canChangeDimensions(world, overworld)) {
+                           entity.changeDimension(BowelsTeleporter.transition(overworld, entity, overworld.getSharedSpawnPos()));
+                        }
                      }
                   } else {
                      ServerLevel overworld = world.getServer().getLevel(Level.OVERWORLD);
-                     entity.changeDimension(overworld, new BowelsTeleporter(overworld.getSharedSpawnPos()));
+                     if (entity.canChangeDimensions(world, overworld)) {
+                        entity.changeDimension(BowelsTeleporter.transition(overworld, entity, overworld.getSharedSpawnPos()));
+                     }
                   }
                }
             );
@@ -545,8 +553,11 @@ public class WitherStormBowelsManager {
    }
 
    public static void queueEnter(ServerPlayer player, WitherStormEntity storm) {
-      if (!player.level().dimension().location().equals(WitherStormMod.bowelsLocation()) && player.canChangeDimensions() && !player.isPassenger() && !player.isVehicle()) {
-         ServerLevel bowels = WitherStormMod.bowels(player.serverLevel());
+      ServerLevel bowels = WitherStormMod.bowels(player.serverLevel());
+      if (!player.level().dimension().location().equals(WitherStormMod.bowelsLocation())
+         && player.canChangeDimensions(player.level(), bowels)
+         && !player.isPassenger()
+         && !player.isVehicle()) {
          bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).ifPresent(manager -> manager.queuedEnter.putIfAbsent(storm.getUUID(), player));
       }
    }
@@ -557,7 +568,7 @@ public class WitherStormBowelsManager {
    }
 
    public static void queueLeave(Entity entity, Runnable action) {
-      if (entity.level().dimension().location().equals(WitherStormMod.bowelsLocation()) && entity.canChangeDimensions() && !entity.isPassenger() && !entity.isVehicle()) {
+      if (entity.level().dimension().location().equals(WitherStormMod.bowelsLocation()) && !entity.isPassenger() && !entity.isVehicle()) {
          ServerLevel bowels = WitherStormMod.bowels((ServerLevel)entity.level());
          bowels.getCapability(WitherStormModCapabilities.BOWELS_MANAGER).ifPresent(manager -> manager.queuedLeave.putIfAbsent(entity, action));
       }
@@ -689,7 +700,7 @@ public class WitherStormBowelsManager {
       }
 
       public static WitherStormBowelsManager.BowelsInstance read(CompoundTag compound) {
-         BlockPos pos = NbtUtils.readBlockPos(compound.getCompound("Pos"));
+         BlockPos pos = WitherStormModNBTUtil.readBlockPos(compound, "Pos").orElse(BlockPos.ZERO);
          UUID storm = compound.getUUID("Storm");
          UUID commandBlock = null;
          if (compound.contains("CommandBlock")) {

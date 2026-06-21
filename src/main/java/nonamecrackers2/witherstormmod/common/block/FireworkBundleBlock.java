@@ -1,10 +1,11 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -28,8 +29,15 @@ import nonamecrackers2.witherstormmod.common.init.WitherStormModBlockEntityTypes
 import org.jetbrains.annotations.Nullable;
 
 public class FireworkBundleBlock extends BaseEntityBlock {
+   public static final MapCodec<FireworkBundleBlock> CODEC = simpleCodec(FireworkBundleBlock::new);
+
    public FireworkBundleBlock(Properties properties) {
       super(properties);
+   }
+
+   @Override
+   protected MapCodec<FireworkBundleBlock> codec() {
+      return CODEC;
    }
 
    public RenderShape getRenderShape(BlockState state) {
@@ -52,23 +60,23 @@ public class FireworkBundleBlock extends BaseEntityBlock {
       }
    }
 
-   public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-      ItemStack stack = player.getItemInHand(hand);
+   @Override
+   protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
       if (!stack.is(Items.FLINT_AND_STEEL) && !stack.is(Items.FIRE_CHARGE)) {
-         return super.use(state, level, pos, player, hand, hitResult);
+         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
       } else {
          this.onCaughtFire(state, level, pos, hitResult.getDirection(), player);
          Item item = stack.getItem();
          if (!player.isCreative()) {
             if (stack.is(Items.FLINT_AND_STEEL)) {
-               stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+               stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             } else {
                stack.shrink(1);
             }
          }
 
          player.awardStat(Stats.ITEM_USED.get(item));
-         return InteractionResult.sidedSuccess(level.isClientSide);
+         return ItemInteractionResult.sidedSuccess(level.isClientSide);
       }
    }
 

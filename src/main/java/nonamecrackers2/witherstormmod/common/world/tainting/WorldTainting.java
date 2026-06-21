@@ -147,7 +147,7 @@ public class WorldTainting {
          .ifPresent(
             conversion -> {
                if (conversion.canBeConvertedFromWitherSickness() || !fromWitherSickness) {
-                  CompoundTag data = mob.serializeNBT();
+                  CompoundTag data = mob.serializeNBT(mob.level().registryAccess());
 
                   try {
                      @SuppressWarnings("unchecked") Mob converted = (Mob)mob.convertTo((EntityType<? extends Mob>)conversion.to(), true);

@@ -13,8 +13,8 @@ import nonamecrackers2.witherstormmod.client.init.WitherStormModRenderers;
 import nonamecrackers2.witherstormmod.common.entity.SickenedVillager;
 
 public class SickenedVillagerRenderer extends HumanoidMobRenderer<SickenedVillager, ZombieVillagerModel<SickenedVillager>> {
-   private static final ResourceLocation TEXTURE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_villager.png");
-   private static final ResourceLocation TEXTURE_EMISSIVE = new ResourceLocation("witherstormmod", "textures/entity/sickened/sickened_villager_emissive.png");
+   private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_villager.png");
+   private static final ResourceLocation TEXTURE_EMISSIVE = ResourceLocation.fromNamespaceAndPath("witherstormmod", "textures/entity/sickened/sickened_villager_emissive.png");
 
    public SickenedVillagerRenderer(Context context) {
       super(context, new ZombieVillagerModel(context.bakeLayer(WitherStormModRenderers.SICKENED_VILLAGER)), 0.5F);

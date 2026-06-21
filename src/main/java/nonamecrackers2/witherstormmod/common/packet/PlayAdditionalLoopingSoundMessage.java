@@ -1,12 +1,14 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
+import java.util.Objects;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent.Context;
 import net.minecraftforge.registries.ForgeRegistries;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.client.packet.WitherStormModMessageHandlerClient;
 import nonamecrackers2.witherstormmod.common.entity.WitherStormEntity;
 
@@ -52,7 +54,7 @@ public class PlayAdditionalLoopingSoundMessage extends Packet {
 
    public void encode(FriendlyByteBuf buffer) {
       buffer.writeVarInt(this.entityId);
-      buffer.writeRegistryId(ForgeRegistries.SOUND_EVENTS, this.event);
+      buffer.writeResourceLocation(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getKey(this.event), "Unregistered sound event"));
       buffer.writeDouble(this.x);
       buffer.writeDouble(this.y);
       buffer.writeDouble(this.z);
@@ -60,7 +62,8 @@ public class PlayAdditionalLoopingSoundMessage extends Packet {
 
    public void decode(FriendlyByteBuf buffer) throws IllegalArgumentException, IndexOutOfBoundsException {
       this.entityId = buffer.readVarInt();
-      this.event = buffer.readRegistryId();
+      ResourceLocation eventId = buffer.readResourceLocation();
+      this.event = Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(eventId), "Unknown sound event: " + eventId);
       this.x = buffer.readDouble();
       this.y = buffer.readDouble();
       this.z = buffer.readDouble();

@@ -18,10 +18,10 @@ public class WitherStormModFeatures {
    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, "witherstormmod");
    public static final RegistryObject<CommandBlockPodiumFeature> COMMAND_BLOCK_PODIUM_FEATURE = FEATURES.register(
       "command_block_podium",
-      () -> new CommandBlockPodiumFeature(NoneFeatureConfiguration.CODEC, new ResourceLocation("witherstormmod", "command_block_podium"))
+      () -> new CommandBlockPodiumFeature(NoneFeatureConfiguration.CODEC, ResourceLocation.fromNamespaceAndPath("witherstormmod", "command_block_podium"))
    );
    public static final RegistryObject<BowelsPodiumFeature> BOWELS_PODIUM_FEATURE = FEATURES.register(
-      "bowels_podium", () -> new BowelsPodiumFeature(NoneFeatureConfiguration.CODEC, new ResourceLocation("witherstormmod", "bowels_podium"))
+      "bowels_podium", () -> new BowelsPodiumFeature(NoneFeatureConfiguration.CODEC, ResourceLocation.fromNamespaceAndPath("witherstormmod", "bowels_podium"))
    );
 
    public static Holder<ConfiguredFeature<?, ?>> getConfiguredFeature(ServerLevel level, ResourceLocation id) {

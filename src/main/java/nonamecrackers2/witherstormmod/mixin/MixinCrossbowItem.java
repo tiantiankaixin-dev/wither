@@ -60,18 +60,14 @@ public class MixinCrossbowItem {
    ) {
       if (!world.isClientSide && (Boolean)WitherStormModConfig.SERVER.crossbowsSupportEnderPearls.get() && projectile.getItem() == Items.ENDER_PEARL) {
          Projectile projectileEntity = new ThrownEnderpearl(world, entity);
-         if (entity instanceof CrossbowAttackMob crossbowUser) {
-            crossbowUser.shootCrossbowProjectile(crossbowUser.getTarget(), stack, projectileEntity, offset);
-         } else {
-            Vec3 upVector = entity.getUpVector(1.0F);
-            Quaternionf quaternion = new Quaternionf()
-               .setAngleAxis((double)(offset * (float) (Math.PI / 180.0)), upVector.x, upVector.y, upVector.z);
-            Vec3 viewVector = entity.getViewVector(1.0F);
-            Vector3f vector3f = viewVector.toVector3f().rotate(quaternion);
-            projectileEntity.shoot((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), power, f);
-         }
+         Vec3 upVector = entity.getUpVector(1.0F);
+         Quaternionf quaternion = new Quaternionf()
+            .setAngleAxis((double)(offset * (float) (Math.PI / 180.0)), upVector.x, upVector.y, upVector.z);
+         Vec3 viewVector = entity.getViewVector(1.0F);
+         Vector3f vector3f = viewVector.toVector3f().rotate(quaternion);
+         projectileEntity.shoot((double)vector3f.x(), (double)vector3f.y(), (double)vector3f.z(), power, f);
 
-         stack.hurtAndBreak(3, entity, livingEntity -> livingEntity.broadcastBreakEvent(hand));
+         stack.hurtAndBreak(3, entity, LivingEntity.getSlotForHand(hand));
          world.addFreshEntity(projectileEntity);
          world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1.0F, shotPitch);
          callback.cancel();

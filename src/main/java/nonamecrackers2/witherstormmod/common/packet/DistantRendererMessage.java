@@ -1,13 +1,12 @@
 package nonamecrackers2.witherstormmod.common.packet;
 
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.DataItem;
 import net.minecraft.network.syncher.SynchedEntityData.DataValue;
-import nonamecrackers2.crackerslib.common.packet.Packet;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.mixin.IMixinSynchedEntityData;
 
 public abstract class DistantRendererMessage extends Packet {
@@ -41,15 +40,13 @@ public abstract class DistantRendererMessage extends Packet {
    protected static List<DataValue<?>> getPackedData(SynchedEntityData data) {
       IMixinSynchedEntityData mixinData = (IMixinSynchedEntityData)data;
       List<DataValue<?>> values = Lists.newArrayList();
-      mixinData.getLock().readLock().lock();
-      ObjectIterator var3 = mixinData.getItemsById().values().iterator();
 
-      while (var3.hasNext()) {
-         DataItem<?> item = (DataItem<?>)var3.next();
-         values.add(item.value());
+      for (DataItem<?> item : mixinData.getItemsById()) {
+         if (item != null) {
+            values.add(item.value());
+         }
       }
 
-      mixinData.getLock().readLock().unlock();
       return values;
    }
 }

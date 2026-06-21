@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -46,6 +48,7 @@ import nonamecrackers2.witherstormmod.common.config.WitherStormModConfig;
 import nonamecrackers2.witherstormmod.common.entity.FormidibombEntity;
 import nonamecrackers2.witherstormmod.common.init.WitherStormModParticleTypes;
 import nonamecrackers2.witherstormmod.common.item.FormidibombItem;
+import nonamecrackers2.witherstormmod.common.util.ItemStackDataUtil;
 import nonamecrackers2.witherstormmod.common.util.IFormidibomb;
 
 public class FormidibombBlock extends TntBlock implements EntityBlock {
@@ -152,20 +155,20 @@ public class FormidibombBlock extends TntBlock implements EntityBlock {
    }
 
    public List<ItemStack> getDrops(BlockState state, net.minecraft.world.level.storage.loot.LootParams.Builder loot) {
-      ResourceLocation location = this.getLootTable();
+      ResourceKey<LootTable> location = this.getLootTable();
       if (location == BuiltInLootTables.EMPTY) {
          return Collections.emptyList();
       } else {
          LootParams context = loot.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
          ServerLevel world = context.getLevel();
-         LootTable table = world.getServer().getLootData().getLootTable(location);
+         LootTable table = world.getServer().reloadableRegistries().getLootTable(location);
          List<ItemStack> stacks = table.getRandomItems(context);
 
          for (ItemStack stack : stacks) {
             if (stack.getItem() instanceof FormidibombItem) {
                BlockEntity tile = (BlockEntity)loot.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
                if (tile instanceof IFormidibomb formidibomb) {
-                  CompoundTag compound = stack.getOrCreateTag();
+                  CompoundTag compound = ItemStackDataUtil.getOrCreateTag(stack);
                   compound.putInt("Fuse", formidibomb.getFuseLife());
                   compound.putInt("StartFuse", formidibomb.getStartFuse());
                }
@@ -176,8 +179,9 @@ public class FormidibombBlock extends TntBlock implements EntityBlock {
       }
    }
 
-   public void appendHoverText(ItemStack stack, BlockGetter world, List<Component> components, TooltipFlag flag) {
-      super.appendHoverText(stack, world, components, flag);
+   @Override
+   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> components, TooltipFlag flag) {
+      super.appendHoverText(stack, context, components, flag);
       if (stack.getItem() instanceof FormidibombItem) {
          FormidibombItem item = (FormidibombItem)stack.getItem();
          if (item.getStartFuse(stack) > 0 && item.getFuse(stack) < item.getStartFuse(stack)) {

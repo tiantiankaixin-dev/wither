@@ -45,7 +45,7 @@ public class EntitySyncableDataEvents {
    public static void sendChanges(ServerPlayer player, Entity entity) {
       if (entity instanceof EntitySyncableData) {
          EntitySyncableDataMessage message = new EntitySyncableDataMessage(entity.getId(), (EntitySyncableData)entity);
-         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> player), message);
+         WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(player), message);
       }
    }
 }

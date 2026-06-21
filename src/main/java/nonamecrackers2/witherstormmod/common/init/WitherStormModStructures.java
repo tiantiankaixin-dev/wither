@@ -25,6 +25,6 @@ public class WitherStormModStructures {
    }
 
    public static void registerPieceTypes() {
-      Registry.register(BuiltInRegistries.STRUCTURE_PIECE, new ResourceLocation("witherstormmod", "platform"), PLATFORM);
+      Registry.register(BuiltInRegistries.STRUCTURE_PIECE, ResourceLocation.fromNamespaceAndPath("witherstormmod", "platform"), PLATFORM);
    }
 }

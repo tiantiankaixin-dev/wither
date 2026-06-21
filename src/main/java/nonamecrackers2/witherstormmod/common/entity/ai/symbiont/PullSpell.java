@@ -38,7 +38,7 @@ public class PullSpell extends SymbiontSpell {
             entity.setDeltaMovement(delta);
             if (entity instanceof ServerPlayer) {
                PlayerMotionMessage message = new PlayerMotionMessage(delta);
-               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)entity), message);
+               WitherStormModPacketHandlers.MAIN.send(PacketDistributor.PLAYER.with((ServerPlayer)entity), message);
             }
 
             double x = entity.getX() + entity.getRandom().nextGaussian() * entity.getBoundingBox().getXsize() * 0.4;

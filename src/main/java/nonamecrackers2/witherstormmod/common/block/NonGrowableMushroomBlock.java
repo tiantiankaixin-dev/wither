@@ -1,5 +1,6 @@
 package nonamecrackers2.witherstormmod.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -13,10 +14,16 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class NonGrowableMushroomBlock extends BushBlock {
+   public static final MapCodec<NonGrowableMushroomBlock> CODEC = simpleCodec(NonGrowableMushroomBlock::new);
    protected static final VoxelShape SHAPE = Block.box(5.0, 0.0, 5.0, 11.0, 6.0, 11.0);
 
    public NonGrowableMushroomBlock(Properties properties) {
       super(properties);
+   }
+
+   @Override
+   protected MapCodec<NonGrowableMushroomBlock> codec() {
+      return CODEC;
    }
 
    protected boolean mayPlaceOn(BlockState state, BlockGetter reader, BlockPos pos) {

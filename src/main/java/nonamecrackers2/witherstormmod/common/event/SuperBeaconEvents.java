@@ -13,7 +13,7 @@ public class SuperBeaconEvents {
    public static void onPlayerOpenContainer(Open event) {
       if (event.getContainer() instanceof AbstractSuperBeaconMenu menu) {
          WitherStormModPacketHandlers.MAIN
-            .send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()), new SuperBeaconValidEffectsMessage(menu.getValidEffects()));
+            .send(PacketDistributor.PLAYER.with((ServerPlayer)event.getEntity()), new SuperBeaconValidEffectsMessage(menu.getValidEffects()));
       }
    }
 }

@@ -1,9 +1,14 @@
 package nonamecrackers2.witherstormmod.common.init;
 
+import java.lang.reflect.InvocationTargetException;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-import nonamecrackers2.crackerslib.common.packet.PacketUtil;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.PacketDistributor.PacketTarget;
+import net.minecraftforge.network.SimpleChannel;
+import nonamecrackers2.witherstormmod.common.network.LegacyNetworkEvent;
+import nonamecrackers2.witherstormmod.common.network.Packet;
 import nonamecrackers2.witherstormmod.common.entity.CommandBlockEntity;
 import nonamecrackers2.witherstormmod.common.entity.TentacleEntity;
 import nonamecrackers2.witherstormmod.common.entity.WitheredSymbiontEntity;
@@ -42,47 +47,93 @@ import nonamecrackers2.witherstormmod.common.packet.UpdateWitherSicknessTrackerM
 import nonamecrackers2.witherstormmod.common.packet.WitherStormToDistantRendererMessage;
 
 public class WitherStormModPacketHandlers {
-   private static final String PROTOCOL_VERSION = "4.0";
-   public static final SimpleChannel MAIN = NetworkRegistry.newSimpleChannel(
-      new ResourceLocation("witherstormmod", "main"), () -> "4.0", "4.0"::equals, "4.0"::equals
+   private static final int PROTOCOL_VERSION = 4;
+   private static int packetId;
+   public static final WitherStormModPacketHandlers.LegacyChannel MAIN = new WitherStormModPacketHandlers.LegacyChannel(
+      ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath("witherstormmod", "main"))
+         .networkProtocolVersion(PROTOCOL_VERSION)
+         .acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
+         .simpleChannel()
    );
 
    public static void registerPackets() {
-      PacketUtil.registerToClient(MAIN, PlayerMotionMessage.class);
-      PacketUtil.registerToClient(MAIN, GlobalSoundMessage.class);
-      PacketUtil.registerToClient(MAIN, WitherStormBodyController.UpdateBodyRotMessage.class);
-      PacketUtil.registerToClient(MAIN, WitherStormToDistantRendererMessage.class);
-      PacketUtil.registerToClient(MAIN, RemoveStormFromDistantRendererMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateStormPositionMessage.class);
-      PacketUtil.registerToClient(MAIN, StormTeleportMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateStormVelocityMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateStormHeadLookMessage.class);
-      PacketUtil.registerToClient(MAIN, StormMetadataMessage.class);
-      PacketUtil.registerToClient(MAIN, StormAttributesMessage.class);
-      PacketUtil.registerToClient(MAIN, CreateLoopingSoundMessage.class);
-      PacketUtil.registerToClient(MAIN, StormSoundPositionMessage.class);
-      PacketUtil.registerToClient(MAIN, RemoveSoundLoopMessage.class);
-      PacketUtil.registerToClient(MAIN, NotifyHeadInjuryMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateEffectInstanceMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateWitherSicknessTrackerMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdatePlayDeadManagerMessage.class);
-      PacketUtil.registerToClient(MAIN, CreateDebrisMessage.class);
-      PacketUtil.registerToClient(MAIN, EntitySyncableDataMessage.class);
-      PacketUtil.registerToClient(MAIN, PlayAdditionalLoopingSoundMessage.class);
-      PacketUtil.registerToClient(MAIN, RemoveAdditionalLoopingSoundMessage.class);
-      PacketUtil.registerToClient(MAIN, ShakeScreenMessage.class);
-      PacketUtil.registerToClient(MAIN, FormidibombExplosionMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateDamagingProjectileMessage.class);
-      PacketUtil.registerToClient(MAIN, WitheredSymbiontEntity.SetSpellTimeMessage.class);
-      PacketUtil.registerToClient(MAIN, CommandBlockEntity.ModeAnimationMessage.class);
-      PacketUtil.registerToClient(MAIN, TentacleEntity.UpdateAnimationMessage.class);
-      PacketUtil.registerToClient(MAIN, BlindScreenMessage.class);
-      PacketUtil.registerToClient(MAIN, SuperBeaconValidEffectsMessage.class);
-      PacketUtil.registerToClient(MAIN, UpdateDistantSuperBeaconMessage.class);
-      PacketUtil.registerToClient(MAIN, RemoveDistantSuperBeaconMessage.class);
-      PacketUtil.registerToClient(MAIN, OnHeadAttackedMessage.class);
-      PacketUtil.registerToServer(MAIN, InjureHeadMessage.class);
-      PacketUtil.registerToServer(MAIN, SuperBeaconSetEffectMessage.class);
-      PacketUtil.registerToServer(MAIN, SuperBeaconToggleAreaMessage.class);
+      registerToClient(PlayerMotionMessage.class);
+      registerToClient(GlobalSoundMessage.class);
+      registerToClient(WitherStormBodyController.UpdateBodyRotMessage.class);
+      registerToClient(WitherStormToDistantRendererMessage.class);
+      registerToClient(RemoveStormFromDistantRendererMessage.class);
+      registerToClient(UpdateStormPositionMessage.class);
+      registerToClient(StormTeleportMessage.class);
+      registerToClient(UpdateStormVelocityMessage.class);
+      registerToClient(UpdateStormHeadLookMessage.class);
+      registerToClient(StormMetadataMessage.class);
+      registerToClient(StormAttributesMessage.class);
+      registerToClient(CreateLoopingSoundMessage.class);
+      registerToClient(StormSoundPositionMessage.class);
+      registerToClient(RemoveSoundLoopMessage.class);
+      registerToClient(NotifyHeadInjuryMessage.class);
+      registerToClient(UpdateEffectInstanceMessage.class);
+      registerToClient(UpdateWitherSicknessTrackerMessage.class);
+      registerToClient(UpdatePlayDeadManagerMessage.class);
+      registerToClient(CreateDebrisMessage.class);
+      registerToClient(EntitySyncableDataMessage.class);
+      registerToClient(PlayAdditionalLoopingSoundMessage.class);
+      registerToClient(RemoveAdditionalLoopingSoundMessage.class);
+      registerToClient(ShakeScreenMessage.class);
+      registerToClient(FormidibombExplosionMessage.class);
+      registerToClient(UpdateDamagingProjectileMessage.class);
+      registerToClient(WitheredSymbiontEntity.SetSpellTimeMessage.class);
+      registerToClient(CommandBlockEntity.ModeAnimationMessage.class);
+      registerToClient(TentacleEntity.UpdateAnimationMessage.class);
+      registerToClient(BlindScreenMessage.class);
+      registerToClient(SuperBeaconValidEffectsMessage.class);
+      registerToClient(UpdateDistantSuperBeaconMessage.class);
+      registerToClient(RemoveDistantSuperBeaconMessage.class);
+      registerToClient(OnHeadAttackedMessage.class);
+      registerToServer(InjureHeadMessage.class);
+      registerToServer(SuperBeaconSetEffectMessage.class);
+      registerToServer(SuperBeaconToggleAreaMessage.class);
+   }
+
+   private static <T extends Packet> void registerToClient(Class<T> type) {
+      register(type, PacketFlow.CLIENTBOUND);
+   }
+
+   private static <T extends Packet> void registerToServer(Class<T> type) {
+      register(type, PacketFlow.SERVERBOUND);
+   }
+
+   private static <T extends Packet> void register(Class<T> type, PacketFlow flow) {
+      MAIN.delegate
+         .messageBuilder(type, packetId++)
+         .direction(flow)
+         .encoder(Packet::encodeCheck)
+         .decoder(buffer -> Packet.decode(() -> createPacket(type), buffer))
+         .consumerMainThread((message, context) -> message.getProcessor(new LegacyNetworkEvent.Context(context)).run())
+         .add();
+   }
+
+   private static <T extends Packet> T createPacket(Class<T> type) {
+      try {
+         return type.getDeclaredConstructor().newInstance();
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
+         throw new IllegalStateException("Could not create packet " + type.getName(), exception);
+      }
+   }
+
+   public static class LegacyChannel {
+      private final SimpleChannel delegate;
+
+      private LegacyChannel(SimpleChannel delegate) {
+         this.delegate = delegate;
+      }
+
+      public <MSG> void send(PacketTarget target, MSG message) {
+         this.delegate.send(message, target);
+      }
+
+      public <MSG> void sendToServer(MSG message) {
+         this.delegate.send(message, net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+      }
    }
 }

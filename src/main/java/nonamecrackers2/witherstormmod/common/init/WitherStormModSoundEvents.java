@@ -88,6 +88,6 @@ public class WitherStormModSoundEvents {
    public static final RegistryObject<SoundEvent> MOB_CURED = createSoundEvent("mob_cured");
 
    private static RegistryObject<SoundEvent> createSoundEvent(String name) {
-      return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation("witherstormmod", name)));
+      return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("witherstormmod", name)));
    }
 }

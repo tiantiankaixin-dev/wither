@@ -78,7 +78,7 @@ public class NearestBlockDistractionGoal<T extends Mob & WitherStormBase> extend
       int scanRadius = (Integer)WitherStormModConfig.SERVER.tractorBeamBlockSearchRadius.get();
       Vec3 currentTarget = this.mob.getHeadPos(this.headIndex);
       Vec3 beamEnd = currentTarget.add(this.mob.getViewVector(this.mob.getHeadXRot(this.headIndex), this.mob.getHeadYRot(this.headIndex), 200.0F));
-      BlockHitResult result = this.mob.level().clip(new ClipContext(currentTarget, beamEnd, Block.COLLIDER, Fluid.NONE, null));
+      BlockHitResult result = this.mob.level().clip(new ClipContext(currentTarget, beamEnd, Block.COLLIDER, Fluid.NONE, this.mob));
       BlockPos hitPos = result.getBlockPos()
          .offset(this.mob.getRandom().nextIntBetweenInclusive(-4, 4), this.mob.getRandom().nextIntBetweenInclusive(-4, 4), this.mob.getRandom().nextIntBetweenInclusive(-4, 4));
       return WorldUtil.isLoaded((ServerLevel)this.mob.level(), hitPos)
